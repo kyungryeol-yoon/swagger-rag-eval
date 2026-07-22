@@ -28,7 +28,7 @@
 | 9 | "Swagger 재생성" 결과 반영 방식 (PR 생성? 직접 수정?) | ActionPanel 동작 | 미정 | |
 | 10 | 재생성이 기존 description을 덮어쓸 때 롤백 수단 | 파괴적 동작 안전장치 | 미정 | |
 | 11 | 사내 Nexus에 `openapi-typescript` 존재 여부 | 프론트 타입 생성 방식 | 불필요 | 생성물 api-types.ts를 저장소에 커밋하기로 결정(2026-07-22). 사내에선 파일만 복사하면 되므로 도구 자체는 필요 없음. 단 계약 변경 시 GitHub 쪽에서 재생성 후 다시 복사 |
-| 12 | 폰트 파일 반입 가능 여부 (Pretendard 등) | 디자인 토큰 | 확인 중 | |
+| 12 | 폰트 파일 반입 가능 여부 (Pretendard 등) | 디자인 토큰 | 확인 중 — **파일만 오면 즉시 적용 가능** | 코드는 준비 완료(2026-07-22). `src/styles/fonts/` 에 woff2 6개를 넣고 `src/app/fonts.ts` 주석 해제 + `globals.css` 두 줄 교체면 끝. 절차는 `frontend/src/styles/fonts/README.md`. 반입이 불가하면 지금의 시스템 폰트 fallback 을 그대로 유지하면 되고, 화면은 깨지지 않는다 |
 
 ## 환경
 
@@ -78,6 +78,15 @@
 | 31 | `get_spec(spec_id)` 의 반환 타입 | 지금은 파싱된 `dict[str, Any]`. 사내가 원문 문자열이나 DB 레코드를 준다면 파싱 책임 위치가 바뀐다 | 미정 | |
 | 32 | `AuthProvider.get_current_user()` 가 요청 컨텍스트를 어떻게 받나 | 지금 시그니처는 인자가 없다. SSO 토큰을 헤더에서 꺼내야 하면 `Request` 나 토큰 문자열을 받는 형태로 바뀐다. 소비자가 없어 미확정인 채로 뒀다 (#4) | 미정 | |
 | 33 | 평가 결과 저장(쓰기) 경로 | 지금 Port 는 읽기 전용(`get_evaluation`/`get_spec`). Phase 8 에서 평가 결과를 저장하려면 `save_*` 가 필요하고, 그때 사내 저장소가 쓰기를 허용하는지가 걸린다 | 미정 | |
+
+## Phase 5(디자인 토큰)에서 생긴 것
+
+| # | 항목 | 왜 필요한가 | 상태 | 답변 |
+|---|---|---|---|---|
+| 37 | `priority` 의 색 지정 | `contract.md` §3 은 grade 색만 정의한다. priority 는 지정이 없었다 | **확정 (2026-07-22)** | `HIGH→--red`, `MEDIUM→--sky`, `LOW→--text-mute`. 근거는 시안의 권장조치 카드가 red/sky 2단계로만 구분한다는 점. **amber 는 grade 전용**으로 남긴다 — priority 에 쓰면 화면에서 "개선 필요(등급)"와 "MEDIUM(우선순위)"이 같은 색이 되어 무엇을 가리키는지 알 수 없다. LOW 는 색을 빼서 시선을 끌지 않게 했다 |
+| 38 | 등급 라벨 문구 — `심각/개선 필요/보통/우수` 인가 `미흡/주의/양호/우수` 인가 | `contract.md` §3 표와 `prompts.md` §9-2 문구 수정안이 서로 달랐다 | **확정 (2026-07-22)** | `contract.md` §3 의 **심각/개선 필요/보통/우수** 유지. `prompts.md` §9-2 의 변경 제안은 철회하고 해당 행을 삭제했다. 라벨 문자열은 `frontend/src/lib/enumTokens.ts` 의 `gradeLabel` 한 곳에만 존재한다 |
+| 39 | 질문 유형 7종의 색 | 도넛 7조각을 채워야 하는데 시안 강조색은 5개뿐이었다 | **확정 (2026-07-22)** | 원색 2개 추가(`--indigo #818CF8`, `--pink #F472B6`). **상태색과 분리해 `--chart-type-*` 접두사로 신설.** direct=sky / user-nl=violet / domain-term=green / parameter=amber / error-case=red / short-keyword=indigo / mixed-lang=pink. 범주 구분용이며 위험·주의를 뜻하지 않는다 |
+| 40 | 폰트 파일 경로와 `BASE_PATH` 충돌 | `public/` 정적 파일에는 Next 가 basePath 접두사를 붙여주지 않아, 서브패스 배포(#34)면 `/fonts/...` 가 404 가 된다 | **해결 (2026-07-22)** | `public/fonts/` 를 없애고 `src/styles/fonts/` 로 옮겼다. `next/font/local`(`src/app/fonts.ts`)이 번들러를 거치므로 basePath 를 바꿔도 깨지지 않는다. 폰트 파일이 아직 없어 설정은 주석 처리 상태이며, `globals.css` 는 `--font-sans`/`--font-mono` 만 보므로 파일이 오면 두 줄만 고치면 된다 |
 
 ---
 

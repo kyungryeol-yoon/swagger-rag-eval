@@ -1,6 +1,133 @@
-/* 디자인 토큰은 Phase 5 에서 정의한다.
-   여기서는 레이아웃이 깨지지 않을 최소 리셋만 둔다.
-   TODO(Phase 5): 색·간격·폰트 토큰, @font-face(public/fonts 로컬 번들), enum→색 매핑 */
+/* ==========================================================================
+   디자인 토큰
+   --------------------------------------------------------------------------
+   컴포넌트는 여기 정의된 var(--token) 만 쓴다. hex 를 직접 적지 않는다.
+
+   특히 **의미 토큰을 경유한다.** 컴포넌트가 --red 를 직접 쓰면
+   "심각은 빨강"이라는 판단이 컴포넌트마다 흩어지고, 등급 색을 바꿀 때
+   전부 찾아다녀야 한다.
+
+   토큰은 세 층이다.
+     1) 원색      — 팔레트. 컴포넌트에서 직접 쓰지 않는다
+     2) 상태 토큰 — grade / priority. "좋다 / 위험하다"를 뜻한다
+     3) 범주 토큰 — chart-type. 서로 다르다는 것만 뜻한다. 좋고 나쁨이 없다
+
+   원본: docs/prompts.md §5 (색), docs/contract.md §3 (등급·유형 매핑)
+   ========================================================================== */
+
+:root {
+  /* ------------------------------------------------------------------------
+     1) 원색 — 시안 기준. 임의 변경 금지.
+     ------------------------------------------------------------------------ */
+
+  /* 배경 계열 */
+  --bg: #05070b;
+  --surface: #111827;
+  --surface-2: #0f172a;
+  --border: #1e293b;
+
+  /* 텍스트 계열 */
+  --text: #e2e8f0;
+  --text-dim: #94a3b8;
+  --text-mute: #64748b;
+
+  /* 강조색 */
+  --sky: #38bdf8;
+  --violet: #a78bfa;
+  --green: #4ade80;
+  --amber: #fbbf24;
+  --red: #f87171;
+
+  /* 범주색 전용으로 추가. 도넛 7종을 채우려면 강조색 5개로는 모자란다. */
+  --indigo: #818cf8;
+  --pink: #f472b6;
+
+  /* ------------------------------------------------------------------------
+     2) 상태 토큰 — enum -> 색
+     ------------------------------------------------------------------------ */
+
+  /* 등급. 기준은 docs/contract.md §3:
+     CRITICAL <70% / NEEDS_IMPROVEMENT 70~85% / FAIR 85~95% / GOOD >=95% */
+  --grade-critical: var(--red);
+  --grade-needs-improvement: var(--amber);
+  --grade-fair: var(--sky);
+  --grade-good: var(--green);
+
+  /* 우선순위. 시안의 권장조치 카드가 red / sky 2단계로만 구분한다.
+     amber 는 grade 전용이다 — 의미 충돌 방지.
+     priority 에 amber 를 쓰면 화면에서 "개선 필요(등급)"와
+     "MEDIUM(우선순위)"이 같은 색으로 나와 무엇을 가리키는지 알 수 없게 된다.
+     LOW 는 색을 빼서 시선을 끌지 않게 한다. */
+  --priority-high: var(--red);
+  --priority-medium: var(--sky);
+  --priority-low: var(--text-mute);
+
+  /* ------------------------------------------------------------------------
+     3) 범주 토큰 — 질문 유형 (docs/contract.md §3 의 questionType 7종)
+     ------------------------------------------------------------------------
+     **범주 구분용이며 상태(위험/주의)를 의미하지 않는다.**
+     --chart-type-error-case 가 red 인 것은 "오류 상황 질문"이 나쁘다는 뜻이
+     아니라, 도넛에서 옆 조각과 구분되어야 하기 때문이다.
+     인식률의 좋고 나쁨은 grade 토큰이 따로 표현한다.
+     ------------------------------------------------------------------------ */
+
+  --chart-type-direct: var(--sky);
+  --chart-type-user-nl: var(--violet);
+  --chart-type-domain-term: var(--green);
+  --chart-type-parameter: var(--amber);
+  --chart-type-error-case: var(--red);
+  --chart-type-short-keyword: var(--indigo);
+  --chart-type-mixed-lang: var(--pink);
+
+  /* ------------------------------------------------------------------------
+     간격 — 4px 배수. 이 8단계 밖의 값을 쓰지 않는다.
+     ------------------------------------------------------------------------ */
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* ------------------------------------------------------------------------
+     모서리 · 그림자
+     ------------------------------------------------------------------------ */
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  /* 어두운 배경에서는 그림자가 잘 안 보인다. 경계선을 함께 얹어 카드를 띄운다. */
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.32);
+
+  /* ------------------------------------------------------------------------
+     타이포
+     ------------------------------------------------------------------------
+     현재 값은 **시스템 폰트 fallback 체인**이다. 폰트 파일이 아직 없다.
+
+     폰트를 넣을 때 고치는 곳은 이 두 줄뿐이다. `src/app/fonts.ts` 의
+     next/font/local 설정을 해제하면 `--font-pretendard` / `--font-jetbrains-mono`
+     변수가 생기고, 아래처럼 앞에 끼워 넣으면 된다:
+
+       --font-sans: var(--font-pretendard), -apple-system, ...;
+       --font-mono: var(--font-jetbrains-mono), ui-monospace, ...;
+
+     절차는 src/styles/fonts/README.md 참고.
+
+     모노는 수치와 경로에 쓴다. `/orders/{id}/refund-status` 같은 문자열이
+     본문 폰트로 나오면 슬래시와 중괄호가 뭉개진다.
+     ------------------------------------------------------------------------ */
+
+  --font-sans: -apple-system, "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* --------------------------------------------------------------------------
+   리셋
+   -------------------------------------------------------------------------- */
 
 *,
 *::before,
@@ -15,11 +142,63 @@ body {
 }
 
 body {
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* 다크 고정. 라이트 모드는 대응하지 않는다.
+     color-scheme 을 지정해야 스크롤바와 기본 폼 컨트롤도 어두워진다. */
+  color-scheme: dark;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+/* 키보드 사용자를 위한 포커스 링. 마우스 클릭에는 나타나지 않는다. */
+:focus-visible {
+  outline: 2px solid var(--sky);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* --------------------------------------------------------------------------
+   유틸리티
+   -------------------------------------------------------------------------- */
+
+/* 수치·경로에 쓴다. 숫자 폭이 고정돼 표에서 자릿수가 흔들리지 않는다.
+   78.0% 와 61.0% 가 세로로 정렬되지 않으면 값을 비교하기 어렵다. */
+.tabular {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 화면에는 안 보이지만 스크린 리더는 읽는 텍스트. */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   접근성
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
