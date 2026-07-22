@@ -1,0 +1,272 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1774" viewBox="0 0 1440 1774" font-family="Inter, system-ui, sans-serif">
+<rect x="0" y="0" width="1440" height="99999" fill="#05070B"/>
+<defs><pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#12182A"/></pattern><filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="18" stdDeviation="26" flood-color="#000000" flood-opacity="0.5"/></filter></defs>
+<rect x="0" y="0" width="1440" height="99999" fill="url(#dots)"/>
+<rect x="40" y="40" width="1360" height="1678.5" rx="16" fill="#0B1120" stroke="#1E293B" stroke-width="1" filter="url(#shadow)"/>
+<rect x="40.0" y="40.0" width="1360.0" height="44.0" rx="0" fill="#0F172A" stroke="none" stroke-width="1" opacity="1"/>
+<line x1="40.0" y1="84.0" x2="1400.0" y2="84.0" stroke="#1E293B" stroke-width="1" stroke-linecap="butt"/>
+<circle cx="70.0" cy="62.0" r="6.0" fill="#F87171" stroke="none" stroke-width="1" opacity="1"/>
+<circle cx="92.0" cy="62.0" r="6.0" fill="#FBBF24" stroke="none" stroke-width="1" opacity="1"/>
+<circle cx="114.0" cy="62.0" r="6.0" fill="#4ADE80" stroke="none" stroke-width="1" opacity="1"/>
+<rect x="563.2" y="51.0" width="313.7" height="22.0" rx="8" fill="#0B1120" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<text x="720.0" y="66.0" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;fill:#64748B;font-weight:400;">app.rag-eval.dev/swagger-search/eval/A492</text>
+<text x="84.0" y="118.0" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;fill:#38BDF8;font-weight:600;letter-spacing:2px;">RAG-EVAL / SWAGGER SEARCH</text>
+<text x="84.0" y="158.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:27px;fill:#E2E8F0;font-weight:800;">Swagger 검색 인식률 평가 결과</text>
+<text x="1356.0" y="74.0" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11.5px;fill:#64748B;font-weight:400;">평가일 2026-07-22 · trace #A492 · bge-m3 · 48s</text>
+<circle cx="1316.0" cy="122.0" r="40.0" fill="#FBBF24" stroke="none" stroke-width="1" opacity="0.08"/>
+<circle cx="1316.0" cy="122.0" r="35.5" fill="none" stroke="#1E293B" stroke-width="7" opacity="1"/>
+<path d="M1316.0,86.5 A35.5,35.5 0 1,1 1281.1,115.3" stroke="#FBBF24" stroke-width="7" fill="none" stroke-linecap="round"/>
+<text x="1316.0" y="128.0" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:17px;fill:#FBBF24;font-weight:800;">78%</text>
+<text x="1316.0" y="143.0" text-anchor="middle" style="font-family:'Inter',system-ui,sans-serif;font-size:8.5px;fill:#94A3B8;font-weight:400;">인식률</text>
+<line x1="40.0" y1="192.0" x2="1400.0" y2="192.0" stroke="#1E293B" stroke-width="1" stroke-linecap="butt"/>
+<rect x="84.0" y="214.0" width="440.0" height="162.0" rx="14" fill="#111827" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<text x="102.0" y="243.0" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11.5px;fill:#38BDF8;font-weight:600;letter-spacing:1.2px;">평가 대상 API</text>
+<rect x="102.0" y="259.0" width="41.8" height="24.0" rx="6" fill="#38BDF8" stroke="none" stroke-width="1" opacity="0.14"/><rect x="102.0" y="259.0" width="41.8" height="24.0" rx="6" fill="none" stroke="#38BDF8" stroke-width="1" opacity="1"/><text x="122.9" y="275.0" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;fill:#38BDF8;font-weight:700;">GET</text>
+<text x="155.8" y="276.0" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:14px;fill:#E2E8F0;font-weight:400;">/api/v1/orders/{id}/refund-status</text>
+<text x="102.0" y="310.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:13.5px;fill:#E2E8F0;font-weight:700;">주문 환불 상태 조회</text>
+<text x="102.0" y="335.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:11.5px;fill:#94A3B8;font-weight:400;"><tspan x="102.0" dy="0">특정 주문 건의 환불 처리 상태, 환불 사유, 처리 일자를 반환합니다.</tspan><tspan x="102.0" dy="17">환불/완료된 주문에 대해서만 유효한 응답을 제공합니다.</tspan></text>
+<rect x="542.0" y="214.0" width="814.0" height="128.0" rx="14" fill="#111827" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<text x="556.0" y="237.0" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11.5px;fill:#38BDF8;font-weight:600;letter-spacing:1.2px;">전체 평가 요약</text>
+<rect x="556.0" y="250.0" width="124.3" height="78.0" rx="10" fill="#38BDF8" stroke="none" stroke-width="1" opacity="0.09"/><rect x="556.0" y="250.0" width="124.3" height="78.0" rx="10" fill="none" stroke="#38BDF8" stroke-width="1" opacity="0.55"/><rect x="556.0" y="250.0" width="3" height="78.0" rx="1.5" fill="#38BDF8"/><text x="568.0" y="270.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:9px;fill:#94A3B8;font-weight:600;">총 질문 수</text><text x="568.0" y="300.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:19px;fill:#38BDF8;font-weight:800;">100</text><text x="607.0" y="300.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:10.5px;fill:#64748B;font-weight:600;">개</text>
+<rect x="688.3" y="250.0" width="124.3" height="78.0" rx="10" fill="#A78BFA" stroke="none" stroke-width="1" opacity="0.09"/><rect x="688.3" y="250.0" width="124.3" height="78.0" rx="10" fill="none" stroke="#A78BFA" stroke-width="1" opacity="0.55"/><rect x="688.3" y="250.0" width="3" height="78.0" rx="1.5" fill="#A78BFA"/><text x="700.3" y="270.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:9px;fill:#94A3B8;font-weight:600;">Top-1 정확도</text><text x="700.3" y="300.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:19px;fill:#A78BFA;font-weight:800;">61.0</text><text x="750.7" y="300.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:10.5px;fill:#64748B;font-weight:600;">%</text>
+<rect x="820.7" y="250.0" width="124.3" height="78.0" rx="10" fill="#4ADE80" stroke="none" stroke-width="1" opacity="0.09"/><rect x="820.7" y="250.0" width="124.3" height="78.0" rx="10" fill="none" stroke="#4ADE80" stroke-width="1" opacity="0.55"/><rect x="820.7" y="250.0" width="3" height="78.0" rx="1.5" fill="#4ADE80"/><text x="832.7" y="270.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:9px;fill:#94A3B8;font-weight:600;">Top-3 인식률</text><text x="832.7" y="300.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:19px;fill:#4ADE80;font-weight:800;">78.0</text><text x="883.0" y="300.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:10.5px;fill:#64748B;font-weight:600;">%</text><text x="832.7" y="315.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:8px;fill:#4ADE80;font-weight:700;">▲+14.0p vs A311</text>
+<rect x="953.0" y="250.0" width="124.3" height="78.0" rx="10" fill="#FBBF24" stroke="none" stroke-width="1" opacity="0.09"/>
+<rect x="953.0" y="250.0" width="124.3" height="78.0" rx="10" fill="none" stroke="#FBBF24" stroke-width="1" opacity="0.55"/>
+<rect x="953.0" y="250.0" width="3" height="78.0" rx="1.5" fill="#FBBF24"/>
+<text x="965.0" y="270.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:9px;fill:#94A3B8;font-weight:600;">평가 상태</text>
+<circle cx="1015.2" cy="294.0" r="15.0" fill="#FBBF24" stroke="none" stroke-width="1" opacity="0.16"/><circle cx="1015.2" cy="294.0" r="15.0" fill="none" stroke="#FBBF24" stroke-width="2" opacity="1"/><circle cx="1008.9" cy="291.8" r="1.5" fill="#FBBF24" stroke="none" stroke-width="1" opacity="1"/><circle cx="1021.5" cy="291.8" r="1.5" fill="#FBBF24" stroke="none" stroke-width="1" opacity="1"/><path d="M1007.7,299.4 Q1015.2,296.4 1022.7,299.4" stroke="#FBBF24" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+<text x="1015.2" y="318.0" text-anchor="middle" style="font-family:'Inter',system-ui,sans-serif;font-size:10px;fill:#FBBF24;font-weight:800;">개선 필요</text>
+<rect x="1085.3" y="250.0" width="124.3" height="78.0" rx="10" fill="#F87171" stroke="none" stroke-width="1" opacity="0.09"/><rect x="1085.3" y="250.0" width="124.3" height="78.0" rx="10" fill="none" stroke="#F87171" stroke-width="1" opacity="0.55"/><rect x="1085.3" y="250.0" width="3" height="78.0" rx="1.5" fill="#F87171"/><text x="1097.3" y="270.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:9px;fill:#94A3B8;font-weight:600;">Top-1 실패</text><text x="1097.3" y="300.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:19px;fill:#F87171;font-weight:800;">39</text><text x="1124.7" y="300.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:10.5px;fill:#64748B;font-weight:600;">건</text>
+<rect x="1217.7" y="250.0" width="124.3" height="78.0" rx="10" fill="#FBBF24" stroke="none" stroke-width="1" opacity="0.09"/><rect x="1217.7" y="250.0" width="124.3" height="78.0" rx="10" fill="none" stroke="#FBBF24" stroke-width="1" opacity="0.55"/><rect x="1217.7" y="250.0" width="3" height="78.0" rx="1.5" fill="#FBBF24"/><text x="1229.7" y="270.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:9px;fill:#94A3B8;font-weight:600;">Top-3 실패</text><text x="1229.7" y="300.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:19px;fill:#FBBF24;font-weight:800;">22</text><text x="1257.0" y="300.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:10.5px;fill:#64748B;font-weight:600;">건</text>
+<rect x="84.0" y="398.0" width="700.0" height="183.0" rx="14" fill="#111827" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<text x="102.0" y="425.0" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11.5px;fill:#38BDF8;font-weight:600;letter-spacing:1.2px;">평가 기준</text>
+<path d="M112.0,498.0 A46,46 0 0,1 185.0,460.8" stroke="#F87171" stroke-width="10" fill="none" stroke-linecap="round"/>
+<path d="M185.0,460.8 A46,46 0 0,1 199.0,477.1" stroke="#FBBF24" stroke-width="10" fill="none" stroke-linecap="round"/>
+<path d="M199.0,477.1 A46,46 0 0,1 203.4,490.8" stroke="#38BDF8" stroke-width="10" fill="none" stroke-linecap="round"/>
+<path d="M203.4,490.8 A46,46 0 0,1 204.0,498.0" stroke="#4ADE80" stroke-width="10" fill="none" stroke-linecap="round"/>
+<line x1="158.0" y1="498.0" x2="185.7" y2="475.1" stroke="#E2E8F0" stroke-width="2.5" stroke-linecap="round"/>
+<circle cx="158.0" cy="498.0" r="4.5" fill="#E2E8F0" stroke="none" stroke-width="1" opacity="1"/>
+<text x="158.0" y="443.0" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8.5px;fill:#64748B;font-weight:400;letter-spacing:0.8px;">TOP-3 인식률</text>
+<text x="158.0" y="514.0" text-anchor="middle" style="font-family:'Inter',system-ui,sans-serif;font-size:21px;fill:#E2E8F0;font-weight:800;">78</text>
+<text x="174.0" y="512.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:10px;fill:#64748B;font-weight:600;">%</text>
+<text x="158.0" y="531.0" text-anchor="middle" style="font-family:'Inter',system-ui,sans-serif;font-size:10.5px;fill:#FBBF24;font-weight:700;">개선 필요</text>
+<line x1="236.0" y1="418.0" x2="236.0" y2="558.0" stroke="#1E293B" stroke-width="1" stroke-linecap="butt"/>
+<text x="258.0" y="424.0" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;fill:#64748B;font-weight:400;letter-spacing:0.8px;">등급</text>
+<text x="410.0" y="424.0" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;fill:#64748B;font-weight:400;letter-spacing:0.8px;">기준</text>
+<circle cx="261.0" cy="439.0" r="3.5" fill="#F87171" stroke="none" stroke-width="1" opacity="1"/>
+<text x="271.0" y="442.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:11px;fill:#94A3B8;font-weight:400;">심각</text>
+<text x="410.0" y="442.0" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;fill:#94A3B8;font-weight:400;">&lt; 70%</text>
+<rect x="250.0" y="453.0" width="178.0" height="27.0" rx="6" fill="#FBBF24" stroke="none" stroke-width="1" opacity="0.08"/>
+<circle cx="261.0" cy="466.0" r="3.5" fill="#FBBF24" stroke="none" stroke-width="1" opacity="1"/>
+<text x="271.0" y="469.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:11px;fill:#E2E8F0;font-weight:700;">개선 필요</text>
+<rect x="330.3" y="459.0" width="26.2" height="14.0" rx="999" fill="#FBBF24" stroke="none" stroke-width="1" opacity="1"/>
+<text x="343.4" y="468.5" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:7.5px;fill:#1a1200;font-weight:700;">현재</text>
+<text x="410.0" y="469.0" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;fill:#E2E8F0;font-weight:400;">70–85%</text>
+<circle cx="261.0" cy="493.0" r="3.5" fill="#38BDF8" stroke="none" stroke-width="1" opacity="1"/>
+<text x="271.0" y="496.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:11px;fill:#94A3B8;font-weight:400;">보통</text>
+<text x="410.0" y="496.0" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;fill:#94A3B8;font-weight:400;">85–95%</text>
+<circle cx="261.0" cy="520.0" r="3.5" fill="#4ADE80" stroke="none" stroke-width="1" opacity="1"/>
+<text x="271.0" y="523.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:11px;fill:#94A3B8;font-weight:400;">우수</text>
+<text x="410.0" y="523.0" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;fill:#94A3B8;font-weight:400;">≥ 95%</text>
+<line x1="430.0" y1="418.0" x2="430.0" y2="558.0" stroke="#1E293B" stroke-width="1" stroke-linecap="butt"/>
+<circle cx="455.0" cy="420.0" r="2.8" fill="#38BDF8" stroke="none" stroke-width="1" opacity="1"/>
+<text x="464.0" y="425.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:11px;fill:#E2E8F0;font-weight:700;">Hit 판정</text>
+<text x="464.0" y="441.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:10px;fill:#94A3B8;font-weight:400;">상위 3위 이내 포함</text>
+<circle cx="455.0" cy="458.0" r="2.8" fill="#38BDF8" stroke="none" stroke-width="1" opacity="1"/>
+<text x="464.0" y="463.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:11px;fill:#E2E8F0;font-weight:700;">검색 방식</text>
+<text x="464.0" y="479.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:10px;fill:#94A3B8;font-weight:400;">BM25+Hybrid (K=3)</text>
+<circle cx="455.0" cy="496.0" r="2.8" fill="#38BDF8" stroke="none" stroke-width="1" opacity="1"/>
+<text x="464.0" y="501.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:11px;fill:#E2E8F0;font-weight:700;">평가 질문</text>
+<text x="464.0" y="517.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:10px;fill:#94A3B8;font-weight:400;">100개 (검수 완료)</text>
+<circle cx="455.0" cy="534.0" r="2.8" fill="#38BDF8" stroke="none" stroke-width="1" opacity="1"/>
+<text x="464.0" y="539.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:11px;fill:#E2E8F0;font-weight:700;">권장 임계값</text>
+<text x="464.0" y="555.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:10px;fill:#94A3B8;font-weight:400;">85% 이상 (보통)</text>
+<rect x="802.0" y="398.0" width="554.0" height="225.5" rx="14" fill="#111827" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<text x="822.0" y="427.0" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11.5px;fill:#38BDF8;font-weight:600;letter-spacing:1.2px;">질문 유형 분포</text>
+<path d="M864.0,489.8 A34,34 0 0,1 897.4,517.4" stroke="#38BDF8" stroke-width="12" fill="none"/>
+<path d="M897.4,517.4 A34,34 0 0,1 880.4,553.5" stroke="#A78BFA" stroke-width="12" fill="none"/>
+<path d="M880.4,553.5 A34,34 0 0,1 847.6,553.5" stroke="#4ADE80" stroke-width="12" fill="none"/>
+<path d="M847.6,553.5 A34,34 0 0,1 830.3,528.0" stroke="#FBBF24" stroke-width="12" fill="none"/>
+<path d="M830.3,528.0 A34,34 0 0,1 836.5,503.8" stroke="#F87171" stroke-width="12" fill="none"/>
+<path d="M836.5,503.8 A34,34 0 0,1 853.5,491.4" stroke="#818CF8" stroke-width="12" fill="none"/>
+<path d="M853.5,491.4 A34,34 0 0,1 864.0,489.8" stroke="#F472B6" stroke-width="12" fill="none"/>
+<circle cx="864.0" cy="523.8" r="26.0" fill="#111827" stroke="none" stroke-width="1" opacity="1"/>
+<text x="864.0" y="528.8" text-anchor="middle" style="font-family:'Inter',system-ui,sans-serif;font-size:14px;fill:#E2E8F0;font-weight:800;">100</text>
+<text x="930.0" y="444.0" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;fill:#64748B;font-weight:400;letter-spacing:0.6px;">유형</text>
+<text x="1284.0" y="444.0" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;fill:#64748B;font-weight:400;letter-spacing:0.6px;">개수</text>
+<text x="1336.0" y="444.0" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;fill:#64748B;font-weight:400;letter-spacing:0.6px;">비율</text>
+<circle cx="933.0" cy="457.0" r="3.2" fill="#38BDF8" stroke="none" stroke-width="1" opacity="1"/>
+<text x="943.0" y="462.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:10.5px;fill:#E2E8F0;font-weight:400;">직접 질문</text>
+<text x="1284.0" y="462.0" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;fill:#94A3B8;font-weight:400;">22개</text>
+<text x="1336.0" y="462.0" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;fill:#38BDF8;font-weight:700;">22%</text>
+<circle cx="933.0" cy="477.5" r="3.2" fill="#A78BFA" stroke="none" stroke-width="1" opacity="1"/>
+<text x="943.0" y="482.5" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:10.5px;fill:#E2E8F0;font-weight:400;">사용자 자연어 질문</text>
+<text x="1284.0" y="482.5" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;fill:#94A3B8;font-weight:400;">20개</text>
+<text x="1336.0" y="482.5" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;fill:#A78BFA;font-weight:700;">20%</text>
+<circle cx="933.0" cy="498.0" r="3.2" fill="#4ADE80" stroke="none" stroke-width="1" opacity="1"/>
+<text x="943.0" y="503.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:10.5px;fill:#E2E8F0;font-weight:400;">업무 용어 질문</text>
+<text x="1284.0" y="503.0" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;fill:#94A3B8;font-weight:400;">16개</text>
+<text x="1336.0" y="503.0" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;fill:#4ADE80;font-weight:700;">16%</text>
+<circle cx="933.0" cy="518.5" r="3.2" fill="#FBBF24" stroke="none" stroke-width="1" opacity="1"/>
+<text x="943.0" y="523.5" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:10.5px;fill:#E2E8F0;font-weight:400;">파라미터 기반 질문</text>
+<text x="1284.0" y="523.5" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;fill:#94A3B8;font-weight:400;">15개</text>
+<text x="1336.0" y="523.5" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;fill:#FBBF24;font-weight:700;">15%</text>
+<circle cx="933.0" cy="539.0" r="3.2" fill="#F87171" stroke="none" stroke-width="1" opacity="1"/>
+<text x="943.0" y="544.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:10.5px;fill:#E2E8F0;font-weight:400;">오류/에러 상황 질문</text>
+<text x="1284.0" y="544.0" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;fill:#94A3B8;font-weight:400;">12개</text>
+<text x="1336.0" y="544.0" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;fill:#F87171;font-weight:700;">12%</text>
+<circle cx="933.0" cy="559.5" r="3.2" fill="#818CF8" stroke="none" stroke-width="1" opacity="1"/>
+<text x="943.0" y="564.5" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:10.5px;fill:#E2E8F0;font-weight:400;">짧은 키워드 질문</text>
+<text x="1284.0" y="564.5" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;fill:#94A3B8;font-weight:400;">10개</text>
+<text x="1336.0" y="564.5" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;fill:#818CF8;font-weight:700;">10%</text>
+<circle cx="933.0" cy="580.0" r="3.2" fill="#F472B6" stroke="none" stroke-width="1" opacity="1"/>
+<text x="943.0" y="585.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:10.5px;fill:#E2E8F0;font-weight:400;">한영 혼합 질문</text>
+<text x="1284.0" y="585.0" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;fill:#94A3B8;font-weight:400;">5개</text>
+<text x="1336.0" y="585.0" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;fill:#F472B6;font-weight:700;">5%</text>
+<text x="84.0" y="661.5" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:16px;fill:#E2E8F0;font-weight:700;">개선 추천</text>
+<text x="1356.0" y="661.5" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;fill:#64748B;font-weight:400;">실패 원인 기반 자동 분석</text>
+<rect x="84.0" y="675.5" width="1272.0" height="249.0" rx="14" fill="#111827" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<rect x="106.0" y="697.5" width="396.0" height="205.0" rx="10" fill="#0F172A" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<text x="124.0" y="724.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;fill:#64748B;font-weight:700;">01</text>
+<rect x="395.7" y="712.5" width="88.3" height="20.0" rx="999" fill="#F87171" stroke="none" stroke-width="1" opacity="0.14"/><rect x="395.7" y="712.5" width="88.3" height="20.0" rx="999" fill="none" stroke="#F87171" stroke-width="1" opacity="1"/><text x="439.9" y="726.0" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;fill:#F87171;font-weight:700;">우선순위 높음</text>
+<text x="124.0" y="750.5" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:14.5px;fill:#E2E8F0;font-weight:700;">설명(Description) 보강</text>
+<text x="124.0" y="772.5" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:12px;fill:#94A3B8;font-weight:400;"><tspan x="124.0" dy="0">summary/description이 비어있거나 지나치게 짧은</tspan><tspan x="124.0" dy="19">API가 다수 발견됐습니다. 실제 사용 맥락을 담은</tspan><tspan x="124.0" dy="19">문장으로 보강하면 인식률이 크게 개선됩니다.</tspan></text>
+<line x1="124.0" y1="843.5" x2="484.0" y2="843.5" stroke="#1E293B" stroke-width="1" stroke-linecap="butt"/>
+<text x="124.0" y="863.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;fill:#64748B;font-weight:400;">관련 실패 비중</text>
+<text x="484.0" y="863.5" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12.5px;fill:#E2E8F0;font-weight:700;">45%</text>
+<rect x="522.0" y="697.5" width="396.0" height="205.0" rx="10" fill="#0F172A" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<text x="540.0" y="724.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;fill:#64748B;font-weight:700;">02</text>
+<rect x="811.7" y="712.5" width="88.3" height="20.0" rx="999" fill="#38BDF8" stroke="none" stroke-width="1" opacity="0.14"/><rect x="811.7" y="712.5" width="88.3" height="20.0" rx="999" fill="none" stroke="#38BDF8" stroke-width="1" opacity="1"/><text x="855.9" y="726.0" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;fill:#38BDF8;font-weight:700;">우선순위 중간</text>
+<text x="540.0" y="750.5" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:14.5px;fill:#E2E8F0;font-weight:700;">파라미터·응답 설명 보강</text>
+<text x="540.0" y="772.5" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:12px;fill:#94A3B8;font-weight:400;"><tspan x="540.0" dy="0">요청 파라미터와 응답 필드에 설명이 없어 상태값·</tspan><tspan x="540.0" dy="19">기간 조건이 포함된 세부 질문에서 검색이</tspan><tspan x="540.0" dy="19">실패하고 있습니다.</tspan></text>
+<line x1="540.0" y1="843.5" x2="900.0" y2="843.5" stroke="#1E293B" stroke-width="1" stroke-linecap="butt"/>
+<text x="540.0" y="863.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;fill:#64748B;font-weight:400;">관련 실패 비중</text>
+<text x="900.0" y="863.5" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12.5px;fill:#E2E8F0;font-weight:700;">23%</text>
+<rect x="938.0" y="697.5" width="396.0" height="205.0" rx="10" fill="#0F172A" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<text x="956.0" y="724.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;fill:#64748B;font-weight:700;">03</text>
+<rect x="1227.7" y="712.5" width="88.3" height="20.0" rx="999" fill="#38BDF8" stroke="none" stroke-width="1" opacity="0.14"/><rect x="1227.7" y="712.5" width="88.3" height="20.0" rx="999" fill="none" stroke="#38BDF8" stroke-width="1" opacity="1"/><text x="1271.9" y="726.0" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;fill:#38BDF8;font-weight:700;">우선순위 중간</text>
+<text x="956.0" y="750.5" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:14.5px;fill:#E2E8F0;font-weight:700;">키워드 다양화</text>
+<text x="956.0" y="772.5" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:12px;fill:#94A3B8;font-weight:400;"><tspan x="956.0" dy="0">사용자가 실제로 쓰는 동의어·구어체 표현</tspan><tspan x="956.0" dy="19">(예: '입고'→restock)이 명세에 반영되지 않아</tspan><tspan x="956.0" dy="19">유사도가 낮게 계산됩니다.</tspan></text>
+<line x1="956.0" y1="843.5" x2="1316.0" y2="843.5" stroke="#1E293B" stroke-width="1" stroke-linecap="butt"/>
+<text x="956.0" y="863.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;fill:#64748B;font-weight:400;">관련 실패 비중</text>
+<text x="1316.0" y="863.5" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12.5px;fill:#E2E8F0;font-weight:700;">32%</text>
+<text x="84.0" y="964.5" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:16px;fill:#E2E8F0;font-weight:700;">실패 질문 상세</text>
+<text x="1356.0" y="964.5" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;fill:#64748B;font-weight:400;">실패 22건 중 3건 표시</text>
+<rect x="84.0" y="978.5" width="1272.0" height="430.0" rx="14" fill="#111827" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<rect x="84.0" y="978.5" width="1272.0" height="40.0" rx="0" fill="#0F172A" stroke="none" stroke-width="1" opacity="1"/>
+<text x="100.0" y="1003.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;fill:#64748B;font-weight:600;letter-spacing:0.8px;">질문</text>
+<text x="260.0" y="1003.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;fill:#64748B;font-weight:600;letter-spacing:0.8px;">기대 API</text>
+<text x="460.0" y="1003.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;fill:#64748B;font-weight:600;letter-spacing:0.8px;">Top-3 검색 결과</text>
+<text x="750.0" y="1003.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;fill:#64748B;font-weight:600;letter-spacing:0.8px;">Hit 여부</text>
+<text x="850.0" y="1003.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;fill:#64748B;font-weight:600;letter-spacing:0.8px;">실패 구분</text>
+<text x="985.0" y="1003.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;fill:#64748B;font-weight:600;letter-spacing:0.8px;">원인 추정</text>
+<text x="100.0" y="1042.5" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:12.5px;fill:#E2E8F0;font-weight:400;"><tspan x="100.0" dy="0">"환불 신청은 어떻게</tspan><tspan x="100.0" dy="18">취소하나요?"</tspan></text>
+<rect x="260.0" y="1028.5" width="61.2" height="20.0" rx="6" fill="#F87171" stroke="none" stroke-width="1" opacity="0.14"/><rect x="260.0" y="1028.5" width="61.2" height="20.0" rx="6" fill="none" stroke="#F87171" stroke-width="1" opacity="1"/><text x="290.6" y="1042.1" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;fill:#F87171;font-weight:700;">DELETE</text>
+<text x="260.0" y="1064.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;fill:#94A3B8;font-weight:400;">/orders/{id}/refund</text>
+<circle cx="467.0" cy="1034.5" r="8.0" fill="none" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<text x="467.0" y="1037.5" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8px;fill:#64748B;font-weight:400;">1</text>
+<rect x="482.0" y="1026.5" width="30.4" height="16.0" rx="6" fill="#38BDF8" stroke="none" stroke-width="1" opacity="0.14"/><rect x="482.0" y="1026.5" width="30.4" height="16.0" rx="6" fill="none" stroke="#38BDF8" stroke-width="1" opacity="1"/><text x="497.2" y="1037.6" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8.5px;fill:#38BDF8;font-weight:700;">GET</text>
+<text x="518.4" y="1038.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;fill:#94A3B8;font-weight:400;">/orders/{id}/refund-status</text>
+<text x="718.0" y="1038.5" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;fill:#64748B;font-weight:400;">0.847</text>
+<circle cx="467.0" cy="1056.5" r="8.0" fill="none" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<text x="467.0" y="1059.5" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8px;fill:#64748B;font-weight:400;">2</text>
+<rect x="482.0" y="1048.5" width="36.5" height="16.0" rx="6" fill="#4ADE80" stroke="none" stroke-width="1" opacity="0.14"/><rect x="482.0" y="1048.5" width="36.5" height="16.0" rx="6" fill="none" stroke="#4ADE80" stroke-width="1" opacity="1"/><text x="500.3" y="1059.6" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8.5px;fill:#4ADE80;font-weight:700;">POST</text>
+<text x="524.5" y="1060.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;fill:#94A3B8;font-weight:400;">/orders/{id}/refund</text>
+<text x="718.0" y="1060.5" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;fill:#64748B;font-weight:400;">0.812</text>
+<circle cx="467.0" cy="1078.5" r="8.0" fill="none" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<text x="467.0" y="1081.5" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8px;fill:#64748B;font-weight:400;">3</text>
+<rect x="482.0" y="1070.5" width="30.4" height="16.0" rx="6" fill="#38BDF8" stroke="none" stroke-width="1" opacity="0.14"/><rect x="482.0" y="1070.5" width="30.4" height="16.0" rx="6" fill="none" stroke="#38BDF8" stroke-width="1" opacity="1"/><text x="497.2" y="1081.6" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8.5px;fill:#38BDF8;font-weight:700;">GET</text>
+<text x="518.4" y="1082.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;fill:#94A3B8;font-weight:400;">/orders/{id}</text>
+<text x="718.0" y="1082.5" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;fill:#64748B;font-weight:400;">0.756</text>
+<rect x="750.0" y="1034.5" width="48.8" height="22.0" rx="999" fill="#F87171" stroke="none" stroke-width="1" opacity="0.14"/><rect x="750.0" y="1034.5" width="48.8" height="22.0" rx="999" fill="none" stroke="#F87171" stroke-width="1" opacity="1"/><text x="774.4" y="1049.0" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;fill:#F87171;font-weight:700;">MISS</text>
+<rect x="850.0" y="1034.5" width="88.6" height="22.0" rx="6" fill="#0F172A" stroke="#1E293B" stroke-width="1" opacity="1"/><text x="894.3" y="1049.0" text-anchor="middle" style="font-family:'Inter',system-ui,sans-serif;font-size:10px;fill:#94A3B8;font-weight:400;">Method 불일치</text>
+<text x="985.0" y="1042.5" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:11.5px;fill:#94A3B8;font-weight:400;"><tspan x="985.0" dy="0">질문의 '취소'를 조회(GET) 의도로 오인식</tspan><tspan x="985.0" dy="17">하여 DELETE 엔드포인트가 후순위로 밀림</tspan></text>
+<line x1="84.0" y1="1122.5" x2="1356.0" y2="1122.5" stroke="#1E293B" stroke-width="1" stroke-linecap="butt"/>
+<text x="100.0" y="1146.5" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:12.5px;fill:#E2E8F0;font-weight:400;"><tspan x="100.0" dy="0">"배송지 변경</tspan><tspan x="100.0" dy="18">가능한가요?"</tspan></text>
+<rect x="260.0" y="1132.5" width="54.0" height="20.0" rx="6" fill="#A78BFA" stroke="none" stroke-width="1" opacity="0.14"/><rect x="260.0" y="1132.5" width="54.0" height="20.0" rx="6" fill="none" stroke="#A78BFA" stroke-width="1" opacity="1"/><text x="287.0" y="1146.1" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;fill:#A78BFA;font-weight:700;">PATCH</text>
+<text x="260.0" y="1168.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;fill:#94A3B8;font-weight:400;">/orders/{id}/shipping-address</text>
+<circle cx="467.0" cy="1138.5" r="8.0" fill="none" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<text x="467.0" y="1141.5" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8px;fill:#64748B;font-weight:400;">1</text>
+<rect x="482.0" y="1130.5" width="30.4" height="16.0" rx="6" fill="#38BDF8" stroke="none" stroke-width="1" opacity="0.14"/><rect x="482.0" y="1130.5" width="30.4" height="16.0" rx="6" fill="none" stroke="#38BDF8" stroke-width="1" opacity="1"/><text x="497.2" y="1141.6" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8.5px;fill:#38BDF8;font-weight:700;">GET</text>
+<text x="518.4" y="1142.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;fill:#94A3B8;font-weight:400;">/orders/{id}</text>
+<text x="718.0" y="1142.5" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;fill:#64748B;font-weight:400;">0.798</text>
+<circle cx="467.0" cy="1160.5" r="8.0" fill="none" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<text x="467.0" y="1163.5" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8px;fill:#64748B;font-weight:400;">2</text>
+<rect x="482.0" y="1152.5" width="30.4" height="16.0" rx="6" fill="#38BDF8" stroke="none" stroke-width="1" opacity="0.14"/><rect x="482.0" y="1152.5" width="30.4" height="16.0" rx="6" fill="none" stroke="#38BDF8" stroke-width="1" opacity="1"/><text x="497.2" y="1163.6" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8.5px;fill:#38BDF8;font-weight:700;">GET</text>
+<text x="518.4" y="1164.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;fill:#94A3B8;font-weight:400;">/orders/{id}/shipping-status</text>
+<text x="718.0" y="1164.5" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;fill:#64748B;font-weight:400;">0.771</text>
+<circle cx="467.0" cy="1182.5" r="8.0" fill="none" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<text x="467.0" y="1185.5" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8px;fill:#64748B;font-weight:400;">3</text>
+<rect x="482.0" y="1174.5" width="42.6" height="16.0" rx="6" fill="#A78BFA" stroke="none" stroke-width="1" opacity="0.14"/><rect x="482.0" y="1174.5" width="42.6" height="16.0" rx="6" fill="none" stroke="#A78BFA" stroke-width="1" opacity="1"/><text x="503.3" y="1185.6" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8.5px;fill:#A78BFA;font-weight:700;">PATCH</text>
+<text x="530.6" y="1186.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;fill:#94A3B8;font-weight:400;">/users/{id}/address</text>
+<text x="718.0" y="1186.5" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;fill:#64748B;font-weight:400;">0.743</text>
+<rect x="750.0" y="1138.5" width="48.8" height="22.0" rx="999" fill="#F87171" stroke="none" stroke-width="1" opacity="0.14"/><rect x="750.0" y="1138.5" width="48.8" height="22.0" rx="999" fill="none" stroke="#F87171" stroke-width="1" opacity="1"/><text x="774.4" y="1153.0" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;fill:#F87171;font-weight:700;">MISS</text>
+<rect x="850.0" y="1138.5" width="97.8" height="22.0" rx="6" fill="#0F172A" stroke="#1E293B" stroke-width="1" opacity="1"/><text x="898.9" y="1153.0" text-anchor="middle" style="font-family:'Inter',system-ui,sans-serif;font-size:10px;fill:#94A3B8;font-weight:400;">유사 리소스 혼동</text>
+<text x="985.0" y="1146.5" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:11.5px;fill:#94A3B8;font-weight:400;"><tspan x="985.0" dy="0">'배송지'가 사용자 주소(address) 엔드포인트와</tspan><tspan x="985.0" dy="17">임베딩 유사도가 더 높게 계산됨</tspan></text>
+<line x1="84.0" y1="1226.5" x2="1356.0" y2="1226.5" stroke="#1E293B" stroke-width="1" stroke-linecap="butt"/>
+<text x="100.0" y="1250.5" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:12.5px;fill:#E2E8F0;font-weight:400;"><tspan x="100.0" dy="0">"이 상품 언제</tspan><tspan x="100.0" dy="18">입고되나요?"</tspan></text>
+<rect x="260.0" y="1236.5" width="39.6" height="20.0" rx="6" fill="#38BDF8" stroke="none" stroke-width="1" opacity="0.14"/><rect x="260.0" y="1236.5" width="39.6" height="20.0" rx="6" fill="none" stroke="#38BDF8" stroke-width="1" opacity="1"/><text x="279.8" y="1250.1" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;fill:#38BDF8;font-weight:700;">GET</text>
+<text x="260.0" y="1272.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;fill:#94A3B8;font-weight:400;">/products/{id}/restock-schedule</text>
+<circle cx="467.0" cy="1242.5" r="8.0" fill="none" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<text x="467.0" y="1245.5" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8px;fill:#64748B;font-weight:400;">1</text>
+<rect x="482.0" y="1234.5" width="30.4" height="16.0" rx="6" fill="#38BDF8" stroke="none" stroke-width="1" opacity="0.14"/><rect x="482.0" y="1234.5" width="30.4" height="16.0" rx="6" fill="none" stroke="#38BDF8" stroke-width="1" opacity="1"/><text x="497.2" y="1245.6" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8.5px;fill:#38BDF8;font-weight:700;">GET</text>
+<text x="518.4" y="1246.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;fill:#94A3B8;font-weight:400;">/products/{id}</text>
+<text x="718.0" y="1246.5" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;fill:#64748B;font-weight:400;">0.812</text>
+<circle cx="467.0" cy="1264.5" r="8.0" fill="none" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<text x="467.0" y="1267.5" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8px;fill:#64748B;font-weight:400;">2</text>
+<rect x="482.0" y="1256.5" width="30.4" height="16.0" rx="6" fill="#38BDF8" stroke="none" stroke-width="1" opacity="0.14"/><rect x="482.0" y="1256.5" width="30.4" height="16.0" rx="6" fill="none" stroke="#38BDF8" stroke-width="1" opacity="1"/><text x="497.2" y="1267.6" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8.5px;fill:#38BDF8;font-weight:700;">GET</text>
+<text x="518.4" y="1268.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;fill:#94A3B8;font-weight:400;">/products/{id}/stock</text>
+<text x="718.0" y="1268.5" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;fill:#64748B;font-weight:400;">0.789</text>
+<circle cx="467.0" cy="1286.5" r="8.0" fill="none" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<text x="467.0" y="1289.5" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8px;fill:#64748B;font-weight:400;">3</text>
+<rect x="482.0" y="1278.5" width="30.4" height="16.0" rx="6" fill="#38BDF8" stroke="none" stroke-width="1" opacity="0.14"/><rect x="482.0" y="1278.5" width="30.4" height="16.0" rx="6" fill="none" stroke="#38BDF8" stroke-width="1" opacity="1"/><text x="497.2" y="1289.6" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8.5px;fill:#38BDF8;font-weight:700;">GET</text>
+<text x="518.4" y="1290.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;fill:#94A3B8;font-weight:400;">/inventory/{id}</text>
+<text x="718.0" y="1290.5" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;fill:#64748B;font-weight:400;">0.764</text>
+<circle cx="467.0" cy="1308.5" r="8.0" fill="none" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<text x="467.0" y="1311.5" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8px;fill:#64748B;font-weight:400;">4</text>
+<text x="482.0" y="1312.5" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:9.5px;fill:#64748B;font-weight:400;">4위 (기대 API 위치)</text>
+<text x="718.0" y="1312.5" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;fill:#64748B;font-weight:400;">0.741</text>
+<rect x="750.0" y="1242.5" width="85.7" height="22.0" rx="999" fill="#FBBF24" stroke="none" stroke-width="1" opacity="0.14"/><rect x="750.0" y="1242.5" width="85.7" height="22.0" rx="999" fill="none" stroke="#FBBF24" stroke-width="1" opacity="1"/><text x="792.9" y="1257.0" text-anchor="middle" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;fill:#FBBF24;font-weight:700;">MISS (근접)</text>
+<rect x="850.0" y="1242.5" width="97.8" height="22.0" rx="6" fill="#0F172A" stroke="#1E293B" stroke-width="1" opacity="1"/><text x="898.9" y="1257.0" text-anchor="middle" style="font-family:'Inter',system-ui,sans-serif;font-size:10px;fill:#94A3B8;font-weight:400;">동의어 인식 실패</text>
+<text x="985.0" y="1250.5" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:11.5px;fill:#94A3B8;font-weight:400;"><tspan x="985.0" dy="0">'입고'라는 표현이 summary/description에</tspan><tspan x="985.0" dy="17">명시되지 않아 임베딩 매칭 점수가 낮음</tspan></text>
+<line x1="84.0" y1="1352.5" x2="1356.0" y2="1352.5" stroke="#1E293B" stroke-width="1" stroke-linecap="butt"/>
+<rect x="84.0" y="1352.5" width="1272.0" height="56.0" rx="0" fill="#0F172A" stroke="none" stroke-width="1" opacity="1"/>
+<rect x="612.1" y="1364.5" width="215.8" height="32.0" rx="9" fill="none" stroke="#1E293B" stroke-width="1" opacity="1"/><text x="720.0" y="1385.2" text-anchor="middle" style="font-family:'Inter',system-ui,sans-serif;font-size:13px;fill:#94A3B8;font-weight:600;">더보기 · 실패 22건 전체 보기</text>
+<rect x="876.0" y="1440.5" width="480.0" height="195.0" rx="14" fill="#111827" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<text x="1332.0" y="1474.5" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;fill:#38BDF8;font-weight:600;letter-spacing:1.5px;">권장 액션</text>
+<text x="1332.0" y="1506.5" text-anchor="end" style="font-family:'Inter',system-ui,sans-serif;font-size:12.5px;fill:#94A3B8;font-weight:400;"><tspan x="1332.0" dy="0">실패 원인 중 77%가 summary/description 누락</tspan><tspan x="1332.0" dy="19">또는 동의어 미반영에 기인합니다.</tspan></text>
+<text x="1332.0" y="1547.5" text-anchor="end" style="font-family:'Inter',system-ui,sans-serif;font-size:9.5px;fill:#64748B;font-weight:400;">* 원인 중복 집계 (한 실패에 여러 원인 해당 가능)</text>
+<rect x="969.2" y="1569.5" width="180.4" height="42.0" rx="9" fill="none" stroke="#38BDF8" stroke-width="1" opacity="1"/><text x="1059.4" y="1595.2" text-anchor="middle" style="font-family:'Inter',system-ui,sans-serif;font-size:13px;fill:#38BDF8;font-weight:600;">Swagger 직접 보강하기</text>
+<rect x="1161.6" y="1569.5" width="170.4" height="42.0" rx="9" fill="#38BDF8" stroke="none" stroke-width="1" opacity="1"/><text x="1246.8" y="1595.2" text-anchor="middle" style="font-family:'Inter',system-ui,sans-serif;font-size:13px;fill:#0B1120;font-weight:700;">Swagger 재생성하기</text>
+<rect x="84.0" y="1440.5" width="768.0" height="238.0" rx="14" fill="#111827" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<text x="104.0" y="1469.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;fill:#38BDF8;font-weight:600;letter-spacing:1.5px;">질문 유형별 인식률</text>
+<text x="832.0" y="1469.5" text-anchor="end" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;fill:#64748B;font-weight:400;">Top-3 · 낮은 순</text>
+<text x="104.0" y="1498.5" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:11px;fill:#E2E8F0;font-weight:400;">한영 혼합 질문</text>
+<rect x="260.0" y="1486.5" width="524.0" height="11.0" rx="5" fill="#0F172A" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<rect x="260.0" y="1486.5" width="209.6" height="11.0" rx="5" fill="#F472B6" stroke="none" stroke-width="1" opacity="0.85"/>
+<text x="792.0" y="1498.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;fill:#F472B6;font-weight:700;">40%</text>
+<text x="104.0" y="1525.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:11px;fill:#E2E8F0;font-weight:400;">오류/에러 상황 질문</text>
+<rect x="260.0" y="1513.0" width="524.0" height="11.0" rx="5" fill="#0F172A" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<rect x="260.0" y="1513.0" width="272.5" height="11.0" rx="5" fill="#F87171" stroke="none" stroke-width="1" opacity="0.85"/>
+<text x="792.0" y="1525.0" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;fill:#F87171;font-weight:700;">52%</text>
+<text x="104.0" y="1551.5" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:11px;fill:#E2E8F0;font-weight:400;">짧은 키워드 질문</text>
+<rect x="260.0" y="1539.5" width="524.0" height="11.0" rx="5" fill="#0F172A" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<rect x="260.0" y="1539.5" width="303.9" height="11.0" rx="5" fill="#818CF8" stroke="none" stroke-width="1" opacity="0.85"/>
+<text x="792.0" y="1551.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;fill:#818CF8;font-weight:700;">58%</text>
+<text x="104.0" y="1578.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:11px;fill:#E2E8F0;font-weight:400;">파라미터 기반 질문</text>
+<rect x="260.0" y="1566.0" width="524.0" height="11.0" rx="5" fill="#0F172A" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<rect x="260.0" y="1566.0" width="351.1" height="11.0" rx="5" fill="#FBBF24" stroke="none" stroke-width="1" opacity="0.85"/>
+<text x="792.0" y="1578.0" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;fill:#FBBF24;font-weight:700;">67%</text>
+<text x="104.0" y="1604.5" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:11px;fill:#E2E8F0;font-weight:400;">사용자 자연어 질문</text>
+<rect x="260.0" y="1592.5" width="524.0" height="11.0" rx="5" fill="#0F172A" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<rect x="260.0" y="1592.5" width="387.8" height="11.0" rx="5" fill="#A78BFA" stroke="none" stroke-width="1" opacity="0.85"/>
+<text x="792.0" y="1604.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;fill:#A78BFA;font-weight:700;">74%</text>
+<text x="104.0" y="1631.0" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:11px;fill:#E2E8F0;font-weight:400;">업무 용어 질문</text>
+<rect x="260.0" y="1619.0" width="524.0" height="11.0" rx="5" fill="#0F172A" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<rect x="260.0" y="1619.0" width="424.4" height="11.0" rx="5" fill="#4ADE80" stroke="none" stroke-width="1" opacity="0.85"/>
+<text x="792.0" y="1631.0" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;fill:#4ADE80;font-weight:700;">81%</text>
+<text x="104.0" y="1657.5" text-anchor="start" style="font-family:'Inter',system-ui,sans-serif;font-size:11px;fill:#E2E8F0;font-weight:400;">직접 질문</text>
+<rect x="260.0" y="1645.5" width="524.0" height="11.0" rx="5" fill="#0F172A" stroke="#1E293B" stroke-width="1" opacity="1"/>
+<rect x="260.0" y="1645.5" width="497.8" height="11.0" rx="5" fill="#38BDF8" stroke="none" stroke-width="1" opacity="0.85"/>
+<text x="792.0" y="1657.5" text-anchor="start" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;fill:#38BDF8;font-weight:700;">95%</text>
+</svg>
