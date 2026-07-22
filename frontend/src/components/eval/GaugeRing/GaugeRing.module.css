@@ -1,0 +1,80 @@
+/* 크기는 전부 --gauge-size 에서 파생된다.
+   size prop 하나만 바꾸면 링·숫자·라벨이 함께 따라온다. */
+
+.root {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.ring {
+  position: relative;
+  width: var(--gauge-size);
+  height: var(--gauge-size);
+}
+
+.svg {
+  display: block;
+  /* 12시 방향에서 시작하도록 돌린다. 기본은 3시 방향. */
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+.track {
+  fill: none;
+  stroke: var(--border);
+}
+
+.progress {
+  fill: none;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 600ms ease-out;
+}
+
+/* 값이 바뀔 때 링이 도는 애니메이션을 끈다.
+   globals.css 에 전역 규칙이 있지만, 이 컴포넌트가 어디에 복사되든
+   동작하도록 여기서도 명시한다 (자기 완결). */
+@media (prefers-reduced-motion: reduce) {
+  .progress {
+    transition: none;
+  }
+}
+
+/* 링 한가운데. SVG 가 회전해 있으므로 텍스트는 HTML 로 얹는다. */
+.center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--gauge-size) * 0.02);
+}
+
+.value {
+  font-size: calc(var(--gauge-size) * 0.24);
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--text);
+}
+
+.unit {
+  font-size: 0.62em;
+  font-weight: 500;
+  color: var(--text-dim);
+}
+
+.grade {
+  font-size: calc(var(--gauge-size) * 0.115);
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.caption {
+  font-size: calc(var(--gauge-size) * 0.125);
+  color: var(--text-dim);
+  line-height: 1.3;
+  text-align: center;
+}

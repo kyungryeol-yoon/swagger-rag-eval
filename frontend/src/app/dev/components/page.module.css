@@ -1,0 +1,120 @@
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--space-7) var(--space-5) var(--space-8);
+}
+
+.title {
+  margin: 0 0 var(--space-2);
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.lead {
+  margin: 0 0 var(--space-7);
+  color: var(--text-dim);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.section {
+  margin-bottom: var(--space-8);
+}
+
+.sectionTitle {
+  margin: 0 0 var(--space-2);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.sectionNote {
+  margin: 0 0 var(--space-5);
+  color: var(--text-mute);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* 등급 × 값 격자 */
+.grid {
+  display: grid;
+  grid-template-columns: 140px repeat(4, 1fr);
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.colHead,
+.rowHead {
+  color: var(--text-dim);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.colHead {
+  text-align: center;
+}
+
+.rowHead code {
+  display: block;
+  color: var(--text-mute);
+  font-size: 11px;
+  margin-top: var(--space-1);
+}
+
+.cell {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-3) 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+/* 크기 비교 */
+.sizeRow {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-7);
+  flex-wrap: wrap;
+  padding: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.sizeItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.sizeLabel {
+  color: var(--text-mute);
+  font-size: 12px;
+}
+
+/* 경계값 */
+.edgeRow {
+  display: flex;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+  padding: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.edgeItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.edgeLabel {
+  color: var(--text-mute);
+  font-size: 12px;
+  text-align: center;
+  max-width: 140px;
+  line-height: 1.5;
+}
