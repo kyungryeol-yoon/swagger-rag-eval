@@ -1,0 +1,1009 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Sample Commerce API",
+    "description": "RAG 검색 인식률 평가의 대상이 되는 더미 커머스 API.",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/orders/{id}": {
+      "get": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "주문 상세 조회",
+        "description": "주문 번호로 주문 1건의 상세 내역을 조회합니다. 결제 금액, 주문 상태, 주문 일시, 담은 상품 수를 함께 반환합니다. 내가 뭘 샀는지 확인하는 구매 내역·주문 내역·주문 확인 화면에서 사용합니다. (order detail, purchase history)",
+        "operationId": "get_order_orders__id__get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "조회할 주문 번호. 주문 완료 시 발급된 식별자입니다.",
+              "title": "Id"
+            },
+            "description": "조회할 주문 번호. 주문 완료 시 발급된 식별자입니다."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-quality": "GOOD"
+      }
+    },
+    "/orders/{id}/refund-status": {
+      "get": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "주문 환불 상태 조회",
+        "description": "특정 주문 건의 환불 처리 상태, 환불 사유, 환불 금액, 처리 일자를 반환합니다. 환불이 어디까지 진행됐는지, 환불 승인이 났는지, 언제 입금되는지 확인할 때 사용합니다. 반품 진행 상황 확인에도 같은 엔드포인트를 씁니다. 환불을 새로 신청하거나 취소하는 것이 아니라 **현재 상태를 읽기만** 합니다. (refund status, 환불 진행 상황, 반품 처리 상태)",
+        "operationId": "get_refund_status_orders__id__refund_status_get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "환불 상태를 확인할 주문 번호입니다.",
+              "title": "Id"
+            },
+            "description": "환불 상태를 확인할 주문 번호입니다."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefundStatus"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-quality": "GOOD"
+      }
+    },
+    "/orders/{id}/refund": {
+      "post": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "환불 신청",
+        "operationId": "create_refund_orders__id__refund_post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefundRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefundAccepted"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-quality": "POOR"
+      },
+      "delete": {
+        "tags": [
+          "orders"
+        ],
+        "operationId": "delete_refund_orders__id__refund_delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefundCancelled"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-quality": "EMPTY"
+      }
+    },
+    "/orders/{id}/shipping-address": {
+      "patch": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "배송지 변경",
+        "operationId": "update_shipping_address_orders__id__shipping_address_patch",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShippingAddressUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShippingAddressUpdated"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-quality": "POOR"
+      }
+    },
+    "/orders/{id}/shipping-status": {
+      "get": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "주문 배송 상태 조회",
+        "description": "주문 건의 현재 배송 상태와 운송장 번호, 택배사, 도착 예정일을 반환합니다. 내 물건이 지금 어디쯤 왔는지, 언제 도착하는지 확인하는 배송 조회·배송 추적 화면에서 사용합니다. 택배 조회, 운송장 번호 확인도 이 엔드포인트로 처리합니다. (shipping status, delivery tracking)",
+        "operationId": "get_shipping_status_orders__id__shipping_status_get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "배송 상태를 확인할 주문 번호입니다.",
+              "title": "Id"
+            },
+            "description": "배송 상태를 확인할 주문 번호입니다."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShippingStatus"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-quality": "GOOD"
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "tags": [
+          "products"
+        ],
+        "summary": "상품 상세 조회",
+        "description": "상품 번호로 상품 1건의 상세 정보를 조회합니다. 상품명, 판매 가격, 카테고리, 상세 설명, 품절 여부를 함께 반환합니다. 상품 상세 페이지에서 가격 확인, 품절 확인 용도로 사용합니다. (product detail, 상품 정보, 가격 조회)",
+        "operationId": "get_product_products__id__get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "조회할 상품 번호입니다.",
+              "title": "Id"
+            },
+            "description": "조회할 상품 번호입니다."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-quality": "GOOD"
+      }
+    },
+    "/products/{id}/stock": {
+      "get": {
+        "tags": [
+          "products"
+        ],
+        "summary": "재고 조회",
+        "operationId": "get_stock_products__id__stock_get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockInfo"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-quality": "POOR"
+      }
+    },
+    "/products/{id}/restock-schedule": {
+      "get": {
+        "tags": [
+          "products"
+        ],
+        "operationId": "get_restock_schedule_products__id__restock_schedule_get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestockSchedule"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-quality": "EMPTY"
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "회원 정보 조회",
+        "description": "회원 번호로 회원 1명의 프로필 정보를 조회합니다. 이메일, 닉네임, 회원 등급, 가입 일자를 함께 반환합니다. 내 정보 확인, 마이페이지, 계정 정보 조회 화면에서 사용합니다. (user profile, my account, 내 계정 정보)",
+        "operationId": "get_user_users__id__get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "조회할 회원 번호입니다.",
+              "title": "Id"
+            },
+            "description": "조회할 회원 번호입니다."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfile"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-quality": "GOOD"
+      }
+    },
+    "/users/{id}/address": {
+      "patch": {
+        "tags": [
+          "users"
+        ],
+        "summary": "주소 변경",
+        "operationId": "update_address_users__id__address_patch",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddressUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddressUpdated"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-quality": "POOR"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AddressUpdate": {
+        "properties": {
+          "postal_code": {
+            "type": "string",
+            "title": "Postal Code"
+          },
+          "address_line1": {
+            "type": "string",
+            "title": "Address Line1"
+          },
+          "address_line2": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address Line2"
+          }
+        },
+        "type": "object",
+        "required": [
+          "postal_code",
+          "address_line1"
+        ],
+        "title": "AddressUpdate"
+      },
+      "AddressUpdated": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "postal_code": {
+            "type": "string",
+            "title": "Postal Code"
+          },
+          "address_line1": {
+            "type": "string",
+            "title": "Address Line1"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "postal_code",
+          "address_line1"
+        ],
+        "title": "AddressUpdated"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "OrderDetail": {
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "title": "Order Id",
+            "description": "주문 번호. 주문 조회·문의 시 사용하는 고유 식별자입니다."
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "주문 상태. PAID(결제 완료), PREPARING(상품 준비 중), SHIPPED(발송됨), DELIVERED(배송 완료), CANCELLED(주문 취소됨) 중 하나입니다."
+          },
+          "total_amount": {
+            "type": "integer",
+            "title": "Total Amount",
+            "description": "결제 금액(원). 할인과 배송비가 모두 반영된 최종 금액입니다."
+          },
+          "ordered_at": {
+            "type": "string",
+            "title": "Ordered At",
+            "description": "주문 일시(ISO 8601). 주문이 접수된 시각입니다."
+          },
+          "item_count": {
+            "type": "integer",
+            "title": "Item Count",
+            "description": "주문에 포함된 상품 종류의 수입니다."
+          }
+        },
+        "type": "object",
+        "required": [
+          "order_id",
+          "status",
+          "total_amount",
+          "ordered_at",
+          "item_count"
+        ],
+        "title": "OrderDetail",
+        "description": "주문 1건의 상세 정보."
+      },
+      "ProductDetail": {
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "title": "Product Id",
+            "description": "상품 번호. 상품을 구분하는 고유 식별자입니다."
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "상품명. 고객에게 노출되는 이름입니다."
+          },
+          "price": {
+            "type": "integer",
+            "title": "Price",
+            "description": "판매가(원). 할인이 적용되기 전 정가입니다."
+          },
+          "category": {
+            "type": "string",
+            "title": "Category",
+            "description": "상품이 속한 카테고리 이름입니다."
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "description": "상품 상세 설명. 소재, 규격, 사용법 등이 들어갑니다."
+          },
+          "is_sold_out": {
+            "type": "boolean",
+            "title": "Is Sold Out",
+            "description": "품절 여부. true 이면 현재 구매할 수 없는 상태(재고 없음)입니다."
+          }
+        },
+        "type": "object",
+        "required": [
+          "product_id",
+          "name",
+          "price",
+          "category",
+          "description",
+          "is_sold_out"
+        ],
+        "title": "ProductDetail",
+        "description": "상품 1건의 상세 정보."
+      },
+      "RefundAccepted": {
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "title": "Order Id"
+          },
+          "refund_state": {
+            "type": "string",
+            "title": "Refund State"
+          }
+        },
+        "type": "object",
+        "required": [
+          "order_id",
+          "refund_state"
+        ],
+        "title": "RefundAccepted"
+      },
+      "RefundCancelled": {
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "title": "Order Id"
+          },
+          "refund_state": {
+            "type": "string",
+            "title": "Refund State"
+          }
+        },
+        "type": "object",
+        "required": [
+          "order_id",
+          "refund_state"
+        ],
+        "title": "RefundCancelled"
+      },
+      "RefundRequest": {
+        "properties": {
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          },
+          "memo": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Memo"
+          }
+        },
+        "type": "object",
+        "required": [
+          "reason"
+        ],
+        "title": "RefundRequest"
+      },
+      "RefundStatus": {
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "title": "Order Id",
+            "description": "환불 대상 주문 번호입니다."
+          },
+          "refund_state": {
+            "type": "string",
+            "title": "Refund State",
+            "description": "환불 진행 상태. REQUESTED(환불 신청 접수), INSPECTING(반품 상품 검수 중), APPROVED(환불 승인), REJECTED(환불 거절), COMPLETED(환불 완료) 중 하나입니다."
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason",
+            "description": "고객이 선택한 환불 사유. 단순 변심, 상품 불량 등입니다."
+          },
+          "refund_amount": {
+            "type": "integer",
+            "title": "Refund Amount",
+            "description": "환불 예정 또는 환불 완료된 금액(원)입니다."
+          },
+          "processed_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Processed At",
+            "description": "환불 처리가 완료된 일시. 아직 처리 중이면 null 입니다."
+          }
+        },
+        "type": "object",
+        "required": [
+          "order_id",
+          "refund_state",
+          "reason",
+          "refund_amount"
+        ],
+        "title": "RefundStatus",
+        "description": "환불 처리 상태."
+      },
+      "RestockSchedule": {
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "title": "Product Id"
+          },
+          "expected_date": {
+            "type": "string",
+            "title": "Expected Date"
+          },
+          "quantity": {
+            "type": "integer",
+            "title": "Quantity"
+          }
+        },
+        "type": "object",
+        "required": [
+          "product_id",
+          "expected_date",
+          "quantity"
+        ],
+        "title": "RestockSchedule"
+      },
+      "ShippingAddressUpdate": {
+        "properties": {
+          "postal_code": {
+            "type": "string",
+            "title": "Postal Code"
+          },
+          "address_line1": {
+            "type": "string",
+            "title": "Address Line1"
+          },
+          "address_line2": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address Line2"
+          },
+          "receiver_phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Receiver Phone"
+          }
+        },
+        "type": "object",
+        "required": [
+          "postal_code",
+          "address_line1"
+        ],
+        "title": "ShippingAddressUpdate"
+      },
+      "ShippingAddressUpdated": {
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "title": "Order Id"
+          },
+          "postal_code": {
+            "type": "string",
+            "title": "Postal Code"
+          },
+          "address_line1": {
+            "type": "string",
+            "title": "Address Line1"
+          }
+        },
+        "type": "object",
+        "required": [
+          "order_id",
+          "postal_code",
+          "address_line1"
+        ],
+        "title": "ShippingAddressUpdated"
+      },
+      "ShippingStatus": {
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "title": "Order Id",
+            "description": "배송 대상 주문 번호입니다."
+          },
+          "carrier": {
+            "type": "string",
+            "title": "Carrier",
+            "description": "배송을 담당하는 택배사 이름입니다."
+          },
+          "tracking_number": {
+            "type": "string",
+            "title": "Tracking Number",
+            "description": "운송장 번호. 택배사 사이트에서 배송 추적에 사용하는 번호입니다."
+          },
+          "shipping_state": {
+            "type": "string",
+            "title": "Shipping State",
+            "description": "배송 상태. READY(배송 준비 중), PICKED_UP(택배사 집화 완료), IN_TRANSIT(배송 중), OUT_FOR_DELIVERY(배송 출발), DELIVERED(배송 완료) 중 하나입니다."
+          },
+          "estimated_arrival": {
+            "type": "string",
+            "title": "Estimated Arrival",
+            "description": "도착 예정일(ISO 8601). 택배사가 제공하는 예상 일자입니다."
+          }
+        },
+        "type": "object",
+        "required": [
+          "order_id",
+          "carrier",
+          "tracking_number",
+          "shipping_state",
+          "estimated_arrival"
+        ],
+        "title": "ShippingStatus",
+        "description": "배송 진행 상태."
+      },
+      "StockInfo": {
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "title": "Product Id"
+          },
+          "quantity": {
+            "type": "integer",
+            "title": "Quantity"
+          },
+          "warehouse": {
+            "type": "string",
+            "title": "Warehouse"
+          }
+        },
+        "type": "object",
+        "required": [
+          "product_id",
+          "quantity",
+          "warehouse"
+        ],
+        "title": "StockInfo"
+      },
+      "UserProfile": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id",
+            "description": "회원 번호. 회원을 구분하는 고유 식별자입니다."
+          },
+          "email": {
+            "type": "string",
+            "title": "Email",
+            "description": "회원 이메일 주소. 로그인 아이디이자 알림 수신 주소입니다."
+          },
+          "nickname": {
+            "type": "string",
+            "title": "Nickname",
+            "description": "회원이 설정한 표시 이름입니다."
+          },
+          "grade": {
+            "type": "string",
+            "title": "Grade",
+            "description": "회원 등급. BASIC, SILVER, GOLD, VIP 순으로 혜택이 올라갑니다."
+          },
+          "joined_at": {
+            "type": "string",
+            "title": "Joined At",
+            "description": "가입 일시(ISO 8601). 회원으로 등록된 시각입니다."
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "email",
+          "nickname",
+          "grade",
+          "joined_at"
+        ],
+        "title": "UserProfile",
+        "description": "회원 1명의 프로필 정보."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
