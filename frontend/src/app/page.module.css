@@ -1,0 +1,19 @@
+/* TODO(Phase 5): 하드코딩된 값을 var(--token) 으로 교체 */
+.main {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.lead {
+  margin: 0;
+  font-size: 0.875rem;
+}

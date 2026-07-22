@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+
+# Node
+node_modules/
+.next/
+out/
+.turbo/
+*.tsbuildinfo
+
+# Env
+.env
+.env.*
+!.env.example
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# 생성물이지만 **커밋하는** 것들 (여기서 무시하지 않는다)
+#   frontend/src/lib/api-types.ts       사내 Nexus에 openapi-typescript가 없을 수 있어
+#                                       생성물 자체가 이식 자산이다.
+#   backend/app/fixtures/openapi_sample.json  평가기 입력. 사내에서 sample-api를 돌리지
+#                                             않아도 평가를 재현할 수 있어야 한다.
+# 둘 다 수기 편집 금지. 계약이 바뀌면 `make gen-types` / `make dump-spec` 로 다시 뽑는다.
+
+# 로컬 평가 산출물
+*.local.json
+/tmp/

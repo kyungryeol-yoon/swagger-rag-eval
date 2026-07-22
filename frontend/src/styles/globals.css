@@ -1,0 +1,25 @@
+/* 디자인 토큰은 Phase 5 에서 정의한다.
+   여기서는 레이아웃이 깨지지 않을 최소 리셋만 둔다.
+   TODO(Phase 5): 색·간격·폰트 토큰, @font-face(public/fonts 로컬 번들), enum→색 매핑 */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
