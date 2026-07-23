@@ -4,24 +4,10 @@
 # ruff 는 파일에서 위로 올라가며 가장 가까운 설정을 쓰므로 이 파일의 영향을
 # 받지 않는다. 여기 설정은 사실상 scripts/ 에만 적용된다.
 #
-# **target-version 이 이 파일의 존재 이유다.**
-# scripts/tasks.py 는 uv 가 관리하는 3.12 가 아니라 시스템 python 으로 실행된다.
-# macOS 기본은 3.9, 사내 Windows PC 는 더 낮을 수 있다.
-#
-# 다만 이것이 어디까지 지켜주는지 정확히 알아둘 것. 실측 결과:
-#
-#   잡힌다   match 문 -> "Cannot use `match` statement on Python 3.8"
-#            (문법 자체가 3.8 에 없는 것들)
-#
-#   못 잡는다  dict1 | dict2       (3.9+)  — 문법은 3.8 에도 유효, 런타임에 TypeError
-#             str.removeprefix    (3.9+)  — 그냥 메서드 호출로 보인다
-#             list[str] 를 런타임 위치에  (3.9+)  — 표현식으로는 유효
-#             X | Y 애노테이션            — future import 덕에 실제로 3.8 에서 안전
-#
-# 즉 "문법에 없는 것"은 막아주지만 "있는데 동작만 다른 것"은 사람이 봐야 한다.
-# 금지 목록은 scripts/tasks.py 상단 docstring 에 있다.
+# 프로젝트 전체가 Python 3.12 다 (로컬·사내 PC·k8s 동일).
+# scripts/tasks.py 최상단의 버전 가드와 같은 기준이다.
 
-target-version = "py38"
+target-version = "py312"
 line-length = 100
 
 [lint]
@@ -29,23 +15,6 @@ select = [
     "E",    # pycodestyle
     "F",    # pyflakes
     "I",    # isort
-    "UP",   # pyupgrade — target-version 을 넘는 문법을 잡는다
+    "UP",   # pyupgrade
     "B",    # flake8-bugbear
-]
-
-ignore = [
-    # UP006 List -> list, UP045 Optional[X] -> X | None
-    #
-    # `from __future__ import annotations` 가 있으면 애노테이션은 런타임에
-    # 평가되지 않으므로 3.8 에서도 신표기가 "동작은" 한다. 그래서 ruff 가
-    # 바꾸라고 한다.
-    #
-    # 그래도 typing.List / Optional 을 유지한다:
-    #   - 애노테이션이 아닌 자리(cast, isinstance, TypeAlias, get_type_hints)
-    #     에서는 신표기가 3.8 에서 그대로 터진다. 한 줄만 그런 자리로
-    #     옮겨져도 사내 PC 에서 SyntaxError/TypeError 가 난다
-    #   - 파일 안에 두 표기가 섞이면 "여기선 되는데 왜 저기선 안 되지"가 된다
-    # 3.9 를 최소 버전으로 올릴 수 있게 되면 이 ignore 를 지우고 --fix 하면 된다.
-    "UP006",
-    "UP045",
 ]

@@ -11,65 +11,55 @@ Makefile 은 이제 이 스크립트를 한 줄로 부르기만 한다.
 **제약 1 — 표준 라이브러리만.** 서드파티 금지.
 의존성을 설치하기 위한 스크립트가 의존성을 요구하면 순환이다.
 
-**제약 2 — Python 3.8 문법으로 유지한다.**
-이 스크립트는 uv 가 관리하는 3.12 가 아니라 **시스템 python 으로 실행된다.**
-macOS 기본 python3 는 3.9(Xcode 번들)이고, 사내 Windows PC 는 더 낮을 수 있다.
-프로젝트가 3.12 를 요구하는 것과는 별개다 — 3.12 를 설치하기 위해 uv 를
-부르는 것이 이 스크립트의 일이므로, 스스로는 오래된 python 에서도 돌아야 한다.
-
-금지:
-    match 문                     (3.10+)
-    X | Y 타입 표기              (3.10+) -> typing.Optional / Union
-    dict1 | dict2 병합           (3.9+)  -> {**a, **b}
-    list[str] / dict[str, int]   (3.9+)  -> typing.List / Dict
-                                 (annotations future import 로 표기 자체는
-                                  가능하지만, 런타임 평가되는 자리에서 터진다)
-    str.removeprefix / removesuffix (3.9+)
-    tomllib                      (3.11+) -> 있으면 쓰고 없으면 폴백
-
-`ruff` 가 `target-version = "py38"` 로 이 파일을 검사한다 (루트 ruff.toml).
-**다만 전부 잡아주지는 않는다.** `match` 처럼 3.8 에 문법 자체가 없는 것은
-막아주지만, `dict1 | dict2` 나 `str.removeprefix` 처럼 문법은 유효하고
-런타임에만 터지는 것은 못 잡는다. 위 금지 목록은 사람이 지켜야 한다.
+**제약 2 — Python 3.12 를 요구한다.** 버전 가드가 최상단에 있다.
+로컬·사내 PC·k8s 가 모두 3.12 이므로 하위호환을 두지 않는다
+(`ruff` 도 `target-version = "py312"` 로 검사한다).
 
 사용:
     python scripts/tasks.py <command>
     make <command>
 """
 
+# ruff: noqa: E402
+#   버전 가드가 나머지 import 보다 **먼저** 실행되어야 한다.
+#   tomllib 은 3.11+ 라, 가드가 뒤에 있으면 오래된 python 에서
+#   친절한 안내 대신 ModuleNotFoundError 가 먼저 튀어나온다.
+
 from __future__ import annotations
+
+import sys
+
+# 프로젝트 전체가 3.12 다. 로컬·사내 PC·k8s 가 모두 같으므로 하위호환을 두지 않는다.
+# 알 수 없는 곳에서 터지는 대신 여기서 무엇을 하면 되는지 알려준다.
+MIN_PYTHON = (3, 12)
+PROJECT_PYTHON = "{}.{}".format(*MIN_PYTHON)
+
+if sys.version_info < MIN_PYTHON:
+    _have = f"{sys.version_info[0]}.{sys.version_info[1]}.{sys.version_info[2]}"
+    sys.stderr.write(
+        f"\n이 프로젝트는 Python {PROJECT_PYTHON} 이상이 필요합니다. 현재 {_have} 입니다.\n"
+        f"  실행 파일: {sys.executable}\n\n"
+        "이미 3.12 가 있다면 그것으로 실행하세요:\n"
+        "  make PY=python3.12 <command>\n\n"
+        "없다면 설치합니다:\n"
+        "  uv python install 3.12          (uv 가 있으면 가장 간단)\n"
+        "  brew install python@3.12        (macOS)\n"
+        "  사내 PC 는 이미 설치된 3.12 를 쓰면 됩니다\n\n"
+        "어떤 python 이 잡혔는지는 `make doctor` 의 맨 위 세 줄에서 확인합니다.\n"
+    )
+    raise SystemExit(1)
 
 import argparse
 import os
 import shutil
 import signal
 import subprocess
-import sys
 import threading
 import time
+import tomllib
 import unicodedata
+from collections.abc import Sequence
 from pathlib import Path
-from typing import List, Optional, Sequence, Tuple
-
-# 문법 자체는 3.6 에서도 파싱되므로, 여기까지 와서 버전을 확인할 수 있다.
-# 메시지 없이 알 수 없는 곳에서 터지는 것보다 낫다.
-MIN_PYTHON = (3, 8)
-if sys.version_info < MIN_PYTHON:
-    _need = f"{MIN_PYTHON[0]}.{MIN_PYTHON[1]}"
-    _have = f"{sys.version_info[0]}.{sys.version_info[1]}.{sys.version_info[2]}"
-    sys.stderr.write(
-        f"\n이 스크립트는 Python {_need} 이상이 필요합니다. 현재 {_have} 입니다.\n"
-        f"  실행 파일: {sys.executable}\n\n"
-        "더 새 python 으로 실행하세요:\n"
-        "  python3 scripts/tasks.py <command>\n"
-        "  make PY=python3.12 <command>\n\n"
-        "참고: 프로젝트 자체는 Python 3.12 를 요구하지만, 그건 uv 가 따로\n"
-        f"설치합니다. 이 스크립트만 {_need} 이상이면 됩니다.\n"
-    )
-    raise SystemExit(1)
-
-# 프로젝트가 요구하는 런타임. tasks.py 가 이 버전으로 돌 필요는 없다.
-PROJECT_PYTHON = "3.12"
 
 ROOT = Path(__file__).resolve().parent.parent
 BACKEND = ROOT / "backend"
@@ -118,7 +108,7 @@ def pad(text: str, size: int) -> str:
     return text + " " * max(0, size - width(text))
 
 
-def capture(cmd: Sequence[str], cwd: Optional[Path] = None) -> Optional[str]:
+def capture(cmd: Sequence[str], cwd: Path | None = None) -> str | None:
     """명령의 첫 줄 출력을 가져온다. 실패하면 None (진단용이라 죽지 않는다)."""
     try:
         result = subprocess.run(
@@ -140,7 +130,7 @@ def capture(cmd: Sequence[str], cwd: Optional[Path] = None) -> Optional[str]:
 # 명령
 # ---------------------------------------------------------------------------
 
-COMMANDS: List[Tuple[str, str]] = [
+COMMANDS: list[tuple[str, str]] = [
     ("setup", "의존성 설치"),
     ("dev", "세 서버 동시 실행 (8001 / 8000 / 3000)"),
     ("build", "프론트 프로덕션 빌드"),
@@ -193,8 +183,8 @@ def cmd_test() -> None:
 def cmd_lint() -> None:
     run(["uv", "run", "ruff", "check", "."], BACKEND)
     run(["uv", "run", "mypy", "app"], BACKEND)
-    # scripts/ 는 별도 설정(루트 ruff.toml)으로 검사한다. target-version = py38 이라
-    # 신문법이 들어가면 여기서 걸린다. ruff 자체는 backend 환경의 것을 빌려 쓴다.
+    # scripts/ 는 별도 설정(루트 ruff.toml, target-version = py312)으로 검사한다.
+    # ruff 자체는 backend 환경의 것을 빌려 쓴다.
     run(["uv", "run", "--project", str(BACKEND), "ruff", "check", "scripts"], ROOT)
     run(["npm", "run", "lint"], FRONTEND)
     run(["npx", "tsc", "--noEmit"], FRONTEND)
@@ -266,73 +256,52 @@ LEGACY_ENV_KEYS = {
 UV_TLS_KEYS = ("system-certs", "native-tls")
 
 
-def _row(label: str, value: Optional[str], note: str = "") -> Tuple[str, str, str]:
+def _row(label: str, value: str | None, note: str = "") -> tuple[str, str, str]:
     return (label, value if value else "(없음)", note)
 
 
-def read_uv_tls_setting(pyproject: Path) -> Tuple[Optional[str], Optional[str]]:
+def read_uv_tls_setting(pyproject: Path) -> tuple[str | None, str | None]:
     """pyproject.toml 의 [tool.uv] TLS 설정을 읽는다.
 
     `(키이름, 값)` 을 돌려준다. 설정이 없으면 `(None, None)`.
-
-    tomllib 은 Python 3.11+ 라 3.9 에서는 못 쓴다. 진단용이므로
-    없으면 정규식으로 훑는다 — 여기서만 쓰는 대충 읽기다.
     """
     if not pyproject.is_file():
         return (None, None)
 
-    text = pyproject.read_text(encoding="utf-8")
-
-    try:
-        import tomllib  # type: ignore[import-not-found]
-
-        data = tomllib.loads(text)
-        uv_table = data.get("tool", {}).get("uv", {})
-        for key in UV_TLS_KEYS:
-            if key in uv_table:
-                return (key, str(uv_table[key]).lower())
-        return (None, None)
-    except ImportError:
-        pass
-
-    # tomllib 이 없는 3.8~3.10 대비 폴백. [tool.uv] 섹션의 주석 아닌 줄만 본다.
-    found = {}
-    in_uv = False
-    for raw in text.splitlines():
-        line = raw.strip()
-        if line.startswith("["):
-            in_uv = line == "[tool.uv]"
-            continue
-        if not in_uv or line.startswith("#") or "=" not in line:
-            continue
-        key, _, value = line.partition("=")
-        key = key.strip()
-        if key in UV_TLS_KEYS:
-            found[key] = value.split("#")[0].strip().lower()
-
+    data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
+    uv_table = data.get("tool", {}).get("uv", {})
     for key in UV_TLS_KEYS:
-        if key in found:
-            return (key, found[key])
+        if key in uv_table:
+            return (key, str(uv_table[key]).lower())
     return (None, None)
 
 
 def cmd_doctor() -> None:
-    rows: List[Tuple[str, str, str]] = []
+    rows: list[tuple[str, str, str]] = []
 
     rows.append(("--- 도구 ---", "", ""))
 
-    # tasks.py 는 uv 가 관리하는 3.12 가 아니라 시스템 python 으로 돈다.
     # 어느 python 이 잡혔는지 보이지 않으면 "왜 여기선 되고 저기선 안 되지"가 된다.
     running = "{}.{}.{}".format(*sys.version_info[:3])
-    if running.startswith(PROJECT_PYTHON + "."):
-        note = "프로젝트 런타임과 동일"
-    else:
-        note = (
-            f"! 프로젝트 런타임은 {PROJECT_PYTHON} "
-            f"(tasks.py 자체는 {MIN_PYTHON[0]}.{MIN_PYTHON[1]}+ 면 동작하므로 오류는 아니다)"
+    rows.append(
+        _row(
+            "tasks.py 실행 python",
+            running,
+            "프로젝트 런타임과 동일" if running.startswith(PROJECT_PYTHON + ".") else "",
         )
-    rows.append(_row("tasks.py 실행 python", running, note))
+    )
     rows.append(_row("  실행 경로", sys.executable))
+
+    # 가드가 최상단에서 막으므로 여기까지 왔다면 이미 충족한 상태다.
+    # 그래도 기준을 보여준다 — 사내 PC 에서 "왜 3.12 냐"를 묻게 된다.
+    meets = sys.version_info >= MIN_PYTHON
+    rows.append(
+        _row(
+            "  최소 요구",
+            f"{PROJECT_PYTHON}+",
+            "충족" if meets else f"! 미달 — make PY=python{PROJECT_PYTHON} 로 실행할 것",
+        )
+    )
 
     venv = os.environ.get("VIRTUAL_ENV")
     rows.append(
@@ -436,7 +405,7 @@ def cmd_doctor() -> None:
 # dev — 세 서버 동시 실행
 # ---------------------------------------------------------------------------
 
-SERVICES: List[Tuple[str, List[str], Path]] = [
+SERVICES: list[tuple[str, list[str], Path]] = [
     (
         "sample-api",
         ["uv", "run", "uvicorn", "app.main:app", "--reload", "--port", "8001"],
@@ -451,7 +420,7 @@ SERVICES: List[Tuple[str, List[str], Path]] = [
 ]
 
 
-def _spawn(name: str, cmd: List[str], cwd: Path) -> subprocess.Popen:
+def _spawn(name: str, cmd: list[str], cwd: Path) -> subprocess.Popen:
     """자식을 별도 프로세스 그룹으로 띄운다.
 
     그래야 종료할 때 손자 프로세스(uvicorn --reload 의 워커, next dev 의
@@ -520,7 +489,7 @@ def _force_stop(name: str, process: subprocess.Popen) -> None:
         pass
 
 
-def _stop_all(running: Sequence[Tuple[str, subprocess.Popen]]) -> None:
+def _stop_all(running: Sequence[tuple[str, subprocess.Popen]]) -> None:
     """전부에게 먼저 신호를 보내고 나서 기다린다.
 
     하나씩 보내고 기다리면 최악의 경우 대기 시간이 프로세스 수만큼 곱해진다.
@@ -552,8 +521,8 @@ def cmd_dev() -> None:
     print("  종료: Ctrl+C")
     print()
 
-    running: List[Tuple[str, subprocess.Popen]] = []
-    threads: List[threading.Thread] = []
+    running: list[tuple[str, subprocess.Popen]] = []
+    threads: list[threading.Thread] = []
 
     # KeyboardInterrupt 에만 기대지 않는다. 백그라운드로 띄우거나
     # 프로세스 관리자가 SIGTERM 을 보내는 경우에도 자식을 정리해야 한다.

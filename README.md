@@ -55,10 +55,23 @@ make 를 구하기 어려우면 이쪽을 쓴다.
 python scripts/tasks.py <command>
 ```
 
+**Python 3.12 이상이 필요하다.** `scripts/tasks.py` 최상단의 버전 가드가
+미달이면 무엇을 하면 되는지 알려주고 멈춘다.
+
+`python3` 가 3.12 미만으로 잡히는 환경이 흔하다 — 예를 들어 macOS 는
+`/usr/bin/python3`(Xcode 번들, 3.9)가 Homebrew 보다 PATH 앞에 있는 경우가 많다.
+그럴 때는 `PY` 를 덮어쓴다.
+
+```bash
+make PY=python3.12 test           # 한 번만
+export PY=python3.12              # 셸에 걸어두면 이후 make 는 그냥 쓴다
+```
+
 Windows 에서 `python3` 를 찾지 못하면 `make PY=python` 을 쓴다.
 (Windows 의 `python3.exe` 는 Microsoft Store 실행 별칭일 수 있어, 파이썬이
 설치돼 있지 않으면 스토어 창이 뜨고 아무것도 실행되지 않는다.)
-어떤 python 이 잡혔는지는 `make doctor` 의 맨 위 세 줄에서 확인한다.
+
+어떤 python 이 잡혔는지는 `make doctor` 의 맨 위 네 줄에서 확인한다.
 
 Makefile 에는 셸 로직이 없다. Windows 에서 make 는 레시피를 `cmd.exe` 로
 실행해서 `[ ]`·파이프·`grep` 이 전부 깨지기 때문에, 로직은 전부
