@@ -591,7 +591,7 @@ frontend/src/styles/globals.css 에 CSS 변수 토큰을 정의해줘.
 | 순서 | 컴포넌트 | 메모 | 상태 |
 |---|---|---|---|
 | 6-1 | `GaugeRing` | 78% 하나만. 중복 표시 제거 | **완료** (+ 6-1a 정렬 수정) |
-| 6-2 | `SummaryCards` | 요약 지표. `previous` 있으면 델타 뱃지 | 미착수 |
+| 6-2 | `SummaryCards` | 요약 지표 5장. `previous` 있으면 델타 뱃지 | **완료** |
 | 6-3 | `TargetApiCard` | method 뱃지 + 경로 + 설명 | 미착수 |
 | 6-4 | `QuestionTypeChart` | 도넛 + 범례. **유형별 인식률 컬럼 포함** | 미착수 |
 | 6-5 | `RecommendationCards` | 3장. priority 뱃지, failShare 바 | 미착수 |
@@ -731,20 +731,91 @@ value 78 → `dashoffset 59.7154` 로 계산값과 일치. value 0 은 `<circle>
 > 라인 박스 중심보다 약간 위에 있어(디센더가 없어서) 1~2px 높아 보일 수 있다.
 > 폰트가 확정된 뒤(`open-questions` #12) 눈으로 보고 필요하면 미세 조정한다.
 
-#### Phase 6-2 — SummaryCards (미착수)
+#### Phase 6-2 — SummaryCards (완료)
 
-요약 지표 카드. `previous` 가 있으면 델타 뱃지(78% → 91%)를 붙인다.
+요약 지표 카드 5장. 시안은 6장이었으나 이모지 "평가 상태" 카드를 뺐다 —
+등급은 `GaugeRing` 이 이미 표현한다 (contract.md §5, §9-1 #2).
 
-> **착수 전에 결정할 것이 있다.** §9-1 #7 은 "요약 카드 6개 중 4개가 상호
-> 계산 가능하니 3개로 압축하고 나머지는 툴팁" 이라고 하는데, 위 표의 메모는
-> "6개 지표" 였다. 실제로 계약의 `totalQuestions 100` / `top1Accuracy 61.0` /
-> `top3Accuracy 78.0` / `top1FailCount 39` / `top3FailCount 22` 는 서로에게서
-> 유도된다 (100 − 78 = 22).
->
-> 게다가 `top3Accuracy` 는 이미 `GaugeRing` 이 표시한다. 카드로 또 내면
-> 시안이 지적받은 중복 표시(§9-1 #1)가 그대로 되돌아온다.
->
-> **몇 개를 남길지 정한 뒤에 프롬프트를 쓴다.**
+**실제 사용한 프롬프트**
+
+```
+Phase 6-2. components/eval/SummaryCards/ 만 만들고 멈춘다.
+
+SummaryCards.tsx + SummaryCards.module.css
+props: summary: Summary, previous?: Previous | null
+
+카드 5장 (시안의 6장에서 이모지 "평가 상태" 카드 제거 — contract.md §5.
+등급은 GaugeRing 이 이미 표현하므로 중복):
+  1 총 질문 수      totalQuestions   단위 "개"   --sky
+  2 Top-1 정확도    top1Accuracy     단위 "%"    --violet
+  3 Top-3 인식률    top3Accuracy     단위 "%"    --green
+  4 Top-1 실패      top1FailCount    단위 "건"   --red
+  5 Top-3 실패      top3FailCount    단위 "건"   --amber
+
+## 스타일 (시안 기준)
+- 좌측에 3px 세로 악센트 바
+- 카드 배경은 해당 색 opacity 0.09, 테두리는 같은 색 opacity 0.55
+- 숫자는 .tabular, 큰 글씨. 단위는 작게 --text-mute
+- 라벨은 --text-dim 소형
+- 색은 CSS 변수 사용. hex 금지
+
+## 델타 뱃지 (Top-3 인식률 카드에만)
+- previous 가 없으면 뱃지 자체를 렌더하지 않는다 (빈 자리도 남기지 말 것)
+- 형식: "▲ +14.0p" / "▼ -3.2p" / "— 0.0p"
+- 단위는 반드시 "p" (퍼센트포인트). "%" 아님.
+  64% -> 78% 는 14 퍼센트포인트 상승이지 14% 상승이 아니다
+- 상승 --green / 하락 --red / 동일 --text-mute
+- 계산은 순수 함수로 분리(테스트 가능하게):
+    formatDelta(current: number, previous: number): { text, direction }
+- aria-label: "이전 평가 A311 대비 14.0 퍼센트포인트 상승"
+
+## 기타
+- 서버 컴포넌트 ('use client' 금지)
+- 반응형: 기본 5열, 1024 이하 3열, 768 이하 2열
+- 숫자 포맷은 계약 그대로. 임의 반올림 금지
+  (top1Accuracy 61.0 은 "61.0" 으로, totalQuestions 100 은 "100" 으로)
+
+app/dev/components/page.tsx 에 섹션 추가:
+- fixture(eval_A492.json) 실제 값으로 렌더한 기본 예시
+- previous 있음 / 없음 / 하락(previous 가 더 높음) 3가지
+- 극단값: 전부 0, 전부 100, totalQuestions 가 4자리(1234)일 때 레이아웃
+
+다른 컴포넌트는 만들지 마.
+```
+
+**결과에서 배운 것**
+
+- **원색을 파일 곳곳에서 부르지 않는다.** `--accent` 하나만 카드별로 바꾸고
+  배경·테두리·악센트 바가 전부 거기서 파생된다. 원색 매핑은 module.css 맨 아래
+  `accent*` 클래스 다섯 줄에만 있다.
+- **투명도는 `color-mix` 로 만든다.** 토큰이 hex 라 알파를 직접 붙일 수 없다.
+  미지원 브라우저를 위해 불투명 폴백을 **앞줄에** 선언한다 — 지원하지 않으면
+  뒷줄을 통째로 무시하므로 색만 빠지고 레이아웃은 살아 있다 (open-questions #48).
+- **뱃지가 없으면 자리도 없다.** `previous` 가 null 일 때 빈 뱃지를 두면
+  카드 높이가 다른 세트와 어긋난다. 조건부로 노드 자체를 만들지 않는다.
+- **`0.05` 미만 차이는 같은 값으로 본다.** 표시가 소수 첫째자리까지인데
+  그러지 않으면 `-0.0001` 이 `▼ -0.0p` 로 나온다.
+
+**퍼센트포인트(p) vs 퍼센트(%)**
+
+델타 단위는 반드시 `p` 다. 64% → 78% 는 **14 퍼센트포인트** 상승이지
+14% 상승이 아니다 (14% 상승이면 64 × 1.14 = 72.96 이 된다).
+`%` 로 적으면 개선 폭을 잘못 읽게 되고, 이 제품의 핵심 지표가 바로 그 값이다.
+
+**검증** — 렌더 결과로 확인했다. 7개 세트 중 델타 뱃지는 6개
+(`previous={null}` 세트에는 없음). 표시/aria 쌍이 전부 일치:
+
+```
+▲ +14.0p   이전 평가 A311 대비 14.0 퍼센트포인트 상승
+▼ -7.0p    이전 평가 A311 대비 7.0 퍼센트포인트 하락
+— 0.0p     이전 평가 A311 대비 0.0 퍼센트포인트 변화 없음
+```
+
+값 표기도 계약 그대로다: `100 개` / `61.0 %` / `78.0 %` / `39 건` / `22 건`.
+
+> **타입 이름**: 프롬프트의 `Summary` / `Previous` 는 실제로
+> `EvaluationSummary` / `PreviousEvaluation` 이다 (`lib/types.ts`).
+> 계약 스키마 이름을 그대로 재노출한 것이라 그쪽을 썼다.
 
 #### Phase 6-3 — TargetApiCard (미착수)
 

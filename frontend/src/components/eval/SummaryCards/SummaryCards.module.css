@@ -1,0 +1,131 @@
+/* 카드마다 --accent 하나만 바꾼다.
+   원색(--sky 등)을 파일 곳곳에서 직접 부르지 않도록 아래 accent* 클래스
+   한 곳에만 모아둔다. 배경·테두리·악센트 바가 전부 --accent 에서 파생된다. */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  /* 왼쪽은 악센트 바(3px)만큼 더 띄운다. */
+  padding: var(--space-4) var(--space-4) var(--space-4) var(--space-5);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+
+  /* color-mix 를 못 쓰는 브라우저를 위한 선언 순서다.
+     지원하지 않으면 두 번째 선언을 통째로 무시하고 위 값이 남는다.
+     (사내 브라우저 버전은 open-questions #48 에서 확인 중) */
+  background: var(--surface);
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
+  border: 1px solid var(--border);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+/* 좌측 세로 악센트 바 */
+.card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--accent);
+}
+
+.label {
+  color: var(--text-dim);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* 숫자와 단위는 baseline 을 맞춘다. 단위가 커 보이면 숫자가 작아 보인다. */
+.figure {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+}
+
+.number {
+  color: var(--text);
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.unit {
+  color: var(--text-mute);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* --- 델타 뱃지 --------------------------------------------------------- */
+
+.delta {
+  align-self: flex-start;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+
+  background: var(--surface-2);
+  background: color-mix(in srgb, var(--delta-color) 14%, transparent);
+  color: var(--delta-color);
+}
+
+.up {
+  --delta-color: var(--green);
+}
+
+.down {
+  --delta-color: var(--red);
+}
+
+.same {
+  --delta-color: var(--text-mute);
+}
+
+/* --- 카드별 악센트 ------------------------------------------------------ */
+
+.accentSky {
+  --accent: var(--sky);
+}
+
+.accentViolet {
+  --accent: var(--violet);
+}
+
+.accentGreen {
+  --accent: var(--green);
+}
+
+.accentRed {
+  --accent: var(--red);
+}
+
+.accentAmber {
+  --accent: var(--amber);
+}

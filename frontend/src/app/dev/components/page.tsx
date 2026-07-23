@@ -1,6 +1,7 @@
 import GaugeRing from "@/components/eval/GaugeRing/GaugeRing";
+import SummaryCards from "@/components/eval/SummaryCards/SummaryCards";
 import { gradeColorVar, gradeLabel } from "@/lib/enumTokens";
-import type { Grade } from "@/lib/types";
+import type { EvaluationSummary, Grade, PreviousEvaluation } from "@/lib/types";
 
 import styles from "./page.module.css";
 
@@ -13,6 +14,22 @@ import styles from "./page.module.css";
 
 const VALUES = [0, 40, 78, 100];
 
+/** backend/app/fixtures/eval_A492.json 의 실제 값. 손으로 바꾸지 말 것. */
+const FIXTURE_SUMMARY: EvaluationSummary = {
+  totalQuestions: 100,
+  top1Accuracy: 61.0,
+  top3Accuracy: 78.0,
+  top1FailCount: 39,
+  top3FailCount: 22,
+  grade: "NEEDS_IMPROVEMENT",
+};
+
+const FIXTURE_PREVIOUS: PreviousEvaluation = {
+  traceId: "A311",
+  evaluatedAt: "2026-07-15T09:12:00+09:00",
+  top3Accuracy: 64.0,
+};
+
 export default function ComponentsPage() {
   const grades = Object.keys(gradeColorVar) as Grade[];
 
@@ -20,8 +37,75 @@ export default function ComponentsPage() {
     <main className={styles.page}>
       <h1 className={styles.title}>컴포넌트</h1>
       <p className={styles.lead}>
-        Phase 6 진행 중. 현재 <code>GaugeRing</code> 1 / 7.
+        Phase 6 진행 중. 현재 <code>GaugeRing</code>, <code>SummaryCards</code> 2 / 7.
       </p>
+
+      {/* --- SummaryCards --- */}
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>SummaryCards</h2>
+        <p className={styles.sectionNote}>
+          fixture <code>eval_A492.json</code> 실제 값. 카드 5장 — 시안의 이모지
+          &ldquo;평가 상태&rdquo; 카드는 뺐다(등급은 GaugeRing 이 표현한다).
+          델타 단위는 <strong>&ldquo;p&rdquo;(퍼센트포인트)</strong>다. 64% → 78% 는
+          14 퍼센트포인트 상승이지 14% 상승이 아니다.
+        </p>
+        <SummaryCards summary={FIXTURE_SUMMARY} previous={FIXTURE_PREVIOUS} />
+
+        <p className={styles.sectionNote}>
+          <code>previous</code> 없음 — 뱃지를 아예 렌더하지 않는다. 빈 자리도 남기지 않아
+          카드 높이가 위와 달라진다.
+        </p>
+        <SummaryCards summary={FIXTURE_SUMMARY} previous={null} />
+
+        <p className={styles.sectionNote}>하락 — 이전 평가가 더 높았던 경우.</p>
+        <SummaryCards
+          summary={FIXTURE_SUMMARY}
+          previous={{ ...FIXTURE_PREVIOUS, top3Accuracy: 85.0 }}
+        />
+
+        <p className={styles.sectionNote}>동일 — 변화가 없으면 방향 기호 없이 회색.</p>
+        <SummaryCards
+          summary={FIXTURE_SUMMARY}
+          previous={{ ...FIXTURE_PREVIOUS, top3Accuracy: 78.0 }}
+        />
+
+        <p className={styles.sectionNote}>
+          극단값 — 레이아웃 확인용이라 수치끼리 앞뒤가 맞지 않는다.
+        </p>
+        <SummaryCards
+          summary={{
+            totalQuestions: 0,
+            top1Accuracy: 0,
+            top3Accuracy: 0,
+            top1FailCount: 0,
+            top3FailCount: 0,
+            grade: "CRITICAL",
+          }}
+          previous={{ ...FIXTURE_PREVIOUS, top3Accuracy: 0 }}
+        />
+        <SummaryCards
+          summary={{
+            totalQuestions: 100,
+            top1Accuracy: 100,
+            top3Accuracy: 100,
+            top1FailCount: 100,
+            top3FailCount: 100,
+            grade: "GOOD",
+          }}
+          previous={{ ...FIXTURE_PREVIOUS, top3Accuracy: 0 }}
+        />
+        <SummaryCards
+          summary={{
+            totalQuestions: 1234,
+            top1Accuracy: 61,
+            top3Accuracy: 78,
+            top1FailCount: 1234,
+            top3FailCount: 999,
+            grade: "NEEDS_IMPROVEMENT",
+          }}
+          previous={FIXTURE_PREVIOUS}
+        />
+      </section>
 
       {/* --- 등급 × 값 --- */}
       <section className={styles.section}>
