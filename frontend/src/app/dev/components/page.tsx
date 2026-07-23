@@ -1,7 +1,13 @@
+import FailureTable from "@/components/eval/FailureTable/FailureTable";
 import GaugeRing from "@/components/eval/GaugeRing/GaugeRing";
 import SummaryCards from "@/components/eval/SummaryCards/SummaryCards";
 import { gradeColorVar, gradeLabel } from "@/lib/enumTokens";
-import type { EvaluationSummary, Grade, PreviousEvaluation } from "@/lib/types";
+import type {
+  EvaluationSummary,
+  Failure,
+  Grade,
+  PreviousEvaluation,
+} from "@/lib/types";
 
 import styles from "./page.module.css";
 
@@ -28,6 +34,76 @@ const FIXTURE_PREVIOUS: PreviousEvaluation = {
   traceId: "A311",
   evaluatedAt: "2026-07-15T09:12:00+09:00",
   top3Accuracy: 64.0,
+};
+
+/** fixture failures 의 앞 3건. expectedRank 는 4 / null / null 이다. */
+const FIXTURE_FAILURES: Failure[] = [
+  {
+    id: "q_003",
+    question: "주문의 배송 상태를 조회하는 API는 무엇인가요?",
+    questionType: "DIRECT",
+    expected: { method: "GET", path: "/orders/{id}/shipping-status" },
+    results: [
+      { rank: 1, method: "GET", path: "/orders/{id}/refund-status", score: 0.781 },
+      { rank: 2, method: "GET", path: "/orders/{id}", score: 0.759 },
+      { rank: 3, method: "PATCH", path: "/orders/{id}/shipping-address", score: 0.724 },
+    ],
+    hit: false,
+    expectedRank: 4,
+    failureCategory: "SIMILAR_RESOURCE",
+    reason:
+      "같은 주문 리소스의 '-status' 엔드포인트끼리 설명이 겹쳐 환불 상태가 배송 상태를 밀어냄",
+  },
+  {
+    id: "q_007",
+    question: "재입고 언제 되나요?",
+    questionType: "USER_NL",
+    expected: { method: "GET", path: "/products/{id}/restock-schedule" },
+    results: [
+      { rank: 1, method: "GET", path: "/products/{id}/stock", score: 0.688 },
+      { rank: 2, method: "GET", path: "/products/{id}", score: 0.671 },
+      { rank: 3, method: "GET", path: "/orders/{id}/shipping-status", score: 0.603 },
+    ],
+    hit: false,
+    expectedRank: null,
+    failureCategory: "DESCRIPTION_MISSING",
+    reason:
+      "기대 엔드포인트에 summary와 description이 모두 없어 경로 문자열 외에는 매칭할 근거가 없음",
+  },
+  {
+    id: "q_017",
+    question: "환불 신청은 어떻게 취소하나요?",
+    questionType: "USER_NL",
+    expected: { method: "DELETE", path: "/orders/{id}/refund" },
+    results: [
+      { rank: 1, method: "GET", path: "/orders/{id}/refund-status", score: 0.812 },
+      { rank: 2, method: "POST", path: "/orders/{id}/refund", score: 0.774 },
+      { rank: 3, method: "GET", path: "/orders/{id}", score: 0.701 },
+    ],
+    hit: false,
+    expectedRank: 7,
+    failureCategory: "METHOD_MISMATCH",
+    reason: "질문의 '취소'를 조회(GET) 의도로 오인식하여 DELETE 엔드포인트가 후순위로 밀림",
+  },
+];
+
+const LONG_TEXT_FAILURE: Failure = {
+  ...FIXTURE_FAILURES[0],
+  id: "q_long",
+  question:
+    "주문한 상품의 배송이 지금 어디까지 진행됐는지, 택배사는 어디이고 운송장 번호는 무엇이며 언제쯤 도착하는지를 한 번에 확인할 수 있는 API가 따로 있나요? 아니면 주문 상세를 먼저 조회한 다음에 별도로 다시 호출해야 하나요?",
+  expectedRank: 5,
+  reason:
+    "질문이 배송 조회·운송장 확인·도착 예정일이라는 세 가지 의도를 한 문장에 담고 있어 임베딩이 어느 쪽으로도 충분히 기울지 못했고, 그 결과 설명이 풍부한 주문 상세 엔드포인트가 상위를 차지했다. 질문을 쪼개면 각각은 Top-1로 잡힌다.",
+};
+
+const FAR_MISS_FAILURE: Failure = {
+  ...FIXTURE_FAILURES[1],
+  id: "q_far",
+  question: "재고 수량",
+  expectedRank: 20,
+  failureCategory: "SYNONYM_MISS",
+  reason: "기대 엔드포인트의 설명이 '재고 조회' 한 줄이라 '수량' 키워드와 연결되지 않음",
 };
 
 export default function ComponentsPage() {
@@ -145,6 +221,39 @@ export default function ComponentsPage() {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* --- FailureTable --- */}
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>FailureTable</h2>
+        <p className={styles.sectionNote}>
+          fixture <code>eval_A492.json</code> 의 실패 앞 3건. 기본 3건만 보이고
+          나머지는 버튼으로 넘긴다. 버튼 문구는 <strong>실제 실패 건수(22건)</strong> 기준이다
+          — 시안의 &ldquo;나머지 97건 보기&rdquo;는 오류였다 (§9-1 #3).
+          <br />
+          <code>expectedRank</code> 가 4~5면 <strong>MISS (근접)</strong> amber pill 이다.
+          한두 칸 차이로 놓친 것이라 먼저 손댈 후보이고, 6위 이하나 순위 밖과는
+          조치의 성격이 다르다.
+        </p>
+        <FailureTable failures={FIXTURE_FAILURES} totalFailCount={22} />
+
+        <p className={styles.sectionNote}>
+          경계: 순위 밖(null) / 근접(5위) / 아주 멀리(20위). 질문과 원인이 길면 말줄임된다.
+        </p>
+        <FailureTable
+          failures={[FIXTURE_FAILURES[1], LONG_TEXT_FAILURE, FAR_MISS_FAILURE]}
+          totalFailCount={22}
+        />
+
+        <p className={styles.sectionNote}>
+          표시할 수 있는 건수가 전체와 같으면 &ldquo;더 있음&rdquo; 안내를 붙이지 않는다.
+        </p>
+        <FailureTable failures={FIXTURE_FAILURES} totalFailCount={3} />
+
+        <p className={styles.sectionNote}>
+          빈 상태 — 실패 0건(인식률 100%). 표 대신 안내를 보인다.
+        </p>
+        <FailureTable failures={[]} totalFailCount={0} />
       </section>
 
       {/* --- 정렬 --- */}

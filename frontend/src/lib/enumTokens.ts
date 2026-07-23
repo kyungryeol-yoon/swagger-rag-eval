@@ -13,7 +13,7 @@
  * (`make gen-types` 후) 여기서 컴파일 에러가 난다. 의도한 것이다.
  */
 
-import type { Grade, Priority, QuestionType } from "./types";
+import type { FailureCategory, Grade, Priority, QuestionType } from "./types";
 
 /** CSS 변수명 -> `var(--...)` 형태로. style 속성에 바로 넣을 수 있다. */
 export function cssVar(name: string): string {
@@ -106,3 +106,19 @@ export const questionTypeLabel: Record<QuestionType, string> = {
 export function questionTypeColor(type: QuestionType): string {
   return cssVar(questionTypeColorVar[type]);
 }
+
+// ---------------------------------------------------------------------------
+// 실패 원인 (failureCategory)
+// ---------------------------------------------------------------------------
+// **색을 주지 않는다.** 실패의 종류를 나누는 범주일 뿐, 어느 원인이 더 나쁘다는
+// 뜻이 아니다. 색을 붙이면 "빨간 원인이 더 심각한가?" 하고 읽게 된다.
+// 화면에서는 중립 뱃지(--surface-2 배경 + --border 테두리)로 표시한다.
+
+export const failureCategoryLabel: Record<FailureCategory, string> = {
+  METHOD_MISMATCH: "Method 불일치",
+  SIMILAR_RESOURCE: "유사 리소스 혼동",
+  SYNONYM_MISS: "동의어 인식 실패",
+  DESCRIPTION_MISSING: "설명 누락",
+  PARAM_MISSING: "파라미터 설명 누락",
+  OTHER: "기타",
+};
