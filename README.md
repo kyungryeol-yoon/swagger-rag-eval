@@ -117,6 +117,79 @@ make lock          # uv.lock 을 사내 index 기준으로 다시 만든다
 make setup
 ```
 
+## 컨테이너 이미지
+
+루트 `Dockerfile` 하나에서 두 이미지를 만든다. `sample-api` 는 만들지 않는다 —
+평가 대상인 더미 API 이고 배포 대상이 아니다.
+
+```bash
+docker build --target backend  -t swagger-rag-eval-backend:1.0 .
+docker build --target frontend -t swagger-rag-eval-frontend:1.0 .
+```
+
+**두 이미지는 같은 버전 태그를 붙여 세트로 승격한다.** 프론트는 백엔드의
+응답 계약에 맞춰 타입이 생성돼 있어(`src/lib/api-types.ts`) 버전이 어긋나면
+화면이 조용히 깨진다. `backend:1.1` 과 `frontend:1.0` 을 섞어 올리지 않는다.
+
+### 사내 레지스트리 / 저장소
+
+베이스 이미지와 패키지 저장소는 전부 빌드 ARG 다. 값은 저장소에 없다.
+
+```bash
+docker build --target backend \
+  --build-arg PYTHON_IMAGE=<사내레지스트리>/python:3.12-slim \
+  --build-arg UV_DEFAULT_INDEX=https://<사내index>/simple \
+  --build-arg UV_SYSTEM_CERTS=true \
+  -t <사내레지스트리>/swagger-rag-eval-backend:1.0 .
+
+docker build --target frontend \
+  --build-arg NODE_IMAGE=<사내레지스트리>/node:22-alpine \
+  --build-arg NPM_REGISTRY=https://<사내nexus>/repository/npm-group/ \
+  -t <사내레지스트리>/swagger-rag-eval-frontend:1.0 .
+```
+
+TLS 재서명 환경이면 사내 CA(`*.crt`)를 `certs/` 에 넣는다 ([certs/README.md](certs/README.md)).
+인증서 파일은 커밋되지 않는다.
+
+| ARG | 기본값 | 대상 |
+|---|---|---|
+| `PYTHON_IMAGE` | `python:3.12-slim` | backend |
+| `NODE_IMAGE` | `node:22-alpine` | frontend |
+| `UV_DEFAULT_INDEX` | `https://pypi.org/simple` | backend |
+| `UV_SYSTEM_CERTS` | `false` | backend |
+| `PIP_INDEX_URL` | `https://pypi.org/simple` | backend (uv 설치용) |
+| `NPM_REGISTRY` | (비움 = 기본 registry) | frontend |
+| `NODE_EXTRA_CA_CERTS` | (비움) | frontend |
+| `BASE_PATH` | (비움 = 루트) | frontend |
+
+> `UV_SYSTEM_CERTS` 를 빈 문자열로 두면 안 된다. `ENV` 는 빈 값도 "설정됨" 으로
+> 만들고, uv 가 boolish 파싱에 실패해 빌드가 죽는다. 끄려면 `false` 를 명시한다.
+
+> **`BASE_PATH` 는 이미지에 굳는다.** 런타임 환경변수가 아니라 빌드 ARG 다.
+> 환경마다 값이 다르면 이미지가 갈리고, "단일 이미지를 dev→stg→prd 로 승격"
+> 하는 전제가 깨진다. 자세한 내용은 [`docs/open-questions.md`](docs/open-questions.md) #45.
+
+### 배포에 필요한 정보
+
+k8s manifest 는 이 저장소에서 만들지 않는다 (사내에서 별도 작성).
+매니페스트를 쓰는 데 필요한 것만 적는다.
+
+| | backend | frontend |
+|---|---|---|
+| 포트 | `8000` | `3000` |
+| 실행 유저 | `appuser` (uid 999) | `node` (uid 1000) |
+| liveness | `GET /health` | `GET /api/health` |
+| readiness | `GET /ready` (실패 시 503) | `GET /api/health` |
+| 런타임 환경변수 | `CORS_ORIGINS`, `SRE_*` (아래 표) | `API_BASE_URL` |
+
+- 두 이미지 모두 `CMD` 가 exec form 이라 **SIGTERM 이 앱에 직접 전달된다.**
+  `terminationGracePeriodSeconds` 는 25 이상을 권장한다 —
+  uvicorn 이 `--timeout-graceful-shutdown 20` 으로 처리 중인 요청을 기다린다.
+- 프론트의 `/api/health` 는 백엔드 상태를 보지 않는다. 백엔드가 죽었다고
+  프론트 파드까지 재시작되면 장애가 번지기만 한다.
+- `BASE_PATH` 를 쓰면 프론트의 probe 경로도 그 아래로 내려간다
+  (`/swagger-eval/api/health`).
+
 ## 환경변수
 
 전부 **런타임**에 읽는다 (`BASE_PATH` 제외). 이미지를 다시 빌드하지 않고

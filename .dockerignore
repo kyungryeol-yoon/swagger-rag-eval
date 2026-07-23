@@ -1,0 +1,53 @@
+# 빌드 컨텍스트에서 제외한다.
+# 여기 남은 것이 곧 이미지 빌드에 필요한 전부다.
+
+# 의존성·산출물 — 이미지 안에서 다시 만든다.
+# 호스트의 것을 그대로 넣으면 플랫폼이 안 맞아 조용히 깨진다
+# (macOS 에서 만든 node_modules 안의 네이티브 바이너리 등).
+node_modules
+**/node_modules
+.venv
+**/.venv
+.next
+**/.next
+out
+**/out
+__pycache__
+**/__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+.mypy_cache
+**/.pytest_cache
+**/.ruff_cache
+**/.mypy_cache
+
+# 배포 대상이 아니다. 평가 "대상"인 더미 API 라 이미지를 만들지 않는다
+# (sample-api/README.md 참고).
+sample-api
+
+# 문서·시안. 이미지에 들어갈 이유가 없고 시안 SVG 는 용량만 차지한다.
+docs
+*.md
+certs/README.md
+
+# 개발 도구
+.git
+.gitignore
+.github
+Makefile
+scripts
+
+# 비밀 — 실수로라도 이미지 레이어에 들어가면 안 된다.
+# 인증서는 certs/ 를 통해서만 들어간다 (Dockerfile 참고).
+.env
+**/.env
+.env.*
+!**/.env.example
+**/.npmrc
+!**/.npmrc.example
+
+# 편집기 · OS
+.DS_Store
+.idea
+.vscode

@@ -213,9 +213,56 @@ TLS_ENV_KEYS = [
     "npm_config_registry",
 ]
 
+# uv 0.11 에서 이름이 바뀐 것들. 설정돼 있으면 "무시되고 있다"고 알려줘야 한다.
+LEGACY_ENV_KEYS = {
+    "UV_NATIVE_TLS": "무시됨 — UV_SYSTEM_CERTS 로 바꿀 것",
+    "UV_INDEX_URL": "deprecated — UV_DEFAULT_INDEX 권장",
+}
+
 
 def _row(label: str, value: Optional[str], note: str = "") -> Tuple[str, str, str]:
     return (label, value if value else "(없음)", note)
+
+
+def read_uv_tls_setting(pyproject: Path) -> Tuple[Optional[str], Optional[str]]:
+    """pyproject.toml 의 [tool.uv] TLS 설정을 읽는다.
+
+    `(키이름, 값)` 을 돌려준다. 설정이 없으면 `(None, None)`.
+
+    tomllib 은 Python 3.11+ 라 3.9 에서는 못 쓴다. 진단용이므로
+    없으면 정규식으로 훑는다 — 여기서만 쓰는 대충 읽기다.
+    """
+    if not pyproject.is_file():
+        return (None, None)
+
+    text = pyproject.read_text(encoding="utf-8")
+
+    try:
+        import tomllib  # type: ignore[import-not-found]
+
+        data = tomllib.loads(text)
+        uv_table = data.get("tool", {}).get("uv", {})
+        for key in ("native-tls", "system-certs"):
+            if key in uv_table:
+                return (key, str(uv_table[key]).lower())
+        return (None, None)
+    except ImportError:
+        pass
+
+    # 3.9 대비 폴백. [tool.uv] 섹션 안의 주석 아닌 줄만 본다.
+    in_uv = False
+    for raw in text.splitlines():
+        line = raw.strip()
+        if line.startswith("["):
+            in_uv = line == "[tool.uv]"
+            continue
+        if not in_uv or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        key = key.strip()
+        if key in ("native-tls", "system-certs"):
+            return (key, value.split("#")[0].strip().lower())
+    return (None, None)
 
 
 def cmd_doctor() -> None:
@@ -245,9 +292,25 @@ def cmd_doctor() -> None:
     )
 
     rows.append(("", "", ""))
-    rows.append(("--- 환경변수 ---", "", ""))
+    rows.append(("--- TLS / 사내 CA ---", "", ""))
+    for label, pyproject in [
+        ("backend [tool.uv]", BACKEND / "pyproject.toml"),
+        ("sample-api [tool.uv]", SAMPLE_API / "pyproject.toml"),
+    ]:
+        key, value = read_uv_tls_setting(pyproject)
+        if key is None:
+            rows.append(_row(label, None, "TLS 설정 없음"))
+        else:
+            note = "사내 CA 사용" if value == "true" else "공인 인증서만 신뢰"
+            rows.append(_row(label, "{} = {}".format(key, value), note))
+
     for key in TLS_ENV_KEYS:
         rows.append(_row(key, os.environ.get(key)))
+
+    for key, warning in LEGACY_ENV_KEYS.items():
+        value = os.environ.get(key)
+        if value:
+            rows.append(_row(key, value, "!! " + warning))
 
     rows.append(("", "", ""))
     rows.append(("--- 설치 상태 ---", "", ""))

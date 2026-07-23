@@ -25,13 +25,24 @@ build-backend = "hatchling.build"
 packages = ["app"]
 
 # ---------------------------------------------------------------------------
-# 사내 패키지 저장소
+# 사내 패키지 저장소 / TLS
 # ---------------------------------------------------------------------------
-# backend/pyproject.toml 과 동일하다. 실제 URL 은 여기 적지 않고
-# 환경변수로 전환한다:
+# backend/pyproject.toml 과 동일하다. 자세한 설명은 그쪽 주석 참고.
+#
+# sample-api 는 사내 배포 대상이 아니다(README 참고). 그래도 사내 PC 에서
+# 시연하려면 설치는 되어야 하므로 같은 설정을 둔다.
+
+[tool.uv]
+# 사내망에서 SSL 오류 시 true 로 변경하거나 UV_SYSTEM_CERTS=true 환경변수 사용.
+# OS 신뢰 저장소의 사내 CA 를 쓴다.
+#
+# [tool.uv] 에서는 `native-tls` 와 `system-certs` 둘 다 유효하지만,
+# 환경변수는 `UV_SYSTEM_CERTS` 만 유효하다 (옛 UV_NATIVE_TLS 는 무시된다).
+native-tls = false
+
+# 사내 index 는 환경변수로 전환한다. 실제 URL 을 여기 적지 않는다:
 #
 #     UV_DEFAULT_INDEX=https://<사내 index>/simple
-#     UV_SYSTEM_CERTS=true
 #
 # 파일로 고정해야 한다면 아래 형태이며, 커밋하지 않는다:
 #
@@ -39,9 +50,6 @@ packages = ["app"]
 # name = "internal"
 # url = "https://<사내 index>/simple"
 # default = true
-#
-# 참고: sample-api 는 사내 배포 대상이 아니다(README 참고). 그래도 사내 PC 에서
-# 시연하려면 설치는 되어야 하므로 같은 설정을 둔다.
 
 [tool.ruff]
 line-length = 100

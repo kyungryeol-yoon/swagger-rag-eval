@@ -43,6 +43,9 @@
 | 41 | 사내 Python index URL 확정 | 미정 | `UV_DEFAULT_INDEX` 에 넣을 값. PEP 503 경로라 보통 `/simple` 로 끝난다. 값이 없으면 `make setup` 이 PyPI 로 나가려다 실패한다. **URL 을 저장소에 커밋하지 않는다** — 환경변수로만 준다 (`docs/prompts.md` §10-1) |
 | 42 | 사내 npm registry URL 확정 | 미정 | `frontend/.npmrc` 의 `registry=`. 커밋된 `package-lock.json` 에는 `registry.npmjs.org` 가 박혀 있어 사내에서 `npm ci` 가 실패한다. 그때는 `npm install` 로 사내 락을 새로 만든다(커밋 금지, §10-2) |
 | 43 | 사내 CA 인증서 배포 경로 / `NODE_EXTRA_CA_CERTS` 표준 위치 | 미정 | PC 마다 경로가 다르면 셋업 문서를 쓸 수 없다. 사내 표준 경로가 정해져 있는지, 아니면 각자 내려받는지 확인 필요. Python 쪽은 `UV_SYSTEM_CERTS=true` 로 OS 신뢰 저장소를 쓰면 경로가 필요 없다 |
+| 45 | **`BASE_PATH` 를 전 환경 동일하게 통일할지** | 미정 | **#35 와 정면 충돌한다.** Next 의 `basePath` 는 빌드 타임에 굳어서 런타임 env 로 못 바꾼다. 실측: `--build-arg BASE_PATH=/swagger-eval` 로 빌드한 이미지는 `/` 에서 404 다. 환경마다 경로가 다르면 이미지가 환경 수만큼 갈리고, "dev 에서 검증한 이미지를 그대로 prd 로 승격" 이 불가능해진다. **(1) 전 환경 동일 경로로 통일**(권장) 또는 **(2) #35 철회하고 환경별 빌드 수용** 중 하나를 골라야 한다. #34(Ingress 경로)와 함께 결정 |
+| 46 | 사내 베이스 이미지 경로 | 미정 | `PYTHON_IMAGE` / `NODE_IMAGE` ARG 에 넣을 값. 폐쇄망에서 Docker Hub 를 못 쓰면 사내 미러의 `python:3.12-slim`, `node:22-alpine` 경로가 필요하다. 태그 정책(고정 버전인지 다이제스트인지)도 함께 확인 |
+| 47 | 컨테이너 레지스트리 경로 / 태그 정책 | 미정 | 빌드한 이미지를 push 할 곳. backend/frontend 두 이미지를 **같은 버전 태그로 세트 승격**하는 규칙을 전제로 문서를 썼다(README). 사내 CI 가 이미지를 따로 빌드·승격하는 구조면 계약 버전이 어긋날 수 있다 |
 | 44 | Windows 개발 PC 를 공식 지원 대상으로 둘지 | 미정 | 현재는 지원한다는 전제로 Makefile 에서 셸 로직을 걷어냈다(Phase 4.6). WSL2 를 표준으로 정하면 이 제약이 사라지고 POSIX 만 가정할 수 있다. 다만 사내 PC 에 WSL 설치 권한이 있는지가 관건. **git bash 와 cmd 를 섞어 쓰는 지금이 가장 나쁜 상태다** — 한쪽에서만 되는 스크립트가 계속 생긴다 |
 
 ## Phase 1(스캐폴딩)에서 생긴 것

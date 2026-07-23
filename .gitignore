@@ -37,3 +37,8 @@ Thumbs.db
 # 로컬 평가 산출물
 *.local.json
 /tmp/
+
+# 빌드 타임 CA 인증서 — 사내 PKI 구조를 공개 저장소에 남기지 않는다.
+# 넣는 방법은 certs/README.md 참고.
+certs/*.crt
+certs/*.pem

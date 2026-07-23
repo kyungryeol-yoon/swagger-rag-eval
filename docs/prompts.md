@@ -449,6 +449,53 @@ E. README 사내망 최초 셋업 절
 - **로그에 서비스 이름을 붙인다.** `make -j3` 는 세 서버 출력을 그대로 섞어서
   어느 서버가 죽었는지 알 수 없었다. Python 이 줄마다 접두사를 붙인다.
 
+### Phase 4.7 — uv TLS 설정 + Dockerfile (수행 완료)
+
+```
+A. uv native-tls 설정
+   backend/sample-api pyproject.toml 에 [tool.uv] native-tls = false.
+   주석으로 사내망 전환 방법 + [[tool.uv.index]] 예시(실제 URL 금지).
+   doctor 에 TLS 설정 상태 진단 추가.
+
+B. Dockerfile (루트 1개, 멀티스테이지 2타겟)
+   sample-api 는 이미지를 만들지 않는다.
+   베이스 이미지·저장소·인증서는 전부 ARG. non-root 실행.
+   CMD 는 exec form (SIGTERM 직접 전달).
+   frontend 는 .next/standalone 만 복사.
+   .dockerignore 신설.
+
+C. README 빌드/실행 예시, probe 경로, k8s 에 필요한 정보만.
+```
+
+**확인한 것 — uv 키 이름**
+
+`uv 0.11.7` 에서 `[tool.uv]` 에 없는 키를 넣고 `uv lock` 을 돌리면
+유효한 키 목록이 에러로 다 나온다. 그걸로 확인한 결과:
+
+| | `native-tls` | `system-certs` |
+|---|---|---|
+| `[tool.uv]` toml 키 | 유효 | 유효 |
+| 환경변수 | **무효** (`UV_NATIVE_TLS` 는 조용히 무시) | 유효 (`UV_SYSTEM_CERTS`) |
+
+toml 은 둘 다 별칭으로 살아 있지만 **환경변수는 새 이름만 동작한다.**
+지시받은 toml 키(`native-tls`)는 그대로 쓰고, 환경변수는 `UV_SYSTEM_CERTS` 로 맞췄다.
+`make doctor` 가 `UV_NATIVE_TLS` 가 설정돼 있으면 "무시됨" 이라고 알려준다.
+
+**핵심 판단**
+
+- **빈 문자열 ARG 를 ENV 로 내리지 않는다.** `ARG UV_SYSTEM_CERTS=""` 로 두면
+  `ENV` 가 빈 값도 "설정됨" 으로 만들고, uv 가 boolish 파싱에 실패해 빌드가 죽는다.
+  실제로 첫 빌드가 이걸로 실패했다. 기본값은 `false` 처럼 유효한 값이어야 한다.
+- **`CMD` 는 반드시 exec form.** shell form 이면 `/bin/sh` 가 PID 1 이 되어
+  SIGTERM 을 자식에게 전달하지 않고, 파드 종료마다 grace period 를 다 쓰고
+  SIGKILL 당한다. 실측으로 두 이미지 모두 `docker stop` 에 **0초** 만에 응답한다.
+- **`certs/` 디렉토리는 비어 있어도 유지한다.** `COPY certs/` 는 대상이 없으면
+  빌드를 실패시킨다. 인증서가 필요 없는 환경에서도 빌드가 되어야 하므로
+  `.gitkeep` 으로 디렉토리만 남긴다.
+- **`BASE_PATH` 는 이미지에 굳는다.** 실측 확인: `--build-arg BASE_PATH=/swagger-eval`
+  로 빌드한 이미지는 `/` 에서 404, `/swagger-eval` 에서 200 이다.
+  이것이 #35(단일 이미지 다환경 승격)와 정면으로 충돌한다 → #45 로 기록.
+
 ### Phase 5 — 디자인 토큰
 
 ```
