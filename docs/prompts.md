@@ -720,7 +720,7 @@ frontend/src/styles/globals.css 에 CSS 변수 토큰을 정의해줘.
 |---|---|---|---|
 | 6-1 | `GaugeRing` | 78% 하나만. 중복 표시 제거 | **완료** (+ 6-1a 정렬 수정) |
 | 6-2 | `SummaryCards` | 요약 지표 5장. `previous` 있으면 델타 뱃지 | **완료** |
-| 6-3 | `TargetApiCard` | method 뱃지 + 경로 + 설명 | 미착수 |
+| 6-3 | `AppSummaryCard` + `QueryQualityTable` | 앱 메타 + 쿼리별 품질 표. 기존 TargetApiCard(단일 엔드포인트) 폐기 | **완료** |
 | 6-4 | `QuestionTypeChart` | 도넛 + 범례 + **유형별 인식률 막대** | **완료** |
 | 6-5 | `RecommendationCards` | priority 뱃지, failShare 바, 중복 집계 각주 | **완료** |
 | 6-6 | `FailureTable` | 표시 3건 + 전체 보기. score 표시. 정렬·필터는 후속 | **완료** |
@@ -946,11 +946,60 @@ app/dev/components/page.tsx 에 섹션 추가:
 > `EvaluationSummary` / `PreviousEvaluation` 이다 (`lib/types.ts`).
 > 계약 스키마 이름을 그대로 재노출한 것이라 그쪽을 썼다.
 
-#### Phase 6-3 — TargetApiCard (미착수)
+#### Phase 6-3 — AppSummaryCard + QueryQualityTable (완료)
 
-평가 대상 API 카드. method 뱃지 + 경로 + summary/description.
-`target.specVersion` 을 함께 표기한다 — 재생성 전후 구분이 안 되면 안 된다 (§5).
-경로는 `.tabular`(모노)로 찍는다. 작업 시점에 프롬프트 작성.
+**기존 `TargetApiCard`(단일 엔드포인트 카드) 설계는 폐기했다.** 평가 단위가
+쿼리 하나가 아니라 DAC 앱 하나로 바뀌면서(contract.md §0, open-questions #1)
+"대상 엔드포인트 하나를 보여주는 카드" 는 성립하지 않는다. 두 컴포넌트로 나눴다.
+
+**AppSummaryCard — 앱 메타 (낮은 높이)**
+
+- appName / appId / specVersion 뱃지 / "쿼리 11개" / owner
+- **수치를 넣지 않는다.** 점수는 GaugeRing 과 SummaryCards 의 몫이다.
+  여기에 78% 를 또 넣으면 시안이 지적받은 중복 표시가 된다.
+
+**QueryQualityTable — 이 화면의 실질 산출물**
+
+- 컬럼: 선택 / 쿼리 / 설명 품질 / 문항 수 / Top-3 인식률 / 재생성 필요
+- **정렬: 재생성 필요가 위, 그 안에서 인식률 오름차순.** 손봐야 할 것이 먼저.
+- **설명 품질은 표시용 요약이다.** `descriptionLength`·`hasParamDescription` 으로
+  FULL/SPARSE/MISSING 을 붙이지만, 진짜 판단은 백엔드의 `needsRegeneration` 이다
+  (`lib/descriptionQuality.ts`, open-questions #53). 이 값으로 등급이나 재생성
+  여부를 재계산하지 않는다.
+- **인식률 막대 색은 백엔드가 확정한 `grade` 를 따른다.** 프론트가 인식률로
+  등급을 다시 계산하지 않는다 (contract.md §3).
+- **method 뱃지는 `hasMultipleMethods` 가 참일 때만.** 전부 GET 이면 뱃지가
+  정보를 주지 못하고 사라진다 (open-questions #50).
+
+**설명 품질 색은 상태색과 경쟁시키지 않는다**
+
+인식률의 좋고 나쁨은 grade 막대가, 재생성 여부는 amber pill 이 이미 말한다.
+설명 품질에 또 빨강/노랑을 쓰면 한 행에서 세 곳이 같은 신호를 두고 다툰다.
+그래서 밝기만 나눈다 — 충실할수록 밝고(`--text`), 없을수록 흐리게(`--text-mute`).
+
+**서버 컴포넌트를 유지했다**
+
+체크박스는 아직 동작하지 않아(disabled) 클라이언트 상태가 필요 없다.
+`defaultChecked={needsRegeneration}` 로 기본 선택만 표시하고, 자동 생성 서비스가
+연동되면 그때 `'use client'` 로 올린다. 지금 올리면 동작할 대상이 없다.
+
+**검증** (렌더 결과)
+
+```
+첫 표 정렬 (재생성 필요가 위 · 인식률 오름차순):
+  ★재생성   20.0%  chamber-sensor-trend
+  ★재생성   42.9%  operator-shift
+  ★재생성   44.4%  step-cycle-time
+           75.0%  alarm-history
+           ...
+          100.0%  wafer-yield-daily
+```
+
+- AppSummaryCard 에 수치 문자 0건 (앱명·버전·쿼리 수·담당만)
+- 설명 품질 3종(충실/부족/없음), 재생성 pill, 체크박스 disabled + title
+- "선택 N건" = 재생성 필요 개수 (3 / 0 / 4)
+- 전부 GET 인 표에서 method 뱃지 사라짐
+- tsc / eslint / build 통과, 컴포넌트 hex 0건, make test 97개 통과
 
 #### Phase 6-4 — QuestionTypeChart (완료)
 

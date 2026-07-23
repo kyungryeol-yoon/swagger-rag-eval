@@ -1,7 +1,9 @@
 import ActionPanel from "@/components/eval/ActionPanel/ActionPanel";
+import AppSummaryCard from "@/components/eval/AppSummaryCard/AppSummaryCard";
 import FailureTable from "@/components/eval/FailureTable/FailureTable";
 import GaugeRing from "@/components/eval/GaugeRing/GaugeRing";
 import GradeScale from "@/components/eval/GradeScale/GradeScale";
+import QueryQualityTable from "@/components/eval/QueryQualityTable/QueryQualityTable";
 import QuestionTypeChart from "@/components/eval/QuestionTypeChart/QuestionTypeChart";
 import RecommendationCards from "@/components/eval/RecommendationCards/RecommendationCards";
 import SummaryCards from "@/components/eval/SummaryCards/SummaryCards";
@@ -12,7 +14,9 @@ import type {
   Grade,
   PreviousEvaluation,
   QuestionTypeStat,
+  QueryStat,
   Recommendation,
+  TargetApp,
 } from "@/lib/types";
 
 import styles from "./page.module.css";
@@ -27,6 +31,29 @@ import styles from "./page.module.css";
 const VALUES = [0, 40, 78, 100];
 
 /** backend/app/fixtures/eval_A492.json 의 실제 값. 손으로 바꾸지 말 것. */
+const FIXTURE_TARGET: TargetApp = {
+  appId: "mf-worker",
+  appName: "MF Worker",
+  specVersion: "v3",
+  queryCount: 11,
+  owner: "데이터플랫폼팀",
+};
+
+/** fixture 의 queries 11개. 정렬·품질 판정 확인용. */
+const FIXTURE_QUERIES: QueryStat[] = [
+  { path: "/queries/lot-status", method: "GET", summary: "랏 현재 공정 단계 조회", descriptionLength: 168, hasParamDescription: true, questionCount: 12, top3Accuracy: 100.0, grade: "GOOD", needsRegeneration: false },
+  { path: "/queries/wafer-yield-daily", method: "GET", summary: "일별 웨이퍼 수율 조회", descriptionLength: 182, hasParamDescription: true, questionCount: 11, top3Accuracy: 100.0, grade: "GOOD", needsRegeneration: false },
+  { path: "/queries/defect-summary", method: "POST", summary: "불량 유형별 집계 조회", descriptionLength: 175, hasParamDescription: true, questionCount: 10, top3Accuracy: 90.0, grade: "FAIR", needsRegeneration: false },
+  { path: "/queries/lot-trace", method: "GET", summary: "랏 이력 추적 조회", descriptionLength: 171, hasParamDescription: true, questionCount: 10, top3Accuracy: 90.0, grade: "FAIR", needsRegeneration: false },
+  { path: "/queries/inventory-wip", method: "GET", summary: "WIP 재고 현황 조회", descriptionLength: 158, hasParamDescription: true, questionCount: 9, top3Accuracy: 88.9, grade: "FAIR", needsRegeneration: false },
+  { path: "/queries/equipment-downtime", method: "GET", summary: "설비 다운타임 조회", descriptionLength: 0, hasParamDescription: false, questionCount: 10, top3Accuracy: 80.0, grade: "NEEDS_IMPROVEMENT", needsRegeneration: false },
+  { path: "/queries/recipe-history", method: "GET", summary: "레시피 변경 이력 조회", descriptionLength: 0, hasParamDescription: false, questionCount: 9, top3Accuracy: 77.8, grade: "NEEDS_IMPROVEMENT", needsRegeneration: false },
+  { path: "/queries/alarm-history", method: "POST", summary: "알람 발생 이력 조회", descriptionLength: 0, hasParamDescription: false, questionCount: 8, top3Accuracy: 75.0, grade: "NEEDS_IMPROVEMENT", needsRegeneration: false },
+  { path: "/queries/step-cycle-time", method: "GET", summary: null, descriptionLength: 0, hasParamDescription: false, questionCount: 9, top3Accuracy: 44.4, grade: "CRITICAL", needsRegeneration: true },
+  { path: "/queries/operator-shift", method: "GET", summary: null, descriptionLength: 0, hasParamDescription: false, questionCount: 7, top3Accuracy: 42.9, grade: "CRITICAL", needsRegeneration: true },
+  { path: "/queries/chamber-sensor-trend", method: "POST", summary: null, descriptionLength: 0, hasParamDescription: false, questionCount: 5, top3Accuracy: 20.0, grade: "CRITICAL", needsRegeneration: true },
+];
+
 const FIXTURE_SUMMARY: EvaluationSummary = {
   totalQuestions: 100,
   top1Accuracy: 61.0,
@@ -166,6 +193,66 @@ export default function ComponentsPage() {
         <br />
         남음: <code>TargetApiCard</code>(6-3).
       </p>
+
+
+      {/* --- AppSummaryCard --- */}
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>AppSummaryCard</h2>
+        <p className={styles.sectionNote}>
+          평가 대상 앱 메타. <strong>수치를 넣지 않는다</strong> — 점수는 GaugeRing 과
+          SummaryCards 의 몫이다. 여기는 어느 앱, 몇 개 쿼리, 어느 버전인지만 낮은
+          높이로 보인다.
+        </p>
+        <AppSummaryCard target={FIXTURE_TARGET} />
+        <p className={styles.sectionNote}>owner 없음.</p>
+        <AppSummaryCard target={{ ...FIXTURE_TARGET, owner: null }} />
+      </section>
+
+      {/* --- QueryQualityTable --- */}
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>QueryQualityTable</h2>
+        <p className={styles.sectionNote}>
+          이 화면의 실질 산출물. <strong>재생성 필요가 위로, 그 안에서 인식률 오름차순</strong>
+          — 손봐야 할 것이 먼저 보인다. 설명 품질은 표시용 요약이고 진짜 판단은
+          needsRegeneration(백엔드)이다. 인식률 막대 색은 백엔드가 확정한 grade 를 따른다.
+        </p>
+        <QueryQualityTable queries={FIXTURE_QUERIES} />
+
+        <p className={styles.sectionNote}>
+          재생성 필요 0건 — pill 도 기본 선택도 없다. &ldquo;선택 0건&rdquo;.
+        </p>
+        <QueryQualityTable
+          queries={FIXTURE_QUERIES.map((q) => ({ ...q, needsRegeneration: false }))}
+        />
+
+        <p className={styles.sectionNote}>전부 재생성 필요.</p>
+        <QueryQualityTable
+          queries={FIXTURE_QUERIES.slice(0, 4).map((q) => ({ ...q, needsRegeneration: true }))}
+        />
+
+        <p className={styles.sectionNote}>
+          메서드가 1종(전부 GET)뿐일 때 — <strong>method 뱃지가 사라지고 경로만</strong>
+          보인다 (open-questions #50).
+        </p>
+        <QueryQualityTable
+          queries={FIXTURE_QUERIES.map((q) => ({ ...q, method: "GET" }))}
+        />
+
+        <p className={styles.sectionNote}>
+          summary 없는 쿼리(&ldquo;설명 없음&rdquo;)와 경로가 매우 긴 쿼리.
+        </p>
+        <QueryQualityTable
+          queries={[
+            FIXTURE_QUERIES[8],
+            {
+              ...FIXTURE_QUERIES[0],
+              path: "/queries/equipment-chamber-sensor-temperature-and-pressure-trend-by-recipe-step",
+              summary: "설비 챔버 센서 온도·압력 추이를 레시피 스텝별로 조회",
+              needsRegeneration: false,
+            },
+          ]}
+        />
+      </section>
 
       {/* --- SummaryCards --- */}
       <section className={styles.section}>
