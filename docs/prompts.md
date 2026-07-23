@@ -499,6 +499,71 @@ toml 은 둘 다 파싱되지만 **환경변수는 새 이름만 동작한다.**
   로 빌드한 이미지는 `/` 에서 404, `/swagger-eval` 에서 200 이다.
   이것이 #35(단일 이미지 다환경 승격)와 정면으로 충돌한다 → #45 로 기록.
 
+### Phase 4.7a — uv 설정 키 정정 (수행 완료)
+
+4.7 이 pyproject 는 `native-tls`(구), doctor 는 `UV_SYSTEM_CERTS`(신)를 보게 두어
+**짝이 맞지 않았다.** 양쪽을 현행 키로 통일한다.
+
+```
+[tool.uv] native-tls = false  ->  system-certs = false
+```
+
+`doctor` 가 구/신을 구분해 보여준다.
+
+| 상태 | 표시 |
+|---|---|
+| toml 이 `native-tls` | `!! deprecated 키 — system-certs 로 바꿀 것` |
+| `UV_NATIVE_TLS` 만 설정 | `!! deprecated + 무시됨` |
+| 구·신 둘 다 설정 | `deprecated` (호환 목적이므로 경고 수위를 낮춤) |
+
+> 이때 tasks.py 에 Python 3.8 호환 가드도 함께 넣었으나 **4.7c 에서 되돌렸다.**
+> 아래 4.7c 참고.
+
+### Phase 4.7b — Python 인터프리터 가시화 (수행 완료)
+
+`tasks.py` 는 프로젝트 의존성이 필요 없다. uv/npm 을 호출하는 런처일 뿐이라
+venv 활성화를 요구하지 않는다. **다만 어떤 python 이 실행 중인지는 보여야 한다.**
+
+```
+- Makefile 상단에 PY ?= python3 변수 선언, 모든 타겟이 $(PY) 로 호출
+- doctor 에 3행 추가: 실행 python 버전 / sys.executable / VIRTUAL_ENV
+- README 에 한 줄: Windows 에서 python3 를 못 찾으면 make PY=python
+```
+
+- 4.6 에서 넣었던 `ifeq ($(OS),Windows_NT)` 플랫폼 분기를 제거하고
+  `PY ?= python3` 하나로 단순화했다. **Windows 는 이제 `make PY=python` 이 필요하다.**
+- Windows 의 `python3.exe` 는 Microsoft Store 실행 별칭일 수 있다. 파이썬이
+  설치돼 있지 않으면 스토어 창만 뜨고 아무것도 실행되지 않는다.
+
+### Phase 4.7c — Python 3.12 로 통일 (수행 완료)
+
+4.7a 에서 넣은 3.8 호환 가드를 되돌린다. 로컬·사내 PC·k8s 가 모두 3.12 라
+하위호환이 불필요하고, `typing.List` / `Optional` 같은 낡은 표기만 남긴다.
+
+```
+- 버전 가드 (3, 8) -> (3, 12). 메시지도 3.12 기준으로
+- docstring 의 3.8 문법 금지 목록 삭제
+- ruff.toml target-version = py312, UP006/UP045 ignore 해제 후 --fix
+- read_uv_tls_setting 의 tomllib 폴백 제거 (3.12 에는 항상 있다)
+- doctor 에 "최소 요구 3.12+" 행, 미달이면 경고
+```
+
+`List[str] -> list[str]`, `Optional[X] -> X | None` 24건이 자동 변환되며
+`tasks.py` 가 `+85 / -133` 로 줄었다.
+
+**핵심 판단**
+
+- **버전 가드는 import 보다 앞에 있어야 한다.** `tomllib` 은 3.11+ 라,
+  가드가 뒤에 있으면 오래된 python 에서 친절한 안내 대신
+  `ModuleNotFoundError: No module named 'tomllib'` 가 먼저 튀어나온다.
+  실제로 그렇게 터지는 것을 확인하고 순서를 바꿨다 (파일 상단 `# ruff: noqa: E402`).
+- **`python3` 가 3.12 미만인 환경이 흔하다.** macOS 는 `/usr/bin/python3`
+  (Xcode 번들, 3.9)가 Homebrew 보다 PATH 앞에 오는 경우가 많다.
+  `PY ?=` 라 환경변수가 이기므로 `export PY=python3.12` 를 셸에 걸어두면 된다.
+
+> 커밋 라벨이 `4.7b` 와 겹쳐 `4.7c` 로 달았다. 같은 라벨이 둘이면
+> "어디까지 이식했는지" 추적이 안 된다.
+
 ### Phase 5 — 디자인 토큰
 
 ```
@@ -523,27 +588,133 @@ frontend/src/styles/globals.css 에 CSS 변수 토큰을 정의해줘.
 
 **한 번에 하나만 요청한다.** "컴포넌트 다 만들어줘"로 주면 품질이 급락한다.
 
+| 순서 | 컴포넌트 | 메모 | 상태 |
+|---|---|---|---|
+| 6-1 | `GaugeRing` | 78% 하나만. 중복 표시 제거 | **완료** |
+| 6-2 | `SummaryCards` | 요약 지표. `previous` 있으면 델타 뱃지 | 미착수 |
+| 6-3 | `TargetApiCard` | method 뱃지 + 경로 + 설명 | 미착수 |
+| 6-4 | `QuestionTypeChart` | 도넛 + 범례. **유형별 인식률 컬럼 포함** | 미착수 |
+| 6-5 | `RecommendationCards` | 3장. priority 뱃지, failShare 바 | 미착수 |
+| 6-6 | `FailureTable` | 정렬·필터·페이징. score 표시 | 미착수 |
+| 6-7 | `ActionPanel` | 재생성 CTA 2개 | 미착수 |
+
+프롬프트 형식은 6-1 을 그대로 따른다. 공통으로 반드시 넣을 것:
+
+- `Foo.tsx` + `Foo.module.css` 한 쌍. 옆 폴더를 참조하지 않는다
+- 색·라벨은 `lib/enumTokens.ts` 경유. hex·문자열 직접 작성 금지
+- 상태나 이벤트가 없으면 서버 컴포넌트로 (`'use client'` 금지)
+- `app/dev/components/page.tsx` 에 경계값까지 렌더해서 확인 가능하게
+
+---
+
+#### Phase 6-1 — GaugeRing (완료)
+
+인식률 게이지. 시안이 78% 를 세 곳에 중복 표시하던 것을 이것 하나로 대체한다 (§9-1 #1).
+
+**실제 사용한 프롬프트**
+
 ```
-components/eval/GaugeRing/ 을 만들어줘.
-- GaugeRing.tsx + GaugeRing.module.css
-- 순수 SVG. stroke-dasharray / stroke-dashoffset
-- props: value(0-100), grade, size?
-- 등급별 색은 var(--grade-*) 에서. 컴포넌트에 hex 하드코딩 금지
-- prefers-reduced-motion 존중
-- app/dev/components/page.tsx 에 여러 값으로 렌더해서 확인 가능하게
+Phase 6-1. components/eval/GaugeRing/ 만 만들고 멈춘다.
+
+GaugeRing.tsx + GaugeRing.module.css
+- 순수 SVG. stroke-dasharray / stroke-dashoffset. 라이브러리 금지
+- props: value (0~100), grade: Grade, size?: number (기본 96), label?: string
+- 색은 enumTokens 의 gradeColor(grade) 경유. hex 금지
+- 등급 라벨은 gradeLabel[grade] 경유. 문자열 직접 작성 금지
+- 트랙(배경 링)은 var(--border), 진행 링만 등급색
+- 숫자는 .tabular 클래스. 소수 첫째자리까지 (78.0)
+- 서버 컴포넌트로 동작해야 한다 ('use client' 금지)
+- transition 은 CSS로. @media (prefers-reduced-motion: reduce) 에서 제거
+- 접근성: role="img" + aria-label="Top-3 인식률 78.0%, 개선 필요"
+
+경계값 처리:
+- value 0 / 100 에서 링이 깨지지 않을 것
+- 0~100 밖의 값은 clamp
+
+app/dev/components/page.tsx 신설:
+  4등급 × (0, 40, 78, 100) 조합을 격자로 렌더.
+  size 변화(64/96/160)도 한 줄.
+  app/dev/layout.tsx 의 production 차단이 이미 적용되는지 확인
+
+다른 컴포넌트는 만들지 마.
 ```
 
-이 형식을 유지하며 아래 순서로 진행:
+**결과에서 배운 것** (다음 컴포넌트에도 적용)
 
-| 순서 | 컴포넌트 | 메모 |
-|---|---|---|
-| 1 | `GaugeRing` | 78% 하나만. 중복 표시 제거 |
-| 2 | `SummaryCards` | 6개 지표. `previous` 있으면 델타 뱃지 |
-| 3 | `TargetApiCard` | method 뱃지 + 경로 + 설명 |
-| 4 | `QuestionTypeChart` | 도넛 + 범례. **유형별 인식률 컬럼 포함** |
-| 5 | `RecommendationCards` | 3장. priority 뱃지, failShare 바 |
-| 6 | `FailureTable` | 정렬·필터·페이징. score 표시 |
-| 7 | `ActionPanel` | 재생성 CTA 2개 |
+- **0% 는 진행 링을 아예 렌더하지 않는다.** `stroke-linecap: round` 는 길이가
+  0 이어도 점 하나를 남기는 브라우저가 있어, "0% 인데 뭔가 칠해진" 상태가 된다.
+- **크기를 전부 `--gauge-size` 에서 파생시킨다.** 두께 10%, 숫자 24%, 등급 11.5%.
+  `size` 하나만 바꾸면 인상이 유지된 채 스케일된다.
+- **`role="img"` + `aria-label` 은 래퍼에 두고 SVG·내부 텍스트는 `aria-hidden`.**
+  링·숫자·등급이 따로 읽히면 오히려 알아듣기 어렵다.
+- **등급과 값은 독립이다.** "우수 등급인데 0%" 같은 조합도 그대로 렌더한다 —
+  등급은 백엔드가 확정해 내려주므로 프론트가 재계산하지 않는다 (contract.md §3).
+- `prefers-reduced-motion` 은 `globals.css` 에 전역 규칙이 있어도 모듈에 다시 쓴다.
+  파일 쌍만 복사해도 동작해야 한다 (CLAUDE.md 규칙 4).
+
+**작업 중 발견해 고친 것**
+
+`label=""` 로 캡션을 끄면 `aria-label` 이 `" 64.0%, 심각"` 처럼 공백으로 시작했다.
+스크린 리더가 읽는 문자열이라 조건부로 조립하도록 고쳤다.
+
+```tsx
+const summary = `${display}%, ${gradeLabel[grade]}`;
+const ariaLabel = label ? `${label} ${summary}` : summary;
+```
+
+**검증** — 렌더 결과로 확인했다. size=96 에서 `circumference 271.4336`,
+value 78 → `dashoffset 59.7154` 로 계산값과 일치. value 0 은 `<circle>` 1개(트랙만),
+100 은 `dashoffset 0`. `-20 → 0` / `140 → 100` clamp. 프로덕션에서 `/dev/components` 404.
+
+---
+
+#### Phase 6-2 — SummaryCards (미착수)
+
+요약 지표 카드. `previous` 가 있으면 델타 뱃지(78% → 91%)를 붙인다.
+
+> **착수 전에 결정할 것이 있다.** §9-1 #7 은 "요약 카드 6개 중 4개가 상호
+> 계산 가능하니 3개로 압축하고 나머지는 툴팁" 이라고 하는데, 위 표의 메모는
+> "6개 지표" 였다. 실제로 계약의 `totalQuestions 100` / `top1Accuracy 61.0` /
+> `top3Accuracy 78.0` / `top1FailCount 39` / `top3FailCount 22` 는 서로에게서
+> 유도된다 (100 − 78 = 22).
+>
+> 게다가 `top3Accuracy` 는 이미 `GaugeRing` 이 표시한다. 카드로 또 내면
+> 시안이 지적받은 중복 표시(§9-1 #1)가 그대로 되돌아온다.
+>
+> **몇 개를 남길지 정한 뒤에 프롬프트를 쓴다.**
+
+#### Phase 6-3 — TargetApiCard (미착수)
+
+평가 대상 API 카드. method 뱃지 + 경로 + summary/description.
+`target.specVersion` 을 함께 표기한다 — 재생성 전후 구분이 안 되면 안 된다 (§5).
+경로는 `.tabular`(모노)로 찍는다. 작업 시점에 프롬프트 작성.
+
+#### Phase 6-4 — QuestionTypeChart (미착수)
+
+문항 유형 도넛 + 범례. **유형별 인식률 컬럼을 반드시 포함한다** — 분포만으로는
+액션이 안 나온다. "한영 혼합 40%" 가 보여야 무엇을 고칠지 정해진다 (§5).
+색은 `questionTypeColorVar` 경유(`--chart-type-*`). 순수 SVG.
+작업 시점에 프롬프트 작성.
+
+#### Phase 6-5 — RecommendationCards (미착수)
+
+권장 조치 3장. priority 뱃지 + `failShare` 바.
+**"원인 중복 집계" 각주가 필수다** — failShare 합이 100 을 넘는다 (contract.md §2).
+작업 시점에 프롬프트 작성.
+
+#### Phase 6-6 — FailureTable (미착수)
+
+실패 문항 표. 원인별·유형별·유사도순 정렬/필터, 페이징, `score` 표시.
+`expectedRank` 가 `null` 이면 "Top-N 밖" 으로 표시한다.
+버튼 문구는 실제 실패 건수 기준으로 계산한다 (§9-1 #3).
+작업 시점에 프롬프트 작성.
+
+#### Phase 6-7 — ActionPanel (미착수)
+
+재생성 CTA 2개. §9-3 을 먼저 읽을 것 — 시안의 두 버튼은 차이가 안 보이고
+파괴적 동작이 primary 색을 달고 있다.
+`설명 직접 수정`(secondary) / `AI로 설명 다시 만들기`(primary + 확인 다이얼로그).
+작업 시점에 프롬프트 작성.
 
 ### Phase 7 — 조립
 
