@@ -69,16 +69,72 @@
   border-radius: var(--radius-md);
 }
 
-/* 크기 비교 */
+/* 크기 비교 — 링끼리 비교하는 자리이므로 가운데를 맞춘다.
+   flex-end 로 두면 캡션 글자 크기가 size 에 비례해 달라지는 탓에
+   링이 서로 어긋난 높이에 놓인다. */
 .sizeRow {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: var(--space-7);
   flex-wrap: wrap;
   padding: var(--space-5);
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
+}
+
+/* 정렬 확인용 십자선.
+   label="" 로 캡션을 끄면 게이지 루트의 높이가 곧 링의 높이이므로,
+   이 상자의 50% 선이 링의 정중앙과 일치한다. 숫자가 그 위에 놓이는지 본다. */
+.alignBox {
+  position: relative;
+  display: inline-block;
+}
+
+.crosshair {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.crosshair::before,
+.crosshair::after {
+  content: "";
+  position: absolute;
+  background: var(--sky);
+  opacity: 0.55;
+}
+
+.crosshair::before {
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+}
+
+.crosshair::after {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+}
+
+.alignRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-7);
+  flex-wrap: wrap;
+  padding: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.alignItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
 }
 
 .sizeItem {

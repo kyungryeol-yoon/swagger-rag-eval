@@ -41,18 +41,30 @@
   }
 }
 
-/* 링 한가운데. SVG 가 회전해 있으므로 텍스트는 HTML 로 얹는다. */
+/* 링 한가운데. SVG 가 회전해 있으므로 텍스트는 HTML 로 얹는다.
+   좌표 기준만 제공하고 정렬은 각 요소가 스스로 잡는다 — 아래 참고. */
 .center {
   position: absolute;
   inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: calc(var(--gauge-size) * 0.02);
 }
 
+/* 숫자를 링의 기하학적 중심에 놓는다.
+   ------------------------------------------------------------------------
+   예전에는 .center 가 flex column 으로 [숫자, 등급] 을 **묶음째** 가운데
+   정렬했다. 그러면 묶음의 중심이 링 중심에 오므로 숫자는 그만큼 위로 뜬다:
+       size 64 -> 5.1px,  96 -> 7.6px,  160 -> 12.6px  (지름의 7.9%)
+   게이지에서 눈이 먼저 가는 것은 숫자다. 숫자가 중심에 있어야 한다.
+
+   가로도 어긋나 있었다. '%' 까지 포함해 가운데 정렬하면 숫자만의 중심은
+   '%' 폭의 절반만큼 왼쪽으로 밀린다. 모노폰트라 '%' 의 advance 는 정확히
+   0.62ch(= .unit 의 font-size 0.62em)이므로 그 절반을 되민다.
+   ------------------------------------------------------------------------ */
 .value {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(calc(-50% + 0.31ch), -50%);
+  white-space: nowrap;
   font-size: calc(var(--gauge-size) * 0.24);
   font-weight: 600;
   line-height: 1.1;
@@ -65,7 +77,14 @@
   color: var(--text-dim);
 }
 
+/* 등급 라벨은 중심에서 고정 거리만큼 아래에 둔다.
+   문서 흐름에서 빠져 있으므로 라벨 길이가 바뀌어도 숫자는 움직이지 않는다.
+   ("심각" 2글자와 "개선 필요" 4글자에서 숫자 위치가 달라지면 안 된다.) */
 .grade {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + var(--gauge-size) * 0.155);
+  transform: translateX(-50%);
   font-size: calc(var(--gauge-size) * 0.115);
   font-weight: 500;
   line-height: 1.2;

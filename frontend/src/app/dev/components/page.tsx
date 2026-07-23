@@ -63,6 +63,49 @@ export default function ComponentsPage() {
         </div>
       </section>
 
+      {/* --- 정렬 --- */}
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>정렬</h2>
+        <p className={styles.sectionNote}>
+          십자선이 링의 정중앙이다. <strong>숫자가 그 위에 놓여야 한다.</strong>
+          <br />
+          예전에는 [숫자 + 등급]을 묶음째 가운데 정렬해서 숫자가 지름의 7.9%만큼
+          위로 떠 있었다 (size 96 에서 7.6px). 등급 라벨은 이제 문서 흐름에서
+          빠져 있어, 라벨이 &ldquo;심각&rdquo;이든 &ldquo;개선 필요&rdquo;든 숫자는
+          움직이지 않는다.
+        </p>
+        <div className={styles.alignRow}>
+          {[64, 96, 160].map((size) => (
+            <div key={size} className={styles.alignItem}>
+              <div className={styles.alignBox}>
+                <div className={styles.crosshair} />
+                <GaugeRing value={78} grade="NEEDS_IMPROVEMENT" size={size} label="" />
+              </div>
+              <span className={styles.sizeLabel}>size = {size}</span>
+            </div>
+          ))}
+        </div>
+
+        <p className={styles.sectionNote}>
+          자릿수와 등급 라벨 길이가 달라도 숫자 위치가 흔들리지 않는지:
+        </p>
+        <div className={styles.alignRow}>
+          {(
+            [
+              { value: 0, grade: "CRITICAL" },
+              { value: 7.5, grade: "CRITICAL" },
+              { value: 78, grade: "NEEDS_IMPROVEMENT" },
+              { value: 100, grade: "GOOD" },
+            ] as const
+          ).map((c) => (
+            <div key={c.value} className={styles.alignBox}>
+              <div className={styles.crosshair} />
+              <GaugeRing value={c.value} grade={c.grade} size={120} label="" />
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* --- 경계값 --- */}
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>경계값</h2>
