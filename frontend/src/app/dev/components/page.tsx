@@ -1,5 +1,6 @@
 import FailureTable from "@/components/eval/FailureTable/FailureTable";
 import GaugeRing from "@/components/eval/GaugeRing/GaugeRing";
+import GradeScale from "@/components/eval/GradeScale/GradeScale";
 import QuestionTypeChart from "@/components/eval/QuestionTypeChart/QuestionTypeChart";
 import RecommendationCards from "@/components/eval/RecommendationCards/RecommendationCards";
 import SummaryCards from "@/components/eval/SummaryCards/SummaryCards";
@@ -157,9 +158,10 @@ export default function ComponentsPage() {
     <main className={styles.page}>
       <h1 className={styles.title}>컴포넌트</h1>
       <p className={styles.lead}>
-        Phase 6 진행 중 — <strong>5 / 7</strong>. 완료: <code>GaugeRing</code>,{" "}
+        Phase 6 진행 중 — <strong>6 / 8</strong>. 완료: <code>GaugeRing</code>,{" "}
         <code>SummaryCards</code>, <code>QuestionTypeChart</code>,{" "}
-        <code>RecommendationCards</code>, <code>FailureTable</code>.
+        <code>RecommendationCards</code>, <code>FailureTable</code>,{" "}
+        <code>GradeScale</code>.
         <br />
         남음: <code>TargetApiCard</code>(6-3), <code>ActionPanel</code>(6-7).
       </p>
@@ -268,6 +270,89 @@ export default function ComponentsPage() {
               <span className={styles.sizeLabel}>size = {size}</span>
             </div>
           ))}
+        </div>
+      </section>
+
+
+      {/* --- GradeScale --- */}
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>GradeScale</h2>
+        <p className={styles.sectionNote}>
+          시안의 &ldquo;평가 기준&rdquo; 카드. <strong>GaugeRing 과 역할이 다르다</strong> —
+          GaugeRing 은 &ldquo;얼마인가&rdquo;(78.0%), GradeScale 은 &ldquo;어느
+          구간인가&rdquo;(개선 필요 / 70~85%)를 말한다. 그래서 여기에는 큰 수치를 넣지
+          않는다. 78%가 화면에서 반복되는 것을 막는 것이 이 분리의 목적이다 (§9-1 #1).
+          <br />
+          구간 정의는 <code>lib/gradeBands.ts</code> 한 곳에만 있다. contract.md §3 이
+          바뀌면 그 배열만 고치면 호·범례·aria 라벨이 함께 따라온다.
+        </p>
+        <div className={styles.alignRow}>
+          <GradeScale value={78} grade="NEEDS_IMPROVEMENT" />
+        </div>
+
+        <p className={styles.sectionNote}>
+          구간 경계에서 바늘 위치 — 0 / 69.9 / 70 / 78 / 85 / 94.9 / 95 / 100.
+          등급은 각 값이 속한 구간으로 맞춰 뒀지만, <strong>실제로는 백엔드가 확정한
+          값을 그대로 쓴다</strong> (프론트가 value 로 구간을 추론하지 않는다).
+        </p>
+        <div className={styles.alignRow}>
+          {(
+            [
+              [0, "CRITICAL"],
+              [69.9, "CRITICAL"],
+              [70, "NEEDS_IMPROVEMENT"],
+              [78, "NEEDS_IMPROVEMENT"],
+              [85, "FAIR"],
+              [94.9, "FAIR"],
+              [95, "GOOD"],
+              [100, "GOOD"],
+            ] as const
+          ).map(([v, g]) => (
+            <div key={v} className={styles.alignItem}>
+              <GradeScale value={v} grade={g} size={120} />
+              <span className={styles.sizeLabel}>value = {v}</span>
+            </div>
+          ))}
+        </div>
+
+        <p className={styles.sectionNote}>size 120 / 180 / 240.</p>
+        <div className={styles.alignRow}>
+          {[120, 180, 240].map((s) => (
+            <div key={s} className={styles.alignItem}>
+              <GradeScale value={78} grade="NEEDS_IMPROVEMENT" size={s} />
+              <span className={styles.sizeLabel}>size = {s}</span>
+            </div>
+          ))}
+        </div>
+
+        <p className={styles.sectionNote}>
+          등급과 값이 어긋난 조합 — 백엔드가 확정한 등급을 그대로 따른다.
+          바늘은 값이 가리키는 곳에, 강조는 등급이 말하는 구간에 있다.
+        </p>
+        <div className={styles.alignRow}>
+          <GradeScale value={40} grade="GOOD" size={140} />
+          <GradeScale value={99} grade="CRITICAL" size={140} />
+        </div>
+      </section>
+
+      {/* --- GaugeRing vs GradeScale --- */}
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>GaugeRing vs GradeScale</h2>
+        <p className={styles.sectionNote}>
+          조립할 때 어느 쪽을 어디에 쓸지 고르는 자리. 같은 데이터(78.0%, 개선 필요)를
+          두 컴포넌트가 각각 어떻게 말하는지 나란히 본다.
+          <strong> 둘을 같이 쓰면 78%가 두 번 나오지는 않는다</strong> —
+          GradeScale 에는 수치가 없다.
+        </p>
+        <div className={styles.alignRow}>
+          <div className={styles.alignItem}>
+            <GaugeRing value={78} grade="NEEDS_IMPROVEMENT" size={180} />
+            <span className={styles.sizeLabel}>GaugeRing — 얼마인가</span>
+          </div>
+          <div className={styles.alignItem}>
+            <GradeScale value={78} grade="NEEDS_IMPROVEMENT" size={180} />
+            <span className={styles.sizeLabel}>GradeScale — 어느 구간인가</span>
+          </div>
         </div>
       </section>
 
