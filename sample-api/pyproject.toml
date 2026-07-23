@@ -33,12 +33,12 @@ packages = ["app"]
 # 시연하려면 설치는 되어야 하므로 같은 설정을 둔다.
 
 [tool.uv]
-# 사내망에서 SSL 오류 시 true 로 변경하거나 UV_SYSTEM_CERTS=true 환경변수 사용.
-# OS 신뢰 저장소의 사내 CA 를 쓴다.
+# 구 `native-tls` 는 deprecated. 사내망에서 SSL 오류 시 true 또는
+# UV_SYSTEM_CERTS=true. uv 구버전 호환이 필요하면 UV_NATIVE_TLS 도 함께 설정.
 #
-# [tool.uv] 에서는 `native-tls` 와 `system-certs` 둘 다 유효하지만,
-# 환경변수는 `UV_SYSTEM_CERTS` 만 유효하다 (옛 UV_NATIVE_TLS 는 무시된다).
-native-tls = false
+# [tool.uv] 에서는 두 키가 다 파싱되지만 환경변수는 `UV_SYSTEM_CERTS` 만
+# 유효하다 (옛 UV_NATIVE_TLS 는 조용히 무시된다).
+system-certs = false
 
 # 사내 index 는 환경변수로 전환한다. 실제 URL 을 여기 적지 않는다:
 #

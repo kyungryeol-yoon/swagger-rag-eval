@@ -86,8 +86,10 @@ npm registry 는 환경변수가 아니라 파일로 잡는다.
 cp frontend/.npmrc.example frontend/.npmrc   # 실제 값을 채운다. 커밋하지 않는다
 ```
 
-> `UV_SYSTEM_CERTS` 는 uv 0.11 부터의 이름이다. 예전 문서의 `UV_NATIVE_TLS` 는
-> **오류 없이 조용히 무시된다.** 설정했는데 인증서 오류가 그대로면 이걸 의심한다.
+> 구 `UV_NATIVE_TLS` 는 deprecated 이고 현행은 `UV_SYSTEM_CERTS` 다.
+> 구 이름은 **오류 없이 조용히 무시되므로**, 설정했는데 인증서 오류가 그대로면
+> 이걸 의심한다. uv 구버전 호환이 필요하면 둘 다 설정해도 된다.
+> 파일로 고정하려면 각 `pyproject.toml` 의 `[tool.uv] system-certs`.
 >
 > `strict-ssl=false` 는 쓰지 않는다. 인증서 검증을 통째로 끄는 것이라
 > 오류의 해결이 아니라 은폐다.

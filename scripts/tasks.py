@@ -8,9 +8,29 @@ Makefile 이 하던 셸 로직을 전부 여기로 옮겼다.
 git bash 로 실행하면 되다가 cmd 에서 안 되는 상황이 반복된다.
 Makefile 은 이제 이 스크립트를 한 줄로 부르기만 한다.
 
-**제약**: 표준 라이브러리만 쓴다. 서드파티 금지 —
+**제약 1 — 표준 라이브러리만.** 서드파티 금지.
 의존성을 설치하기 위한 스크립트가 의존성을 요구하면 순환이다.
-Python 3.9 에서 동작해야 한다 (macOS 기본 python3 가 3.9).
+
+**제약 2 — Python 3.8 문법으로 유지한다.**
+이 스크립트는 uv 가 관리하는 3.12 가 아니라 **시스템 python 으로 실행된다.**
+macOS 기본 python3 는 3.9(Xcode 번들)이고, 사내 Windows PC 는 더 낮을 수 있다.
+프로젝트가 3.12 를 요구하는 것과는 별개다 — 3.12 를 설치하기 위해 uv 를
+부르는 것이 이 스크립트의 일이므로, 스스로는 오래된 python 에서도 돌아야 한다.
+
+금지:
+    match 문                     (3.10+)
+    X | Y 타입 표기              (3.10+) -> typing.Optional / Union
+    dict1 | dict2 병합           (3.9+)  -> {**a, **b}
+    list[str] / dict[str, int]   (3.9+)  -> typing.List / Dict
+                                 (annotations future import 로 표기 자체는
+                                  가능하지만, 런타임 평가되는 자리에서 터진다)
+    str.removeprefix / removesuffix (3.9+)
+    tomllib                      (3.11+) -> 있으면 쓰고 없으면 폴백
+
+`ruff` 가 `target-version = "py38"` 로 이 파일을 검사한다 (루트 ruff.toml).
+**다만 전부 잡아주지는 않는다.** `match` 처럼 3.8 에 문법 자체가 없는 것은
+막아주지만, `dict1 | dict2` 나 `str.removeprefix` 처럼 문법은 유효하고
+런타임에만 터지는 것은 못 잡는다. 위 금지 목록은 사람이 지켜야 한다.
 
 사용:
     python scripts/tasks.py <command>
@@ -30,6 +50,26 @@ import time
 import unicodedata
 from pathlib import Path
 from typing import List, Optional, Sequence, Tuple
+
+# 문법 자체는 3.6 에서도 파싱되므로, 여기까지 와서 버전을 확인할 수 있다.
+# 메시지 없이 알 수 없는 곳에서 터지는 것보다 낫다.
+MIN_PYTHON = (3, 8)
+if sys.version_info < MIN_PYTHON:
+    _need = f"{MIN_PYTHON[0]}.{MIN_PYTHON[1]}"
+    _have = f"{sys.version_info[0]}.{sys.version_info[1]}.{sys.version_info[2]}"
+    sys.stderr.write(
+        f"\n이 스크립트는 Python {_need} 이상이 필요합니다. 현재 {_have} 입니다.\n"
+        f"  실행 파일: {sys.executable}\n\n"
+        "더 새 python 으로 실행하세요:\n"
+        "  python3 scripts/tasks.py <command>\n"
+        "  make PY=python3.12 <command>\n\n"
+        "참고: 프로젝트 자체는 Python 3.12 를 요구하지만, 그건 uv 가 따로\n"
+        f"설치합니다. 이 스크립트만 {_need} 이상이면 됩니다.\n"
+    )
+    raise SystemExit(1)
+
+# 프로젝트가 요구하는 런타임. tasks.py 가 이 버전으로 돌 필요는 없다.
+PROJECT_PYTHON = "3.12"
 
 ROOT = Path(__file__).resolve().parent.parent
 BACKEND = ROOT / "backend"
@@ -153,6 +193,9 @@ def cmd_test() -> None:
 def cmd_lint() -> None:
     run(["uv", "run", "ruff", "check", "."], BACKEND)
     run(["uv", "run", "mypy", "app"], BACKEND)
+    # scripts/ 는 별도 설정(루트 ruff.toml)으로 검사한다. target-version = py38 이라
+    # 신문법이 들어가면 여기서 걸린다. ruff 자체는 backend 환경의 것을 빌려 쓴다.
+    run(["uv", "run", "--project", str(BACKEND), "ruff", "check", "scripts"], ROOT)
     run(["npm", "run", "lint"], FRONTEND)
     run(["npx", "tsc", "--noEmit"], FRONTEND)
 
@@ -213,11 +256,14 @@ TLS_ENV_KEYS = [
     "npm_config_registry",
 ]
 
-# uv 0.11 에서 이름이 바뀐 것들. 설정돼 있으면 "무시되고 있다"고 알려줘야 한다.
+# uv 에서 이름이 바뀐 것들. 설정돼 있으면 어떻게 취급되는지 알려줘야 한다.
 LEGACY_ENV_KEYS = {
-    "UV_NATIVE_TLS": "무시됨 — UV_SYSTEM_CERTS 로 바꿀 것",
-    "UV_INDEX_URL": "deprecated — UV_DEFAULT_INDEX 권장",
+    "UV_NATIVE_TLS": "UV_SYSTEM_CERTS 로 바꿀 것",
+    "UV_INDEX_URL": "UV_DEFAULT_INDEX 권장",
 }
+
+# 현행 키를 먼저 본다. 구 키는 폴백으로만 인정한다.
+UV_TLS_KEYS = ("system-certs", "native-tls")
 
 
 def _row(label: str, value: Optional[str], note: str = "") -> Tuple[str, str, str]:
@@ -242,14 +288,15 @@ def read_uv_tls_setting(pyproject: Path) -> Tuple[Optional[str], Optional[str]]:
 
         data = tomllib.loads(text)
         uv_table = data.get("tool", {}).get("uv", {})
-        for key in ("native-tls", "system-certs"):
+        for key in UV_TLS_KEYS:
             if key in uv_table:
                 return (key, str(uv_table[key]).lower())
         return (None, None)
     except ImportError:
         pass
 
-    # 3.9 대비 폴백. [tool.uv] 섹션 안의 주석 아닌 줄만 본다.
+    # tomllib 이 없는 3.8~3.10 대비 폴백. [tool.uv] 섹션의 주석 아닌 줄만 본다.
+    found = {}
     in_uv = False
     for raw in text.splitlines():
         line = raw.strip()
@@ -260,8 +307,12 @@ def read_uv_tls_setting(pyproject: Path) -> Tuple[Optional[str], Optional[str]]:
             continue
         key, _, value = line.partition("=")
         key = key.strip()
-        if key in ("native-tls", "system-certs"):
-            return (key, value.split("#")[0].strip().lower())
+        if key in UV_TLS_KEYS:
+            found[key] = value.split("#")[0].strip().lower()
+
+    for key in UV_TLS_KEYS:
+        if key in found:
+            return (key, found[key])
     return (None, None)
 
 
@@ -269,7 +320,17 @@ def cmd_doctor() -> None:
     rows: List[Tuple[str, str, str]] = []
 
     rows.append(("--- 도구 ---", "", ""))
-    rows.append(_row("python", sys.version.split()[0], sys.executable))
+
+    # tasks.py 는 시스템 python 으로 돈다. 프로젝트가 요구하는 3.12 와 달라도
+    # 정상이다 — 3.12 는 uv 가 따로 설치한다.
+    running = "{}.{}.{}".format(*sys.version_info[:3])
+    rows.append(_row("tasks.py 실행 python", running, sys.executable))
+
+    if running.startswith(PROJECT_PYTHON + "."):
+        note = "프로젝트 런타임과 동일"
+    else:
+        note = f"프로젝트 런타임 {PROJECT_PYTHON} 와 다르지만 정상 — 3.12 는 uv 가 따로 설치한다"
+    rows.append(_row("  최소 요구", "{}.{}+".format(*MIN_PYTHON), note))
     rows.append(_row("node", capture(["node", "-v"])))
     rows.append(_row("npm", capture(["npm", "-v"])))
     rows.append(_row("uv", capture(["uv", "--version"])))
@@ -302,15 +363,25 @@ def cmd_doctor() -> None:
             rows.append(_row(label, None, "TLS 설정 없음"))
         else:
             note = "사내 CA 사용" if value == "true" else "공인 인증서만 신뢰"
-            rows.append(_row(label, "{} = {}".format(key, value), note))
+            if key == "native-tls":
+                note += "  !! deprecated 키 — system-certs 로 바꿀 것"
+            rows.append(_row(label, f"{key} = {value}", note))
 
     for key in TLS_ENV_KEYS:
         rows.append(_row(key, os.environ.get(key)))
 
-    for key, warning in LEGACY_ENV_KEYS.items():
+    # 구 환경변수는 설정돼 있을 때만 보여준다.
+    # 신 키 없이 구 키만 있으면 아무 효과가 없으므로 강하게 표시한다.
+    has_current = bool(os.environ.get("UV_SYSTEM_CERTS"))
+    for key, hint in LEGACY_ENV_KEYS.items():
         value = os.environ.get(key)
-        if value:
-            rows.append(_row(key, value, "!! " + warning))
+        if not value:
+            continue
+        if key == "UV_NATIVE_TLS" and not has_current:
+            note = "!! deprecated + 무시됨 — " + hint
+        else:
+            note = "deprecated — " + hint
+        rows.append(_row(key, value, note))
 
     rows.append(("", "", ""))
     rows.append(("--- 설치 상태 ---", "", ""))

@@ -452,8 +452,8 @@ E. README 사내망 최초 셋업 절
 ### Phase 4.7 — uv TLS 설정 + Dockerfile (수행 완료)
 
 ```
-A. uv native-tls 설정
-   backend/sample-api pyproject.toml 에 [tool.uv] native-tls = false.
+A. uv TLS 설정
+   backend/sample-api pyproject.toml 에 [tool.uv] system-certs = false.
    주석으로 사내망 전환 방법 + [[tool.uv.index]] 예시(실제 URL 금지).
    doctor 에 TLS 설정 상태 진단 추가.
 
@@ -477,9 +477,12 @@ C. README 빌드/실행 예시, probe 경로, k8s 에 필요한 정보만.
 | `[tool.uv]` toml 키 | 유효 | 유효 |
 | 환경변수 | **무효** (`UV_NATIVE_TLS` 는 조용히 무시) | 유효 (`UV_SYSTEM_CERTS`) |
 
-toml 은 둘 다 별칭으로 살아 있지만 **환경변수는 새 이름만 동작한다.**
-지시받은 toml 키(`native-tls`)는 그대로 쓰고, 환경변수는 `UV_SYSTEM_CERTS` 로 맞췄다.
-`make doctor` 가 `UV_NATIVE_TLS` 가 설정돼 있으면 "무시됨" 이라고 알려준다.
+toml 은 둘 다 파싱되지만 **환경변수는 새 이름만 동작한다.**
+
+> **Phase 4.7a 에서 정정.** 처음에는 toml 키를 `native-tls` 로 뒀는데,
+> 파일은 구 키·환경변수는 신 키가 되어 짝이 맞지 않았다.
+> **양쪽 다 `system-certs` / `UV_SYSTEM_CERTS` 로 통일했다.**
+> `make doctor` 가 `native-tls` 키나 `UV_NATIVE_TLS` 를 발견하면 deprecated 로 표시한다.
 
 **핵심 판단**
 
@@ -745,7 +748,7 @@ TLS 는 사내 CA 로 재서명된다. 여기서 **락 파일이 갈라진다.**
 | 대상 | 설정 | 비고 |
 |---|---|---|
 | Python index | `UV_DEFAULT_INDEX` | PEP 503 경로. 보통 `/simple` 로 끝난다 |
-| Python TLS | `UV_SYSTEM_CERTS=true` | **uv 0.11 부터의 이름.** 옛 `UV_NATIVE_TLS` 는 조용히 무시된다 |
+| Python TLS | `UV_SYSTEM_CERTS=true` 또는 `[tool.uv] system-certs` | 구 `native-tls` / `UV_NATIVE_TLS` 는 deprecated. 환경변수 쪽 구 이름은 조용히 무시된다 |
 | npm registry | `frontend/.npmrc` | `.npmrc.example` 복사. 커밋 금지 |
 | Node TLS | `NODE_EXTRA_CA_CERTS` | npm 뿐 아니라 next build 에도 적용돼 `.npmrc` 의 `cafile` 보다 낫다 |
 

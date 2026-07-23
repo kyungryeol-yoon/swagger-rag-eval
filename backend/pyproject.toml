@@ -30,8 +30,8 @@ packages = ["app"]
 # ---------------------------------------------------------------------------
 
 [tool.uv]
-# 사내망에서 SSL 오류 시 true 로 변경하거나 UV_SYSTEM_CERTS=true 환경변수 사용.
-# OS 신뢰 저장소의 사내 CA 를 쓴다.
+# 구 `native-tls` 는 deprecated. 사내망에서 SSL 오류 시 true 또는
+# UV_SYSTEM_CERTS=true. uv 구버전 호환이 필요하면 UV_NATIVE_TLS 도 함께 설정.
 #
 # 기본값 false 로 커밋한다 — GitHub·로컬은 공인 인증서라 불필요하고,
 # true 로 두면 로컬에서 OS 저장소를 뒤지느라 느려지기만 한다.
@@ -41,14 +41,15 @@ packages = ["app"]
 #   "unable to get local issuer certificate"
 # uv 는 기본적으로 자체 번들 인증서만 믿기 때문에, 사내 프록시가 TLS 를
 # 사내 CA 로 재서명하는 환경에서는 이 설정 없이는 무조건 실패한다.
-native-tls = false
+system-certs = false
 
-# 이름에 주의. uv 0.11.7 기준으로 확인한 결과:
-#   [tool.uv] 키 : `native-tls` 와 `system-certs` **둘 다 유효**하다 (별칭).
-#   환경변수     : `UV_SYSTEM_CERTS` **만** 유효하다.
-#                  옛 `UV_NATIVE_TLS` 는 오류 없이 조용히 무시된다.
-# 환경변수를 설정했는데 인증서 오류가 그대로면 이걸 가장 먼저 의심할 것.
-# 현재 유효한 키 목록은 `uv lock` 에 없는 키를 넣어보면 에러 메시지로 다 나온다.
+# uv 0.11.7 에서 실측한 결과:
+#   [tool.uv] 키 : `system-certs`(현행) 와 `native-tls`(구) 둘 다 파싱된다.
+#   환경변수     : `UV_SYSTEM_CERTS` 만 유효하고,
+#                  `UV_NATIVE_TLS` 는 오류 없이 조용히 무시된다.
+# 그래서 파일은 현행 키로 두고, 환경변수도 현행 이름을 쓴다.
+# 유효한 키 전체 목록은 [tool.uv] 에 없는 키를 넣고 `uv lock` 을 돌리면
+# 에러 메시지로 다 나온다.
 
 # 사내 index. **실제 URL 을 여기 적지 않는다** — 이 저장소는 공개돼 있다.
 # 전환은 환경변수로 한다 (backend/.env.example 참고):
