@@ -129,18 +129,19 @@ def test_per_type_accuracy_matches_actual_failures(report: EvaluationReport) -> 
         assert stat.top3_accuracy == pytest.approx(expected), stat.type
 
 
-def test_grade_matches_top3_accuracy(report: EvaluationReport) -> None:
+def _grade_for(accuracy: float) -> Grade:
     """등급 기준 (contract.md §3): <70 CRITICAL / 70~85 NEEDS_IMPROVEMENT / 85~95 FAIR / >=95 GOOD."""
-    accuracy = report.summary.top3_accuracy
     if accuracy < 70:
-        expected = Grade.CRITICAL
-    elif accuracy < 85:
-        expected = Grade.NEEDS_IMPROVEMENT
-    elif accuracy < 95:
-        expected = Grade.FAIR
-    else:
-        expected = Grade.GOOD
-    assert report.summary.grade == expected
+        return Grade.CRITICAL
+    if accuracy < 85:
+        return Grade.NEEDS_IMPROVEMENT
+    if accuracy < 95:
+        return Grade.FAIR
+    return Grade.GOOD
+
+
+def test_grade_matches_top3_accuracy(report: EvaluationReport) -> None:
+    assert report.summary.grade == _grade_for(report.summary.top3_accuracy)
 
 
 # ---------------------------------------------------------------------------
@@ -285,6 +286,11 @@ def test_get_evaluation_returns_camel_case() -> None:
     assert body["recommendations"][0]["failShare"] == 45.5
     assert body["failures"][0]["questionType"] == "DIRECT"
     assert body["previous"]["top3Accuracy"] == 64.0
+    assert body["target"]["appId"] == "mf-worker"
+    assert body["target"]["queryCount"] == 11
+    assert body["queries"][0]["descriptionLength"] == 144
+    assert body["queries"][0]["hasParamDescription"] is True
+    assert body["queries"][3]["needsRegeneration"] is True
 
 
 def test_no_snake_case_leaks_into_response() -> None:
@@ -325,3 +331,77 @@ def test_response_model_is_documented_in_openapi() -> None:
     report_schema = schema["components"]["schemas"]["EvaluationReport"]
     for name, field in report_schema["properties"].items():
         assert field.get("description") or field.get("allOf") or "$ref" in field, name
+
+
+# ---------------------------------------------------------------------------
+# 평가 대상 앱 / 쿼리
+# ---------------------------------------------------------------------------
+
+
+def test_target_is_an_app_not_a_single_query(report: EvaluationReport) -> None:
+    """평가 단위는 쿼리 하나가 아니라 DAC 앱 하나다 (contract.md §0)."""
+    assert report.target.app_id == "mf-worker"
+    assert report.target.spec_version
+    assert report.target.query_count > 0
+
+
+def test_query_count_matches_queries_length(report: EvaluationReport) -> None:
+    """헤더의 쿼리 수와 실제 목록이 어긋나면 화면이 서로 다른 말을 한다."""
+    assert report.target.query_count == len(report.queries)
+
+
+def test_query_question_counts_sum_to_total(report: EvaluationReport) -> None:
+    assert (
+        sum(q.question_count for q in report.queries) == report.summary.total_questions
+    )
+
+
+def test_query_accuracy_matches_actual_failures(report: EvaluationReport) -> None:
+    """쿼리별 인식률이 실패 목록에서 실제로 재구성되는지 확인한다.
+
+    어긋나면 쿼리 표와 실패 표가 서로 다른 이야기를 하게 된다.
+    """
+    failures_by_query = Counter(
+        (f.expected.method, f.expected.path) for f in report.failures
+    )
+    for query in report.queries:
+        misses = failures_by_query[(query.method, query.path)]
+        hits = query.question_count - misses
+        expected = round(hits / query.question_count * 100, 1)
+        assert query.top3_accuracy == pytest.approx(expected), f"{query.method} {query.path}"
+
+
+def test_query_grade_matches_its_accuracy(report: EvaluationReport) -> None:
+    for query in report.queries:
+        assert query.grade == _grade_for(query.top3_accuracy), query.path
+
+
+def test_queries_are_unique(report: EvaluationReport) -> None:
+    """같은 경로라도 메서드가 다르면 다른 쿼리다 (POST/DELETE /orders/{id}/refund)."""
+    keys = [(q.method, q.path) for q in report.queries]
+    assert len(set(keys)) == len(keys)
+
+
+def test_every_failed_query_exists_in_queries(report: EvaluationReport) -> None:
+    """실패 목록의 기대 쿼리는 전부 쿼리 목록에 있어야 한다."""
+    known = {(q.method, q.path) for q in report.queries}
+    for failure in report.failures:
+        assert (failure.expected.method, failure.expected.path) in known, failure.id
+
+
+def test_queries_without_description_need_regeneration(report: EvaluationReport) -> None:
+    """설명이 아예 없는 쿼리는 재생성 후보여야 한다.
+
+    이게 무너지면 "부실한 쿼리를 자동 생성 서비스로 넘긴다"는 이 제품의
+    목적 자체가 성립하지 않는다.
+    """
+    empty = [q for q in report.queries if q.description_length == 0 and q.summary is None]
+    assert len(empty) >= 2
+    for query in empty:
+        assert query.needs_regeneration, f"{query.method} {query.path}"
+
+
+def test_regeneration_candidates_are_backend_decided(report: EvaluationReport) -> None:
+    """프론트가 인식률로 다시 계산하지 않도록, 후보는 응답에 들어 있어야 한다."""
+    assert any(q.needs_regeneration for q in report.queries)
+    assert not all(q.needs_regeneration for q in report.queries)

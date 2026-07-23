@@ -1,16 +1,13 @@
 {
   "traceId": "A492",
   "evaluatedAt": "2026-07-22T11:38:00+09:00",
-
   "target": {
-    "specId": "orders-v3",
+    "appId": "mf-worker",
+    "appName": "MF Worker 조회",
     "specVersion": "v3",
-    "method": "GET",
-    "path": "/orders/{id}/refund-status",
-    "summary": "주문 환불 상태 조회",
-    "description": "특정 주문 건의 환불 처리 상태, 환불 사유, 환불 금액, 처리 일자를 반환합니다."
+    "queryCount": 11,
+    "owner": "데이터플랫폼팀"
   },
-
   "meta": {
     "embeddingModel": "bge-m3",
     "searchMode": "HYBRID",
@@ -18,7 +15,6 @@
     "questionSource": "LLM_GENERATED_HUMAN_REVIEWED",
     "durationMs": 48210
   },
-
   "summary": {
     "totalQuestions": 100,
     "top1Accuracy": 61.0,
@@ -27,17 +23,180 @@
     "top3FailCount": 22,
     "grade": "NEEDS_IMPROVEMENT"
   },
-
-  "questionTypes": [
-    { "type": "DIRECT",        "label": "직접 질문",          "count": 22, "ratio": 22.0, "top3Accuracy": 95.5 },
-    { "type": "USER_NL",       "label": "사용자 자연어 질문", "count": 20, "ratio": 20.0, "top3Accuracy": 75.0 },
-    { "type": "DOMAIN_TERM",   "label": "업무 용어 질문",     "count": 14, "ratio": 14.0, "top3Accuracy": 78.6 },
-    { "type": "PARAMETER",     "label": "파라미터 기반 질문", "count": 12, "ratio": 12.0, "top3Accuracy": 83.3 },
-    { "type": "ERROR_CASE",    "label": "오류/에러 상황 질문", "count": 11, "ratio": 11.0, "top3Accuracy": 81.8 },
-    { "type": "SHORT_KEYWORD", "label": "짧은 키워드 질문",   "count": 11, "ratio": 11.0, "top3Accuracy": 72.7 },
-    { "type": "MIXED_LANG",    "label": "한영 혼합 질문",     "count": 10, "ratio": 10.0, "top3Accuracy": 40.0 }
+  "queries": [
+    {
+      "path": "/orders/{id}",
+      "method": "GET",
+      "summary": "주문 상세 조회",
+      "descriptionLength": 144,
+      "hasParamDescription": true,
+      "questionCount": 12,
+      "top3Accuracy": 100.0,
+      "grade": "GOOD",
+      "needsRegeneration": false
+    },
+    {
+      "path": "/orders/{id}/refund-status",
+      "method": "GET",
+      "summary": "주문 환불 상태 조회",
+      "descriptionLength": 206,
+      "hasParamDescription": true,
+      "questionCount": 11,
+      "top3Accuracy": 100.0,
+      "grade": "GOOD",
+      "needsRegeneration": false
+    },
+    {
+      "path": "/orders/{id}/refund",
+      "method": "POST",
+      "summary": "환불 신청",
+      "descriptionLength": 0,
+      "hasParamDescription": false,
+      "questionCount": 10,
+      "top3Accuracy": 80.0,
+      "grade": "NEEDS_IMPROVEMENT",
+      "needsRegeneration": false
+    },
+    {
+      "path": "/orders/{id}/refund",
+      "method": "DELETE",
+      "summary": null,
+      "descriptionLength": 0,
+      "hasParamDescription": false,
+      "questionCount": 9,
+      "top3Accuracy": 44.4,
+      "grade": "CRITICAL",
+      "needsRegeneration": true
+    },
+    {
+      "path": "/orders/{id}/shipping-address",
+      "method": "PATCH",
+      "summary": "배송지 변경",
+      "descriptionLength": 0,
+      "hasParamDescription": false,
+      "questionCount": 9,
+      "top3Accuracy": 66.7,
+      "grade": "CRITICAL",
+      "needsRegeneration": true
+    },
+    {
+      "path": "/orders/{id}/shipping-status",
+      "method": "GET",
+      "summary": "주문 배송 상태 조회",
+      "descriptionLength": 170,
+      "hasParamDescription": true,
+      "questionCount": 10,
+      "top3Accuracy": 90.0,
+      "grade": "FAIR",
+      "needsRegeneration": false
+    },
+    {
+      "path": "/products/{id}",
+      "method": "GET",
+      "summary": "상품 상세 조회",
+      "descriptionLength": 136,
+      "hasParamDescription": true,
+      "questionCount": 10,
+      "top3Accuracy": 100.0,
+      "grade": "GOOD",
+      "needsRegeneration": false
+    },
+    {
+      "path": "/products/{id}/stock",
+      "method": "GET",
+      "summary": "재고 조회",
+      "descriptionLength": 0,
+      "hasParamDescription": false,
+      "questionCount": 9,
+      "top3Accuracy": 77.8,
+      "grade": "NEEDS_IMPROVEMENT",
+      "needsRegeneration": false
+    },
+    {
+      "path": "/products/{id}/restock-schedule",
+      "method": "GET",
+      "summary": null,
+      "descriptionLength": 0,
+      "hasParamDescription": false,
+      "questionCount": 8,
+      "top3Accuracy": 37.5,
+      "grade": "CRITICAL",
+      "needsRegeneration": true
+    },
+    {
+      "path": "/users/{id}",
+      "method": "GET",
+      "summary": "회원 정보 조회",
+      "descriptionLength": 135,
+      "hasParamDescription": true,
+      "questionCount": 7,
+      "top3Accuracy": 85.7,
+      "grade": "FAIR",
+      "needsRegeneration": false
+    },
+    {
+      "path": "/users/{id}/address",
+      "method": "PATCH",
+      "summary": "주소 변경",
+      "descriptionLength": 0,
+      "hasParamDescription": false,
+      "questionCount": 5,
+      "top3Accuracy": 40.0,
+      "grade": "CRITICAL",
+      "needsRegeneration": true
+    }
   ],
-
+  "questionTypes": [
+    {
+      "type": "DIRECT",
+      "label": "직접 질문",
+      "count": 22,
+      "ratio": 22.0,
+      "top3Accuracy": 95.5
+    },
+    {
+      "type": "USER_NL",
+      "label": "사용자 자연어 질문",
+      "count": 20,
+      "ratio": 20.0,
+      "top3Accuracy": 75.0
+    },
+    {
+      "type": "DOMAIN_TERM",
+      "label": "업무 용어 질문",
+      "count": 14,
+      "ratio": 14.0,
+      "top3Accuracy": 78.6
+    },
+    {
+      "type": "PARAMETER",
+      "label": "파라미터 기반 질문",
+      "count": 12,
+      "ratio": 12.0,
+      "top3Accuracy": 83.3
+    },
+    {
+      "type": "ERROR_CASE",
+      "label": "오류/에러 상황 질문",
+      "count": 11,
+      "ratio": 11.0,
+      "top3Accuracy": 81.8
+    },
+    {
+      "type": "SHORT_KEYWORD",
+      "label": "짧은 키워드 질문",
+      "count": 11,
+      "ratio": 11.0,
+      "top3Accuracy": 72.7
+    },
+    {
+      "type": "MIXED_LANG",
+      "label": "한영 혼합 질문",
+      "count": 10,
+      "ratio": 10.0,
+      "top3Accuracy": 40.0
+    }
+  ],
   "recommendations": [
     {
       "order": 1,
@@ -61,17 +220,34 @@
       "failShare": 31.8
     }
   ],
-
   "failures": [
     {
       "id": "q_003",
       "question": "주문의 배송 상태를 조회하는 API는 무엇인가요?",
       "questionType": "DIRECT",
-      "expected": { "method": "GET", "path": "/orders/{id}/shipping-status" },
+      "expected": {
+        "method": "GET",
+        "path": "/orders/{id}/shipping-status"
+      },
       "results": [
-        { "rank": 1, "method": "GET", "path": "/orders/{id}/refund-status", "score": 0.781 },
-        { "rank": 2, "method": "GET", "path": "/orders/{id}", "score": 0.759 },
-        { "rank": 3, "method": "PATCH", "path": "/orders/{id}/shipping-address", "score": 0.724 }
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/orders/{id}/refund-status",
+          "score": 0.781
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/orders/{id}",
+          "score": 0.759
+        },
+        {
+          "rank": 3,
+          "method": "PATCH",
+          "path": "/orders/{id}/shipping-address",
+          "score": 0.724
+        }
       ],
       "hit": false,
       "expectedRank": 4,
@@ -82,11 +258,29 @@
       "id": "q_007",
       "question": "재입고 언제 되나요?",
       "questionType": "USER_NL",
-      "expected": { "method": "GET", "path": "/products/{id}/restock-schedule" },
+      "expected": {
+        "method": "GET",
+        "path": "/products/{id}/restock-schedule"
+      },
       "results": [
-        { "rank": 1, "method": "GET", "path": "/products/{id}/stock", "score": 0.688 },
-        { "rank": 2, "method": "GET", "path": "/products/{id}", "score": 0.671 },
-        { "rank": 3, "method": "GET", "path": "/orders/{id}/shipping-status", "score": 0.603 }
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/products/{id}/stock",
+          "score": 0.688
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/products/{id}",
+          "score": 0.671
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/orders/{id}/shipping-status",
+          "score": 0.603
+        }
       ],
       "hit": false,
       "expectedRank": null,
@@ -97,11 +291,29 @@
       "id": "q_009",
       "question": "restock 일정 확인하는 endpoint 알려줘",
       "questionType": "MIXED_LANG",
-      "expected": { "method": "GET", "path": "/products/{id}/restock-schedule" },
+      "expected": {
+        "method": "GET",
+        "path": "/products/{id}/restock-schedule"
+      },
       "results": [
-        { "rank": 1, "method": "GET", "path": "/products/{id}", "score": 0.641 },
-        { "rank": 2, "method": "GET", "path": "/products/{id}/stock", "score": 0.629 },
-        { "rank": 3, "method": "GET", "path": "/orders/{id}", "score": 0.552 }
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/products/{id}",
+          "score": 0.641
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/products/{id}/stock",
+          "score": 0.629
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/orders/{id}",
+          "score": 0.552
+        }
       ],
       "hit": false,
       "expectedRank": null,
@@ -112,11 +324,29 @@
       "id": "q_011",
       "question": "주문한 상품 받을 주소를 바꾸고 싶어요",
       "questionType": "USER_NL",
-      "expected": { "method": "PATCH", "path": "/orders/{id}/shipping-address" },
+      "expected": {
+        "method": "PATCH",
+        "path": "/orders/{id}/shipping-address"
+      },
       "results": [
-        { "rank": 1, "method": "PATCH", "path": "/users/{id}/address", "score": 0.742 },
-        { "rank": 2, "method": "GET", "path": "/orders/{id}/shipping-status", "score": 0.719 },
-        { "rank": 3, "method": "GET", "path": "/orders/{id}", "score": 0.688 }
+        {
+          "rank": 1,
+          "method": "PATCH",
+          "path": "/users/{id}/address",
+          "score": 0.742
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/orders/{id}/shipping-status",
+          "score": 0.719
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/orders/{id}",
+          "score": 0.688
+        }
       ],
       "hit": false,
       "expectedRank": 4,
@@ -127,11 +357,29 @@
       "id": "q_013",
       "question": "재입고 일정",
       "questionType": "SHORT_KEYWORD",
-      "expected": { "method": "GET", "path": "/products/{id}/restock-schedule" },
+      "expected": {
+        "method": "GET",
+        "path": "/products/{id}/restock-schedule"
+      },
       "results": [
-        { "rank": 1, "method": "GET", "path": "/products/{id}/stock", "score": 0.612 },
-        { "rank": 2, "method": "GET", "path": "/products/{id}", "score": 0.587 },
-        { "rank": 3, "method": "GET", "path": "/orders/{id}/shipping-status", "score": 0.531 }
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/products/{id}/stock",
+          "score": 0.612
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/products/{id}",
+          "score": 0.587
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/orders/{id}/shipping-status",
+          "score": 0.531
+        }
       ],
       "hit": false,
       "expectedRank": null,
@@ -142,11 +390,29 @@
       "id": "q_017",
       "question": "환불 신청은 어떻게 취소하나요?",
       "questionType": "USER_NL",
-      "expected": { "method": "DELETE", "path": "/orders/{id}/refund" },
+      "expected": {
+        "method": "DELETE",
+        "path": "/orders/{id}/refund"
+      },
       "results": [
-        { "rank": 1, "method": "GET", "path": "/orders/{id}/refund-status", "score": 0.812 },
-        { "rank": 2, "method": "POST", "path": "/orders/{id}/refund", "score": 0.774 },
-        { "rank": 3, "method": "GET", "path": "/orders/{id}", "score": 0.701 }
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/orders/{id}/refund-status",
+          "score": 0.812
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/orders/{id}/refund",
+          "score": 0.774
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/orders/{id}",
+          "score": 0.701
+        }
       ],
       "hit": false,
       "expectedRank": 7,
@@ -157,11 +423,29 @@
       "id": "q_022",
       "question": "환불 접수 건을 철회 처리하려면 어떤 API를 호출하나요?",
       "questionType": "DOMAIN_TERM",
-      "expected": { "method": "DELETE", "path": "/orders/{id}/refund" },
+      "expected": {
+        "method": "DELETE",
+        "path": "/orders/{id}/refund"
+      },
       "results": [
-        { "rank": 1, "method": "POST", "path": "/orders/{id}/refund", "score": 0.769 },
-        { "rank": 2, "method": "GET", "path": "/orders/{id}/refund-status", "score": 0.744 },
-        { "rank": 3, "method": "GET", "path": "/orders/{id}", "score": 0.662 }
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/orders/{id}/refund",
+          "score": 0.769
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/orders/{id}/refund-status",
+          "score": 0.744
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/orders/{id}",
+          "score": 0.662
+        }
       ],
       "hit": false,
       "expectedRank": 5,
@@ -172,11 +456,29 @@
       "id": "q_026",
       "question": "refund 취소는 어떤 method로 call 하나요?",
       "questionType": "MIXED_LANG",
-      "expected": { "method": "DELETE", "path": "/orders/{id}/refund" },
+      "expected": {
+        "method": "DELETE",
+        "path": "/orders/{id}/refund"
+      },
       "results": [
-        { "rank": 1, "method": "POST", "path": "/orders/{id}/refund", "score": 0.758 },
-        { "rank": 2, "method": "GET", "path": "/orders/{id}/refund-status", "score": 0.731 },
-        { "rank": 3, "method": "PATCH", "path": "/orders/{id}/shipping-address", "score": 0.598 }
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/orders/{id}/refund",
+          "score": 0.758
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/orders/{id}/refund-status",
+          "score": 0.731
+        },
+        {
+          "rank": 3,
+          "method": "PATCH",
+          "path": "/orders/{id}/shipping-address",
+          "score": 0.598
+        }
       ],
       "hit": false,
       "expectedRank": 6,
@@ -187,11 +489,29 @@
       "id": "q_029",
       "question": "배송지를 바꿀 때 우편번호는 필수인가요?",
       "questionType": "PARAMETER",
-      "expected": { "method": "PATCH", "path": "/orders/{id}/shipping-address" },
+      "expected": {
+        "method": "PATCH",
+        "path": "/orders/{id}/shipping-address"
+      },
       "results": [
-        { "rank": 1, "method": "GET", "path": "/orders/{id}/shipping-status", "score": 0.703 },
-        { "rank": 2, "method": "PATCH", "path": "/users/{id}/address", "score": 0.697 },
-        { "rank": 3, "method": "GET", "path": "/orders/{id}", "score": 0.634 }
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/orders/{id}/shipping-status",
+          "score": 0.703
+        },
+        {
+          "rank": 2,
+          "method": "PATCH",
+          "path": "/users/{id}/address",
+          "score": 0.697
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/orders/{id}",
+          "score": 0.634
+        }
       ],
       "hit": false,
       "expectedRank": 4,
@@ -202,11 +522,29 @@
       "id": "q_034",
       "question": "회원 정보에 등록된 주소를 수정하고 싶어요",
       "questionType": "USER_NL",
-      "expected": { "method": "PATCH", "path": "/users/{id}/address" },
+      "expected": {
+        "method": "PATCH",
+        "path": "/users/{id}/address"
+      },
       "results": [
-        { "rank": 1, "method": "PATCH", "path": "/orders/{id}/shipping-address", "score": 0.726 },
-        { "rank": 2, "method": "GET", "path": "/users/{id}", "score": 0.711 },
-        { "rank": 3, "method": "GET", "path": "/orders/{id}", "score": 0.612 }
+        {
+          "rank": 1,
+          "method": "PATCH",
+          "path": "/orders/{id}/shipping-address",
+          "score": 0.726
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/users/{id}",
+          "score": 0.711
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/orders/{id}",
+          "score": 0.612
+        }
       ],
       "hit": false,
       "expectedRank": 4,
@@ -217,11 +555,29 @@
       "id": "q_041",
       "question": "이미 환불된 주문에 환불을 또 신청하면 어떤 오류가 나나요?",
       "questionType": "ERROR_CASE",
-      "expected": { "method": "POST", "path": "/orders/{id}/refund" },
+      "expected": {
+        "method": "POST",
+        "path": "/orders/{id}/refund"
+      },
       "results": [
-        { "rank": 1, "method": "GET", "path": "/orders/{id}/refund-status", "score": 0.788 },
-        { "rank": 2, "method": "DELETE", "path": "/orders/{id}/refund", "score": 0.664 },
-        { "rank": 3, "method": "GET", "path": "/orders/{id}", "score": 0.641 }
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/orders/{id}/refund-status",
+          "score": 0.788
+        },
+        {
+          "rank": 2,
+          "method": "DELETE",
+          "path": "/orders/{id}/refund",
+          "score": 0.664
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/orders/{id}",
+          "score": 0.641
+        }
       ],
       "hit": false,
       "expectedRank": 4,
@@ -232,11 +588,29 @@
       "id": "q_046",
       "question": "특정 상품의 가용 재고 수량을 확인하는 API",
       "questionType": "DOMAIN_TERM",
-      "expected": { "method": "GET", "path": "/products/{id}/stock" },
+      "expected": {
+        "method": "GET",
+        "path": "/products/{id}/stock"
+      },
       "results": [
-        { "rank": 1, "method": "GET", "path": "/products/{id}", "score": 0.771 },
-        { "rank": 2, "method": "GET", "path": "/products/{id}/restock-schedule", "score": 0.629 },
-        { "rank": 3, "method": "GET", "path": "/orders/{id}", "score": 0.574 }
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/products/{id}",
+          "score": 0.771
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/products/{id}/restock-schedule",
+          "score": 0.629
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/orders/{id}",
+          "score": 0.574
+        }
       ],
       "hit": false,
       "expectedRank": 4,
@@ -247,11 +621,29 @@
       "id": "q_050",
       "question": "shipping address 변경 API 있나요?",
       "questionType": "MIXED_LANG",
-      "expected": { "method": "PATCH", "path": "/orders/{id}/shipping-address" },
+      "expected": {
+        "method": "PATCH",
+        "path": "/orders/{id}/shipping-address"
+      },
       "results": [
-        { "rank": 1, "method": "GET", "path": "/orders/{id}/shipping-status", "score": 0.734 },
-        { "rank": 2, "method": "PATCH", "path": "/users/{id}/address", "score": 0.681 },
-        { "rank": 3, "method": "GET", "path": "/orders/{id}", "score": 0.605 }
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/orders/{id}/shipping-status",
+          "score": 0.734
+        },
+        {
+          "rank": 2,
+          "method": "PATCH",
+          "path": "/users/{id}/address",
+          "score": 0.681
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/orders/{id}",
+          "score": 0.605
+        }
       ],
       "hit": false,
       "expectedRank": 4,
@@ -262,11 +654,29 @@
       "id": "q_055",
       "question": "재고 수량",
       "questionType": "SHORT_KEYWORD",
-      "expected": { "method": "GET", "path": "/products/{id}/stock" },
+      "expected": {
+        "method": "GET",
+        "path": "/products/{id}/stock"
+      },
       "results": [
-        { "rank": 1, "method": "GET", "path": "/products/{id}", "score": 0.648 },
-        { "rank": 2, "method": "GET", "path": "/products/{id}/restock-schedule", "score": 0.561 },
-        { "rank": 3, "method": "GET", "path": "/orders/{id}", "score": 0.508 }
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/products/{id}",
+          "score": 0.648
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/products/{id}/restock-schedule",
+          "score": 0.561
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/orders/{id}",
+          "score": 0.508
+        }
       ],
       "hit": false,
       "expectedRank": 4,
@@ -277,11 +687,29 @@
       "id": "q_058",
       "question": "품절된 상품이 다시 들어오는 날짜를 알 수 있나요?",
       "questionType": "USER_NL",
-      "expected": { "method": "GET", "path": "/products/{id}/restock-schedule" },
+      "expected": {
+        "method": "GET",
+        "path": "/products/{id}/restock-schedule"
+      },
       "results": [
-        { "rank": 1, "method": "GET", "path": "/products/{id}", "score": 0.752 },
-        { "rank": 2, "method": "GET", "path": "/products/{id}/stock", "score": 0.667 },
-        { "rank": 3, "method": "GET", "path": "/orders/{id}/shipping-status", "score": 0.588 }
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/products/{id}",
+          "score": 0.752
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/products/{id}/stock",
+          "score": 0.667
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/orders/{id}/shipping-status",
+          "score": 0.588
+        }
       ],
       "hit": false,
       "expectedRank": null,
@@ -292,11 +720,29 @@
       "id": "q_064",
       "question": "product restock schedule 조회 가능한가요?",
       "questionType": "MIXED_LANG",
-      "expected": { "method": "GET", "path": "/products/{id}/restock-schedule" },
+      "expected": {
+        "method": "GET",
+        "path": "/products/{id}/restock-schedule"
+      },
       "results": [
-        { "rank": 1, "method": "GET", "path": "/products/{id}", "score": 0.673 },
-        { "rank": 2, "method": "GET", "path": "/products/{id}/stock", "score": 0.634 },
-        { "rank": 3, "method": "GET", "path": "/users/{id}", "score": 0.521 }
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/products/{id}",
+          "score": 0.673
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/products/{id}/stock",
+          "score": 0.634
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/users/{id}",
+          "score": 0.521
+        }
       ],
       "hit": false,
       "expectedRank": null,
@@ -307,11 +753,29 @@
       "id": "q_071",
       "question": "반품 접수를 생성하는 엔드포인트는 무엇인가요?",
       "questionType": "DOMAIN_TERM",
-      "expected": { "method": "POST", "path": "/orders/{id}/refund" },
+      "expected": {
+        "method": "POST",
+        "path": "/orders/{id}/refund"
+      },
       "results": [
-        { "rank": 1, "method": "GET", "path": "/orders/{id}/refund-status", "score": 0.796 },
-        { "rank": 2, "method": "GET", "path": "/orders/{id}", "score": 0.657 },
-        { "rank": 3, "method": "DELETE", "path": "/orders/{id}/refund", "score": 0.623 }
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/orders/{id}/refund-status",
+          "score": 0.796
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/orders/{id}",
+          "score": 0.657
+        },
+        {
+          "rank": 3,
+          "method": "DELETE",
+          "path": "/orders/{id}/refund",
+          "score": 0.623
+        }
       ],
       "hit": false,
       "expectedRank": 4,
@@ -322,11 +786,29 @@
       "id": "q_078",
       "question": "회원 주소 수정",
       "questionType": "SHORT_KEYWORD",
-      "expected": { "method": "PATCH", "path": "/users/{id}/address" },
+      "expected": {
+        "method": "PATCH",
+        "path": "/users/{id}/address"
+      },
       "results": [
-        { "rank": 1, "method": "GET", "path": "/users/{id}", "score": 0.719 },
-        { "rank": 2, "method": "PATCH", "path": "/orders/{id}/shipping-address", "score": 0.694 },
-        { "rank": 3, "method": "GET", "path": "/orders/{id}", "score": 0.551 }
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/users/{id}",
+          "score": 0.719
+        },
+        {
+          "rank": 2,
+          "method": "PATCH",
+          "path": "/orders/{id}/shipping-address",
+          "score": 0.694
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/orders/{id}",
+          "score": 0.551
+        }
       ],
       "hit": false,
       "expectedRank": 4,
@@ -337,11 +819,29 @@
       "id": "q_083",
       "question": "주문 조회할 때 넘기는 id는 주문번호인가요 회원번호인가요?",
       "questionType": "PARAMETER",
-      "expected": { "method": "GET", "path": "/users/{id}" },
+      "expected": {
+        "method": "GET",
+        "path": "/users/{id}"
+      },
       "results": [
-        { "rank": 1, "method": "GET", "path": "/orders/{id}", "score": 0.804 },
-        { "rank": 2, "method": "GET", "path": "/orders/{id}/refund-status", "score": 0.712 },
-        { "rank": 3, "method": "GET", "path": "/orders/{id}/shipping-status", "score": 0.679 }
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/orders/{id}",
+          "score": 0.804
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/orders/{id}/refund-status",
+          "score": 0.712
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/orders/{id}/shipping-status",
+          "score": 0.679
+        }
       ],
       "hit": false,
       "expectedRank": 5,
@@ -352,11 +852,29 @@
       "id": "q_087",
       "question": "user address update API가 뭔가요?",
       "questionType": "MIXED_LANG",
-      "expected": { "method": "PATCH", "path": "/users/{id}/address" },
+      "expected": {
+        "method": "PATCH",
+        "path": "/users/{id}/address"
+      },
       "results": [
-        { "rank": 1, "method": "GET", "path": "/users/{id}", "score": 0.738 },
-        { "rank": 2, "method": "PATCH", "path": "/orders/{id}/shipping-address", "score": 0.672 },
-        { "rank": 3, "method": "GET", "path": "/orders/{id}", "score": 0.543 }
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/users/{id}",
+          "score": 0.738
+        },
+        {
+          "rank": 2,
+          "method": "PATCH",
+          "path": "/orders/{id}/shipping-address",
+          "score": 0.672
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/orders/{id}",
+          "score": 0.543
+        }
       ],
       "hit": false,
       "expectedRank": 4,
@@ -367,11 +885,29 @@
       "id": "q_090",
       "question": "환불 취소를 요청했는데 실패하면 어떤 응답이 오나요?",
       "questionType": "ERROR_CASE",
-      "expected": { "method": "DELETE", "path": "/orders/{id}/refund" },
+      "expected": {
+        "method": "DELETE",
+        "path": "/orders/{id}/refund"
+      },
       "results": [
-        { "rank": 1, "method": "GET", "path": "/orders/{id}/refund-status", "score": 0.783 },
-        { "rank": 2, "method": "POST", "path": "/orders/{id}/refund", "score": 0.716 },
-        { "rank": 3, "method": "GET", "path": "/orders/{id}", "score": 0.618 }
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/orders/{id}/refund-status",
+          "score": 0.783
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/orders/{id}/refund",
+          "score": 0.716
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/orders/{id}",
+          "score": 0.618
+        }
       ],
       "hit": false,
       "expectedRank": null,
@@ -382,11 +918,29 @@
       "id": "q_096",
       "question": "cancel refund request 하는 API 알려주세요",
       "questionType": "MIXED_LANG",
-      "expected": { "method": "DELETE", "path": "/orders/{id}/refund" },
+      "expected": {
+        "method": "DELETE",
+        "path": "/orders/{id}/refund"
+      },
       "results": [
-        { "rank": 1, "method": "POST", "path": "/orders/{id}/refund", "score": 0.747 },
-        { "rank": 2, "method": "GET", "path": "/orders/{id}/refund-status", "score": 0.725 },
-        { "rank": 3, "method": "GET", "path": "/orders/{id}", "score": 0.589 }
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/orders/{id}/refund",
+          "score": 0.747
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/orders/{id}/refund-status",
+          "score": 0.725
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/orders/{id}",
+          "score": 0.589
+        }
       ],
       "hit": false,
       "expectedRank": 6,
@@ -394,7 +948,6 @@
       "reason": "'cancel'이 어느 설명에도 없어 동일 경로의 POST가 메서드 구분 없이 상위를 차지함"
     }
   ],
-
   "previous": {
     "traceId": "A311",
     "evaluatedAt": "2026-07-15T09:12:00+09:00",

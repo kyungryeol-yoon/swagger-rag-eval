@@ -33,9 +33,36 @@ export interface paths {
         };
         /**
          * 헬스 체크
-         * @description 서버 기동 확인용.
+         * @description 프로세스가 살아 있는지만 본다. 의존 자원은 확인하지 않는다.
+         *
+         *     liveness 용이다. 여기서 데이터 소스까지 확인하면, 데이터가 잠깐 안 읽힐 때
+         *     파드가 재시작되면서 상황이 더 나빠진다.
          */
         get: operations["health_health_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ready": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 레디니스 체크
+         * @description 데이터 소스에서 평가 결과가 실제로 읽히는지 확인한다.
+         *
+         *     readiness 용이다. 실패하면 트래픽을 받지 않아야 하므로 503 을 준다.
+         *     저장소는 Port 를 경유하므로, 사내에서 DB 어댑터로 바뀌면
+         *     이 체크가 곧 DB 연결 확인이 된다.
+         */
+        get: operations["ready_ready_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -93,12 +120,17 @@ export interface components {
              * @description 평가 실행 시각(ISO 8601 + 타임존).
              */
             evaluatedAt: string;
-            /** @description 평가 대상 API. */
-            target: components["schemas"]["TargetApi"];
+            /** @description 평가 대상 DAC 앱. */
+            target: components["schemas"]["TargetApp"];
             /** @description 재현성 정보. */
             meta: components["schemas"]["EvaluationMeta"];
             /** @description 요약 지표. */
             summary: components["schemas"]["EvaluationSummary"];
+            /**
+             * Queries
+             * @description 쿼리별 설명 품질과 인식률. 앱에 등록된 쿼리 전부를 내려준다. 이 목록에서 needsRegeneration 인 것이 재생성 요청 대상이 된다.
+             */
+            queries: components["schemas"]["QueryStat"][];
             /**
              * Questiontypes
              * @description 문항 유형별 분포와 인식률. 7종 전부 내려준다.
@@ -152,17 +184,17 @@ export interface components {
         };
         /**
          * ExpectedApi
-         * @description 문항이 찾아냈어야 하는 정답 엔드포인트.
+         * @description 문항이 찾아냈어야 하는 정답 쿼리.
          */
         ExpectedApi: {
             /**
              * Method
-             * @description 기대 HTTP 메서드.
+             * @description 기대 쿼리의 HTTP 메서드.
              */
             method: string;
             /**
              * Path
-             * @description 기대 엔드포인트 경로.
+             * @description 기대 쿼리의 경로.
              */
             path: string;
         };
@@ -183,7 +215,7 @@ export interface components {
             question: string;
             /** @description 문항 유형 enum. */
             questionType: components["schemas"]["QuestionType"];
-            /** @description 찾아냈어야 하는 정답 엔드포인트. */
+            /** @description 찾아냈어야 하는 정답 쿼리. */
             expected: components["schemas"]["ExpectedApi"];
             /**
              * Results
@@ -192,12 +224,12 @@ export interface components {
             results: components["schemas"]["SearchResult"][];
             /**
              * Hit
-             * @description Top-K 안에 기대 API가 있었는지. 실패 목록이므로 항상 false.
+             * @description Top-K 안에 기대 쿼리가 있었는지. 실패 목록이므로 항상 false.
              */
             hit: boolean;
             /**
              * Expectedrank
-             * @description 기대 API가 전체 검색 결과에서 몇 위였는지. **Top-N 밖이면 null**.
+             * @description 기대 쿼리가 전체 검색 결과에서 몇 위였는지. **Top-N 밖이면 null**.
              */
             expectedRank?: number | null;
             /** @description 실패 원인 분류 enum. */
@@ -252,6 +284,57 @@ export interface components {
          * @enum {string}
          */
         Priority: "HIGH" | "MEDIUM" | "LOW";
+        /**
+         * QueryStat
+         * @description 쿼리 1개의 설명 품질과 인식률.
+         *
+         *     **이 화면의 실질 산출물이다.** 어느 쿼리의 설명을 고쳐야 하는지가
+         *     여기서 정해지고, 그 목록이 그대로 재생성 요청 대상이 된다.
+         */
+        QueryStat: {
+            /**
+             * Path
+             * @description 쿼리 경로. 경로 파라미터는 중괄호 표기.
+             */
+            path: string;
+            /**
+             * Method
+             * @description HTTP 메서드. 대문자로 내려준다.
+             */
+            method: string;
+            /**
+             * Summary
+             * @description 명세에 적힌 요약. 없으면 null — 비어 있다는 사실 자체가 평가 결과다.
+             */
+            summary?: string | null;
+            /**
+             * Descriptionlength
+             * @description 설명 길이(글자 수). 0 이면 설명이 없다. 길이만으로도 부실한 쿼리가 드러난다.
+             */
+            descriptionLength: number;
+            /**
+             * Hasparamdescription
+             * @description 파라미터 설명이 하나라도 있는지. 파라미터 기반 질문의 인식률과 직결된다.
+             */
+            hasParamDescription: boolean;
+            /**
+             * Questioncount
+             * @description 이 쿼리를 기대 결과로 삼은 문항 수. 모든 쿼리의 합은 totalQuestions.
+             */
+            questionCount: number;
+            /**
+             * Top3Accuracy
+             * @description 이 쿼리를 기대한 문항들의 Top-3 인식률(%).
+             */
+            top3Accuracy: number;
+            /** @description 이 쿼리의 등급. 백엔드가 확정해 내려준다. */
+            grade: components["schemas"]["Grade"];
+            /**
+             * Needsregeneration
+             * @description 재생성 요청 대상 후보인지. **백엔드가 판단한다** — 프론트가 인식률로 다시 계산하지 않는다. 판정 기준은 docs/open-questions.md #53 참고.
+             */
+            needsRegeneration: boolean;
+        };
         /**
          * QuestionType
          * @description 평가 문항의 유형.
@@ -335,12 +418,12 @@ export interface components {
             rank: number;
             /**
              * Method
-             * @description 검색된 엔드포인트의 HTTP 메서드.
+             * @description 검색된 쿼리의 HTTP 메서드.
              */
             method: string;
             /**
              * Path
-             * @description 검색된 엔드포인트 경로.
+             * @description 검색된 쿼리의 경로.
              */
             path: string;
             /**
@@ -350,40 +433,39 @@ export interface components {
             score: number;
         };
         /**
-         * TargetApi
-         * @description 평가 대상이 된 API 엔드포인트.
+         * TargetApp
+         * @description 평가 대상이 된 DAC 앱.
+         *
+         *     평가 단위는 **쿼리 하나가 아니라 앱 하나**다. DAC 이 앱마다 Swagger 를
+         *     생성하므로 Swagger 1개 = 앱 1개이고, 그 안의 엔드포인트 하나가 등록된
+         *     SELECT 쿼리 하나다 (docs/contract.md §0).
          */
-        TargetApi: {
+        TargetApp: {
             /**
-             * Specid
-             * @description 평가 대상 명세의 식별자. 예: orders-v3
+             * Appid
+             * @description DAC 앱 식별자. 예: mf-worker
              */
-            specId: string;
+            appId: string;
+            /**
+             * Appname
+             * @description 화면에 표시할 앱 이름.
+             */
+            appName: string;
             /**
              * Specversion
-             * @description 명세 버전. 재생성 전후를 구분하는 근거이므로 화면에 반드시 표기한다.
+             * @description Swagger 버전. 재생성 전후를 구분하는 근거이므로 화면에 반드시 표기한다.
              */
             specVersion: string;
             /**
-             * Method
-             * @description HTTP 메서드. 대문자로 내려준다. 예: GET
+             * Querycount
+             * @description 앱에 등록된 쿼리 수. queries 배열의 길이와 같다.
              */
-            method: string;
+            queryCount: number;
             /**
-             * Path
-             * @description 엔드포인트 경로. 경로 파라미터는 중괄호 표기. 예: /orders/{id}
+             * Owner
+             * @description 앱 담당 조직 또는 담당자. DAC 이 제공하지 않으면 null.
              */
-            path: string;
-            /**
-             * Summary
-             * @description 명세에 적힌 요약. 비어 있을 수 있으며, 비어 있다는 사실 자체가 평가 결과다.
-             */
-            summary?: string | null;
-            /**
-             * Description
-             * @description 명세에 적힌 상세 설명. 비어 있을 수 있다.
-             */
-            description?: string | null;
+            owner?: string | null;
         };
         /** ValidationError */
         ValidationError: {
@@ -464,6 +546,26 @@ export interface operations {
                     "application/json": {
                         [key: string]: string;
                     };
+                };
+            };
+        };
+    };
+    ready_ready_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
         };

@@ -23,12 +23,17 @@ export type Evaluation = Schemas["EvaluationReport"];
 
 // --- 구성 요소 -------------------------------------------------------------
 
-export type TargetApi = Schemas["TargetApi"];
+/** 평가 대상 DAC 앱. 평가 단위는 쿼리 하나가 아니라 앱 하나다 (contract.md §0). */
+export type TargetApp = Schemas["TargetApp"];
+
+/** 쿼리 1개의 설명 품질과 인식률. 이 화면의 실질 산출물이다. */
+export type QueryStat = Schemas["QueryStat"];
 export type EvaluationMeta = Schemas["EvaluationMeta"];
 export type EvaluationSummary = Schemas["EvaluationSummary"];
 export type QuestionTypeStat = Schemas["QuestionTypeStat"];
 export type Recommendation = Schemas["Recommendation"];
 export type Failure = Schemas["Failure"];
+/** 문항이 찾아냈어야 하는 정답 쿼리. */
 export type ExpectedApi = Schemas["ExpectedApi"];
 export type SearchResult = Schemas["SearchResult"];
 export type PreviousEvaluation = Schemas["PreviousEvaluation"];

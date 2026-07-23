@@ -9,6 +9,34 @@
 
 ---
 
+## 0. 도메인 — DAC 과 쿼리
+
+사내 Oracle 에 직접 접근할 수 있는 사람은 소수다. 그래서 **DAC** 이라는
+조회 전용 중계 서비스를 통한다. 사용자는 DAC 에 **앱**(예: `flops`,
+`mf-worker`)을 만들고 그 안에 SELECT **쿼리**를 등록하며, DAC 이 앱마다
+Swagger 를 생성해 준다.
+
+```
+DAC 앱 1개  =  Swagger 1개
+엔드포인트 1개  =  등록된 SELECT 쿼리 1개
+```
+
+**이 프로젝트의 목적**은 각 쿼리의 설명(summary / description / 파라미터 설명)이
+AI 검색에 충분한지 평가하고, 부실한 쿼리를 **별도 팀의 Swagger 자동 생성
+서비스로 넘기는 것**이다. 설명을 이 서비스가 직접 고치지는 않는다.
+
+### 용어
+
+화면과 문서의 기본 용어는 **"쿼리"** 다. "API" 나 "엔드포인트" 로 쓰지 않는다 —
+사용자는 REST 엔드포인트가 아니라 자기가 등록한 SELECT 쿼리로 인식한다.
+JSON 필드 이름은 HTTP 규약을 따르므로 `method` / `path` 를 그대로 쓰지만,
+라벨은 "기대 쿼리", "검색된 쿼리" 처럼 적는다.
+
+**평가 단위는 앱 하나다** (docs/open-questions.md #1 확정).
+쿼리 하나만 따로 평가하지 않는다.
+
+---
+
 ## 1. 엔드포인트
 
 | 메서드 | 경로 | 설명 | 우선순위 |
@@ -17,7 +45,7 @@
 | `POST` | `/api/v1/evaluations` | 평가 실행 (비동기, `job_id` 반환) | P1 |
 | `GET` | `/api/v1/evaluations/{trace_id}/status` | 진행 상태 | P1 |
 | `GET` | `/api/v1/evaluations` | 이력 목록 | P2 |
-| `POST` | `/api/v1/specs/{spec_id}/regenerate` | AI로 Swagger 설명 재생성 | P2 |
+| `POST` | `/api/v1/specs/{app_id}/regenerate-request` | 부실한 쿼리를 자동 생성 서비스로 넘기는 요청 | P2 |
 
 **대시보드는 P0 하나로 전부 그려진다.** 나머지는 나중에 붙여도 화면이 흔들리지 않는다.
 
@@ -31,12 +59,11 @@
   "evaluatedAt": "2026-07-22T11:38:00+09:00",
 
   "target": {
-    "specId": "orders-v3",
+    "appId": "mf-worker",
+    "appName": "MF Worker 조회",
     "specVersion": "v3",
-    "method": "GET",
-    "path": "/api/v1/orders/{id}/refund-status",
-    "summary": "주문 환불 상태 조회",
-    "description": "특정 주문 건의 환불 처리 상태, 환불 사유, 처리 일자를 반환합니다."
+    "queryCount": 11,
+    "owner": "데이터플랫폼팀"
   },
 
   "meta": {
@@ -55,6 +82,23 @@
     "top3FailCount": 22,
     "grade": "NEEDS_IMPROVEMENT"
   },
+
+  // 쿼리별 설명 품질과 인식률. 앱에 등록된 쿼리 전부.
+  // **이 화면의 실질 산출물이다** — 어느 쿼리를 고쳐야 하는지가 여기서 정해지고,
+  // needsRegeneration 인 것이 그대로 재생성 요청 대상이 된다.
+  "queries": [
+    {
+      "path": "/products/{id}/restock-schedule",
+      "method": "GET",
+      "summary": null,              // 없으면 null
+      "descriptionLength": 0,       // 0 이면 설명 없음
+      "hasParamDescription": false,
+      "questionCount": 8,           // 이 쿼리를 기대 결과로 삼은 문항 수
+      "top3Accuracy": 37.5,
+      "grade": "CRITICAL",
+      "needsRegeneration": true     // 백엔드가 판단한다
+    }
+  ],
 
   "questionTypes": [
     {
@@ -110,6 +154,14 @@
 - `recommendations[].failShare` 의 **합은 100을 넘을 수 있다** (한 실패에 원인이 복수).
   화면에 "원인 중복 집계" 각주 필수.
 - 시각은 전부 ISO 8601 + 타임존.
+- `target.queryCount` 는 `queries` 배열의 길이와 같다. 어긋나면 화면이 서로 다른
+  말을 한다.
+- `queries[].questionCount` 의 합은 `summary.totalQuestions` 와 같다.
+- `queries[].top3Accuracy` 는 그 쿼리를 기대한 문항들만의 인식률이다. 전체
+  인식률(`summary.top3Accuracy`)과 다르다.
+- **`needsRegeneration` 은 백엔드가 판단한다.** 프론트가 인식률이나 설명 길이로
+  다시 계산하지 않는다. 판정 기준은 `open-questions.md` #53 참고.
+- `failures[].expected` 는 "기대 쿼리" 다. 화면 라벨도 그렇게 적는다.
 
 ---
 
@@ -151,17 +203,19 @@ failureCategory  METHOD_MISMATCH | SIMILAR_RESOURCE | SYNONYM_MISS
 
 ---
 
-## 4. POST /api/v1/evaluations (P1)
+## 4. 그 외 엔드포인트
+
+### POST /api/v1/evaluations (P1)
 
 ```jsonc
 // 요청
-{ "specId": "orders-v3", "questionCount": 100, "topK": 3, "searchMode": "HYBRID" }
+{ "appId": "mf-worker", "questionCount": 100, "topK": 3, "searchMode": "HYBRID" }
 
 // 응답 202
 { "jobId": "job_7f2a", "traceId": "A493", "statusUrl": "/api/v1/evaluations/A493/status" }
 ```
 
-### GET /{trace_id}/status
+### GET /{trace_id}/status (P1)
 
 ```jsonc
 {
@@ -178,7 +232,31 @@ failureCategory  METHOD_MISMATCH | SIMILAR_RESOURCE | SYNONYM_MISS
 > 평가가 수십 초 걸린다. **실행 중 화면이 실제로는 가장 자주 보이는 화면**이므로
 > 이 엔드포인트를 P1로 둔다.
 
----
+### POST /api/v1/specs/{app_id}/regenerate-request (P2)
+
+부실한 쿼리를 **별도 팀의 Swagger 자동 생성 서비스로 넘기는 요청**이다.
+
+**이 서비스가 설명을 직접 덮어쓰지 않는다.** 요청을 접수해 넘길 뿐이고,
+실제 생성과 반영은 그쪽 팀의 절차를 따른다. 그래서 화면의 버튼도
+"덮어쓰기" 가 아니라 "넘기기" 로 읽혀야 한다.
+
+```jsonc
+// 요청 — 화면에서 고른 쿼리 경로들
+{ "queryPaths": ["/products/{id}/restock-schedule", "/orders/{id}/refund"] }
+
+// 응답 202
+{
+  "requestId": "req_20260722_001",
+  "submittedCount": 2,
+  "status": "SUBMITTED"             // SUBMITTED | ACCEPTED | REJECTED
+}
+```
+
+`queryPaths` 는 `queries[].path` 를 그대로 쓴다. 기본 선택값은
+`needsRegeneration` 이 `true` 인 쿼리들이다.
+
+> 받는 팀의 API 스펙이 아직 확정되지 않았다 (`open-questions.md` #52).
+> 위 형태는 이쪽에서 필요한 최소치를 적어둔 것이며, 확정되면 여기를 먼저 고친다.
 
 ## 5. 시안 대비 변경점
 
@@ -205,6 +283,7 @@ failureCategory  METHOD_MISMATCH | SIMILAR_RESOURCE | SYNONYM_MISS
 
 - "실패 22건 중 3건 표시" ↔ "나머지 97건 보기" → **22건 기준으로 통일**
 - "실패 원인 중 62%" ↔ 카드의 45/23/32% → **계약에서 산출한 값 사용**
+- 평가 대상을 엔드포인트 1개로 그린 부분 → **앱 단위**로 바뀌었다 (§0)
 
 ---
 
@@ -213,3 +292,4 @@ failureCategory  METHOD_MISMATCH | SIMILAR_RESOURCE | SYNONYM_MISS
 | 날짜 | 변경 | 사유 |
 |---|---|---|
 | 2026-07-22 | 최초 작성 | — |
+| 2026-07-23 | 평가 단위를 앱으로 변경, `queries` 신설, 용어를 "쿼리"로 통일, 재생성을 요청 방식으로 변경 | 미정 #1 확정 (DAC 앱 단위) |

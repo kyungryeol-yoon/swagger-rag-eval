@@ -94,22 +94,60 @@ class FailureCategory(StrEnum):
 # ---------------------------------------------------------------------------
 
 
-class TargetApi(ContractModel):
-    """평가 대상이 된 API 엔드포인트."""
+class TargetApp(ContractModel):
+    """평가 대상이 된 DAC 앱.
 
-    spec_id: str = Field(description="평가 대상 명세의 식별자. 예: orders-v3")
+    평가 단위는 **쿼리 하나가 아니라 앱 하나**다. DAC 이 앱마다 Swagger 를
+    생성하므로 Swagger 1개 = 앱 1개이고, 그 안의 엔드포인트 하나가 등록된
+    SELECT 쿼리 하나다 (docs/contract.md §0).
+    """
+
+    app_id: str = Field(description="DAC 앱 식별자. 예: mf-worker")
+    app_name: str = Field(description="화면에 표시할 앱 이름.")
     spec_version: str = Field(
-        description="명세 버전. 재생성 전후를 구분하는 근거이므로 화면에 반드시 표기한다."
+        description="Swagger 버전. 재생성 전후를 구분하는 근거이므로 화면에 반드시 표기한다."
     )
-    method: str = Field(description="HTTP 메서드. 대문자로 내려준다. 예: GET")
-    path: str = Field(description="엔드포인트 경로. 경로 파라미터는 중괄호 표기. 예: /orders/{id}")
+    query_count: int = Field(
+        ge=0, description="앱에 등록된 쿼리 수. queries 배열의 길이와 같다."
+    )
+    owner: str | None = Field(
+        default=None,
+        description="앱 담당 조직 또는 담당자. DAC 이 제공하지 않으면 null.",
+    )
+
+
+class QueryStat(ContractModel):
+    """쿼리 1개의 설명 품질과 인식률.
+
+    **이 화면의 실질 산출물이다.** 어느 쿼리의 설명을 고쳐야 하는지가
+    여기서 정해지고, 그 목록이 그대로 재생성 요청 대상이 된다.
+    """
+
+    path: str = Field(description="쿼리 경로. 경로 파라미터는 중괄호 표기.")
+    method: str = Field(description="HTTP 메서드. 대문자로 내려준다.")
     summary: str | None = Field(
         default=None,
-        description="명세에 적힌 요약. 비어 있을 수 있으며, 비어 있다는 사실 자체가 평가 결과다.",
+        description="명세에 적힌 요약. 없으면 null — 비어 있다는 사실 자체가 평가 결과다.",
     )
-    description: str | None = Field(
-        default=None,
-        description="명세에 적힌 상세 설명. 비어 있을 수 있다.",
+    description_length: int = Field(
+        ge=0,
+        description="설명 길이(글자 수). 0 이면 설명이 없다. 길이만으로도 부실한 쿼리가 드러난다.",
+    )
+    has_param_description: bool = Field(
+        description="파라미터 설명이 하나라도 있는지. 파라미터 기반 질문의 인식률과 직결된다."
+    )
+    question_count: int = Field(
+        ge=0, description="이 쿼리를 기대 결과로 삼은 문항 수. 모든 쿼리의 합은 totalQuestions."
+    )
+    top3_accuracy: float = Field(
+        ge=0, le=100, description="이 쿼리를 기대한 문항들의 Top-3 인식률(%)."
+    )
+    grade: Grade = Field(description="이 쿼리의 등급. 백엔드가 확정해 내려준다.")
+    needs_regeneration: bool = Field(
+        description=(
+            "재생성 요청 대상 후보인지. **백엔드가 판단한다** — 프론트가 인식률로 "
+            "다시 계산하지 않는다. 판정 기준은 docs/open-questions.md #53 참고."
+        )
     )
 
 
@@ -182,18 +220,18 @@ class Recommendation(ContractModel):
 
 
 class ExpectedApi(ContractModel):
-    """문항이 찾아냈어야 하는 정답 엔드포인트."""
+    """문항이 찾아냈어야 하는 정답 쿼리."""
 
-    method: str = Field(description="기대 HTTP 메서드.")
-    path: str = Field(description="기대 엔드포인트 경로.")
+    method: str = Field(description="기대 쿼리의 HTTP 메서드.")
+    path: str = Field(description="기대 쿼리의 경로.")
 
 
 class SearchResult(ContractModel):
     """검색 결과 1건."""
 
     rank: int = Field(ge=1, description="검색 순위. 1이 가장 유사.")
-    method: str = Field(description="검색된 엔드포인트의 HTTP 메서드.")
-    path: str = Field(description="검색된 엔드포인트 경로.")
+    method: str = Field(description="검색된 쿼리의 HTTP 메서드.")
+    path: str = Field(description="검색된 쿼리의 경로.")
     score: float = Field(
         ge=0,
         le=1,
@@ -207,15 +245,15 @@ class Failure(ContractModel):
     id: str = Field(description="문항 식별자. 예: q_017")
     question: str = Field(description="실제로 던진 질문 문장.")
     question_type: QuestionType = Field(description="문항 유형 enum.")
-    expected: ExpectedApi = Field(description="찾아냈어야 하는 정답 엔드포인트.")
+    expected: ExpectedApi = Field(description="찾아냈어야 하는 정답 쿼리.")
     results: list[SearchResult] = Field(
         description="실제 검색 결과 상위 목록. 보통 topK 개."
     )
-    hit: bool = Field(description="Top-K 안에 기대 API가 있었는지. 실패 목록이므로 항상 false.")
+    hit: bool = Field(description="Top-K 안에 기대 쿼리가 있었는지. 실패 목록이므로 항상 false.")
     expected_rank: int | None = Field(
         default=None,
         ge=1,
-        description="기대 API가 전체 검색 결과에서 몇 위였는지. **Top-N 밖이면 null**.",
+        description="기대 쿼리가 전체 검색 결과에서 몇 위였는지. **Top-N 밖이면 null**.",
     )
     failure_category: FailureCategory = Field(description="실패 원인 분류 enum.")
     reason: str = Field(description="사람이 읽을 실패 원인 설명. 한 문장.")
@@ -242,9 +280,15 @@ class EvaluationReport(ContractModel):
 
     trace_id: str = Field(description="평가 실행의 추적 ID. 예: A492")
     evaluated_at: str = Field(description="평가 실행 시각(ISO 8601 + 타임존).")
-    target: TargetApi = Field(description="평가 대상 API.")
+    target: TargetApp = Field(description="평가 대상 DAC 앱.")
     meta: EvaluationMeta = Field(description="재현성 정보.")
     summary: EvaluationSummary = Field(description="요약 지표.")
+    queries: list[QueryStat] = Field(
+        description=(
+            "쿼리별 설명 품질과 인식률. 앱에 등록된 쿼리 전부를 내려준다. "
+            "이 목록에서 needsRegeneration 인 것이 재생성 요청 대상이 된다."
+        )
+    )
     question_types: list[QuestionTypeStat] = Field(
         description="문항 유형별 분포와 인식률. 7종 전부 내려준다."
     )
