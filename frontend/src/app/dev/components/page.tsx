@@ -1,5 +1,6 @@
 import FailureTable from "@/components/eval/FailureTable/FailureTable";
 import GaugeRing from "@/components/eval/GaugeRing/GaugeRing";
+import QuestionTypeChart from "@/components/eval/QuestionTypeChart/QuestionTypeChart";
 import SummaryCards from "@/components/eval/SummaryCards/SummaryCards";
 import { gradeColorVar, gradeLabel } from "@/lib/enumTokens";
 import type {
@@ -7,6 +8,7 @@ import type {
   Failure,
   Grade,
   PreviousEvaluation,
+  QuestionTypeStat,
 } from "@/lib/types";
 
 import styles from "./page.module.css";
@@ -35,6 +37,17 @@ const FIXTURE_PREVIOUS: PreviousEvaluation = {
   evaluatedAt: "2026-07-15T09:12:00+09:00",
   top3Accuracy: 64.0,
 };
+
+/** fixture 의 questionTypes 7종. count 합 100, 인식률 40.0 ~ 95.5. */
+const FIXTURE_TYPES: QuestionTypeStat[] = [
+  { type: "DIRECT", label: "직접 질문", count: 22, ratio: 22.0, top3Accuracy: 95.5 },
+  { type: "USER_NL", label: "사용자 자연어 질문", count: 20, ratio: 20.0, top3Accuracy: 75.0 },
+  { type: "DOMAIN_TERM", label: "업무 용어 질문", count: 14, ratio: 14.0, top3Accuracy: 78.6 },
+  { type: "PARAMETER", label: "파라미터 기반 질문", count: 12, ratio: 12.0, top3Accuracy: 83.3 },
+  { type: "ERROR_CASE", label: "오류/에러 상황 질문", count: 11, ratio: 11.0, top3Accuracy: 81.8 },
+  { type: "SHORT_KEYWORD", label: "짧은 키워드 질문", count: 11, ratio: 11.0, top3Accuracy: 72.7 },
+  { type: "MIXED_LANG", label: "한영 혼합 질문", count: 10, ratio: 10.0, top3Accuracy: 40.0 },
+];
 
 /** fixture failures 의 앞 3건. expectedRank 는 4 / null / null 이다. */
 const FIXTURE_FAILURES: Failure[] = [
@@ -221,6 +234,58 @@ export default function ComponentsPage() {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* --- QuestionTypeChart --- */}
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>QuestionTypeChart</h2>
+        <p className={styles.sectionNote}>
+          fixture <code>eval_A492.json</code> 의 7종. 시안에는 분포만 있었다 —
+          <strong> 유형별 인식률이 이 대시보드에서 가장 중요한 정보다.</strong>
+          &ldquo;한영 혼합 10%&rdquo;로는 할 게 없지만 &ldquo;한영 혼합에서
+          40%&rdquo;면 무엇을 고칠지가 정해진다.
+          <br />
+          막대는 <strong>낮은 순</strong>이고, 점선은 전체 인식률(78.0%)이다.
+          평균 아래 유형이 기준선 왼쪽에 모인다 — 등급을 다시 계산하지 않고 같은 효과를 낸다.
+        </p>
+        <QuestionTypeChart questionTypes={FIXTURE_TYPES} overallTop3Accuracy={78.0} />
+
+        <p className={styles.sectionNote}>
+          한 유형이 100% — 조각이 하나면 간격을 두지 않는다. 간격을 그대로 두면
+          원이 안 닫혀서 데이터가 잘못된 것처럼 보인다.
+        </p>
+        <QuestionTypeChart
+          questionTypes={[{ ...FIXTURE_TYPES[0], count: 100, ratio: 100.0 }]}
+          overallTop3Accuracy={95.5}
+        />
+
+        <p className={styles.sectionNote}>
+          <code>count</code> 가 0 인 유형이 섞였을 때 — 조각은 안 그려지고 범례엔 남는다.
+          그 유형으로 만든 문항이 0개라는 것도 정보다.
+        </p>
+        <QuestionTypeChart
+          questionTypes={FIXTURE_TYPES.map((t, i) =>
+            i % 2 === 1 ? { ...t, count: 0, ratio: 0, top3Accuracy: 0 } : t,
+          )}
+          overallTop3Accuracy={78.0}
+        />
+
+        <p className={styles.sectionNote}>유형이 2개뿐일 때.</p>
+        <QuestionTypeChart
+          questionTypes={[
+            { ...FIXTURE_TYPES[0], count: 60, ratio: 60.0 },
+            { ...FIXTURE_TYPES[6], count: 40, ratio: 40.0 },
+          ]}
+          overallTop3Accuracy={73.3}
+        />
+
+        <p className={styles.sectionNote}>
+          인식률이 전부 동일할 때 — 기준선과 막대 끝이 겹친다.
+        </p>
+        <QuestionTypeChart
+          questionTypes={FIXTURE_TYPES.map((t) => ({ ...t, top3Accuracy: 78.0 }))}
+          overallTop3Accuracy={78.0}
+        />
       </section>
 
       {/* --- FailureTable --- */}
