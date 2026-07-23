@@ -95,6 +95,18 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PATH="/app/.venv/bin:$PATH"
 
+# 바인딩 주소.
+#
+# **컨테이너 안에서는 0.0.0.0 이어야 한다.** 127.0.0.1 로 두면 컨테이너
+# 네트워크 네임스페이스 밖에서 닿을 수 없어, 포트를 매핑해도 연결이 거부되고
+# k8s 의 probe 도 전부 실패한다. 컨테이너 격리가 이미 경계 역할을 하므로
+# 여기서 0.0.0.0 은 안전하다.
+#
+# 로컬 개발(`make dev`)은 127.0.0.1 그대로다 — 거기서 0.0.0.0 으로 열면
+# 같은 네트워크의 다른 기기에 개발 서버가 그대로 노출된다 (scripts/tasks.py).
+ENV HOST=0.0.0.0 \
+    PORT=8000
+
 # non-root. 시스템 계정이라 로그인 셸을 주지 않는다.
 RUN useradd --system --create-home --shell /usr/sbin/nologin appuser
 
@@ -108,15 +120,21 @@ USER appuser
 EXPOSE 8000
 
 # exec form 이어야 uvicorn 이 PID 1 이 되고 SIGTERM 을 직접 받는다.
-# shell form 으로 쓰면 /bin/sh 가 PID 1 이 되어 신호를 자식에게 전달하지 않고,
-# 파드 종료 때마다 grace period 를 다 쓰고 SIGKILL 당한다.
+# shell form(CMD uvicorn ...)으로 쓰면 /bin/sh 가 PID 1 이 되어 신호를 자식에게
+# 전달하지 않고, 파드 종료 때마다 grace period 를 다 쓰고 SIGKILL 당한다.
+#
+# `sh -c` 를 거치는 이유는 HOST/PORT 를 실제로 반영하기 위해서다.
+# 순수 exec form 은 변수를 치환하지 않아 ["--host", "$HOST"] 가 문자열
+# "$HOST" 그대로 넘어간다. 그러면 ENV 가 있어도 무용지물이고, 값을 하드코딩하면
+# `docker run -e PORT=9000` 이 조용히 무시된다.
+#
+# **`exec` 가 핵심이다.** sh 가 uvicorn 으로 자신을 대체하므로 uvicorn 이 PID 1 이
+# 되어 SIGTERM 을 직접 받는다. `exec` 를 빼면 sh 가 PID 1 로 남아 신호가 막힌다.
 #
 # --timeout-graceful-shutdown: 처리 중인 요청을 기다리는 시간.
 #   k8s terminationGracePeriodSeconds 보다 짧아야 의미가 있다.
-CMD ["uvicorn", "app.main:app", \
-     "--host", "0.0.0.0", \
-     "--port", "8000", \
-     "--timeout-graceful-shutdown", "20"]
+CMD ["sh", "-c", \
+     "exec uvicorn app.main:app --host \"$HOST\" --port \"$PORT\" --timeout-graceful-shutdown 20"]
 
 
 # ===========================================================================
@@ -162,10 +180,21 @@ RUN npm run build
 
 FROM ${NODE_IMAGE} AS frontend
 
+# standalone 산출물의 server.js 는 HOSTNAME / PORT 환경변수를 읽는다.
+#
+# **명시적으로 설정한다.** Next 버전에 따라 기본 바인딩 주소가 달라진 이력이
+# 있어서, 기본값에 기대면 버전을 올릴 때 조용히 127.0.0.1 로 바뀌어 있을 수 있다.
+# 그러면 이미지는 정상 기동하는데 포트 매핑도 probe 도 전부 실패한다 —
+# 로그에는 "Ready" 만 찍혀 있어 원인을 찾기 어렵다.
+#
+# 이름이 HOST 가 아니라 HOSTNAME 인 것에 주의. backend 는 HOST 를 쓴다.
+# server.js 가 보는 이름이 HOSTNAME 이라 맞출 수 없다.
+#
+# 로컬 개발(`next dev`)에는 설정하지 않는다. Dockerfile 안에서만 준다.
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
-    PORT=3000 \
-    HOSTNAME=0.0.0.0
+    HOSTNAME=0.0.0.0 \
+    PORT=3000
 
 WORKDIR /app
 

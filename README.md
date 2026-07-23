@@ -197,18 +197,33 @@ k8s manifest 는 이 저장소에서 만들지 않는다 (사내에서 별도 �
 | | backend | frontend |
 |---|---|---|
 | 포트 | `8000` | `3000` |
+| 바인딩 | `HOST=0.0.0.0` | `HOSTNAME=0.0.0.0` |
 | 실행 유저 | `appuser` (uid 999) | `node` (uid 1000) |
 | liveness | `GET /health` | `GET /api/health` |
 | readiness | `GET /ready` (실패 시 503) | `GET /api/health` |
-| 런타임 환경변수 | `CORS_ORIGINS`, `SRE_*` (아래 표) | `API_BASE_URL` |
+| 런타임 환경변수 | `CORS_ORIGINS`, `HOST`, `PORT`, `SRE_*` | `API_BASE_URL`, `HOSTNAME`, `PORT` |
 
-- 두 이미지 모두 `CMD` 가 exec form 이라 **SIGTERM 이 앱에 직접 전달된다.**
+**probe 경로는 `BASE_PATH` 에 따라 달라진다.** 프론트만 그렇다.
+
+| `BASE_PATH` | frontend probe | backend probe |
+|---|---|---|
+| (비움, 루트 배포) | `/api/health` | `/health`, `/ready` |
+| `/swagger-eval` | `/swagger-eval/api/health` | `/health`, `/ready` (그대로) |
+
+백엔드는 `basePath` 의 영향을 받지 않는다. Next 의 설정이라 프론트 라우트에만
+적용된다. 매니페스트에서 프론트 probe 경로만 빌드 시 `BASE_PATH` 와 맞춰야 하고,
+이걸 놓치면 **파드는 정상인데 probe 만 404 로 실패해 무한 재시작**한다.
+
+- 바인딩 주소를 `0.0.0.0` 으로 명시했다. `127.0.0.1` 이면 컨테이너 밖에서 닿을 수
+  없어 포트를 매핑해도 연결이 거부되고 probe 도 전부 실패한다.
+  변수 이름이 backend 는 `HOST`, frontend 는 `HOSTNAME` 인데,
+  standalone `server.js` 가 보는 이름이 `HOSTNAME` 이라 맞출 수 없다.
+- 두 이미지 모두 **SIGTERM 이 앱에 직접 전달된다.** backend 는 `sh -c exec ...`
+  로 uvicorn 을 PID 1 에 올려 신호를 받게 했다.
   `terminationGracePeriodSeconds` 는 25 이상을 권장한다 —
   uvicorn 이 `--timeout-graceful-shutdown 20` 으로 처리 중인 요청을 기다린다.
 - 프론트의 `/api/health` 는 백엔드 상태를 보지 않는다. 백엔드가 죽었다고
   프론트 파드까지 재시작되면 장애가 번지기만 한다.
-- `BASE_PATH` 를 쓰면 프론트의 probe 경로도 그 아래로 내려간다
-  (`/swagger-eval/api/health`).
 
 ## 환경변수
 

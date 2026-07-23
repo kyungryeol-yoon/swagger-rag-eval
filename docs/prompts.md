@@ -564,6 +564,87 @@ venv 활성화를 요구하지 않는다. **다만 어떤 python 이 실행 중�
 > 커밋 라벨이 `4.7b` 와 겹쳐 `4.7c` 로 달았다. 같은 라벨이 둘이면
 > "어디까지 이식했는지" 추적이 안 된다.
 
+### Phase 4.7d — 컨테이너 네트워크 바인딩 (수행 완료)
+
+Dockerfile 과 문서만. 컨테이너가 바깥에서 닿을 수 있게 바인딩 주소를 명시한다.
+
+```
+backend
+- CMD 를 uvicorn --host 0.0.0.0 --port 8000 으로 명시, exec form 유지
+- HOST/PORT 를 ENV 로 두되 기본값 0.0.0.0 / 8000
+
+frontend
+- standalone server.js 는 HOSTNAME 을 본다. 버전에 따라 기본값이 달라진
+  이력이 있으므로 ENV HOSTNAME=0.0.0.0 / PORT=3000 을 명시
+- 로컬 개발(next dev)은 기존 동작 유지. Dockerfile 에서만 설정
+
+로컬 개발은 그대로
+- tasks.py 의 dev 는 127.0.0.1 유지. 이유를 주석으로
+
+probe 경로
+- basePath 를 쓰면 프론트 health 가 /{basePath}/api/health 로 바뀐다.
+  백엔드는 영향 없음. README 에 차이 명시
+```
+
+**핵심 판단 — `sh -c exec`**
+
+순수 exec form 은 변수를 치환하지 않는다. `["--host", "$HOST"]` 는 문자열
+`"$HOST"` 그대로 넘어간다. 그러면 `ENV HOST` 를 선언해도 **무용지물**이고,
+값을 하드코딩하면 `docker run -e PORT=9000` 이 조용히 무시된다.
+
+그래서 `sh -c` 를 거치되 **`exec` 를 붙인다.**
+
+```dockerfile
+CMD ["sh", "-c", \
+     "exec uvicorn app.main:app --host \"$HOST\" --port \"$PORT\" --timeout-graceful-shutdown 20"]
+```
+
+`exec` 가 sh 를 uvicorn 으로 대체하므로 uvicorn 이 PID 1 이 되어 SIGTERM 을
+직접 받는다. `exec` 를 빼면 sh 가 PID 1 로 남아 신호가 막히고, 파드 종료마다
+grace period 를 다 쓰고 SIGKILL 당한다.
+
+실측으로 확인했다.
+
+```
+$ docker exec t-be cat /proc/1/cmdline
+/app/.venv/bin/python /app/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 ...
+```
+
+**변수 이름이 backend/frontend 가 다르다**
+
+backend 는 `HOST`, frontend 는 `HOSTNAME` 이다. 맞추고 싶지만
+standalone `server.js` 가 보는 이름이 `HOSTNAME` 이라 바꿀 수 없다.
+
+**로컬은 127.0.0.1 그대로**
+
+컨테이너에서 `0.0.0.0` 이 안전한 것은 컨테이너 격리가 경계 역할을 하기
+때문이다. 로컬에서 그대로 열면 같은 네트워크의 다른 기기에서 개발 서버에
+접속할 수 있다 — 공용 와이파이에서는 평가 fixture 와 명세가 그대로 노출된다.
+
+**probe 경로는 프론트만 basePath 를 탄다**
+
+| `BASE_PATH` | frontend | backend |
+|---|---|---|
+| (비움) | `/api/health` | `/health`, `/ready` |
+| `/swagger-eval` | `/swagger-eval/api/health` | `/health`, `/ready` (그대로) |
+
+매니페스트에서 이걸 놓치면 **파드는 정상인데 probe 만 404 로 실패해
+무한 재시작**한다. 원인이 로그에 안 보여서 찾기 어렵다.
+
+**검증** (실제 빌드·기동)
+
+| 확인 | 결과 |
+|---|---|
+| 기본 바인딩 | backend `0.0.0.0:8000`, frontend `0.0.0.0:3000` |
+| 외부 접속 | `/health` `/ready` `/api/health` 전부 200 |
+| `-e PORT=9100` | 로그 `0.0.0.0:9100`, `/health` 200 — ENV 가 실제로 반영된다 |
+| PID 1 | sh 가 아니라 uvicorn |
+| SIGTERM | `docker stop` 0~1초, exit 0 / 143 |
+| basePath probe | `/api/health` 404, `/swagger-eval/api/health` 200 |
+| 사내 URL | Dockerfile 에 공개 URL(pypi.org) 외 없음 |
+
+> 커밋 라벨이 `4.7c`(Python 3.12 통일)와 겹쳐 `4.7d` 로 달았다.
+
 ### Phase 5 — 디자인 토큰
 
 ```
