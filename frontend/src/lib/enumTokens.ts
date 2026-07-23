@@ -68,6 +68,18 @@ export const priorityColorVar: Record<Priority, string> = {
   LOW: "--priority-low",
 };
 
+/**
+ * 우선순위의 표시 문구.
+ *
+ * "높음/중간/낮음" 만 쓰면 무엇의 높낮이인지 모호하다 — 인식률인지 비중인지
+ * 우선순위인지. 뱃지 하나만 떼어놔도 읽히도록 "우선순위" 를 붙인다.
+ */
+export const priorityLabel: Record<Priority, string> = {
+  HIGH: "우선순위 높음",
+  MEDIUM: "우선순위 중간",
+  LOW: "우선순위 낮음",
+};
+
 /** 우선순위에 해당하는 색. */
 export function priorityColor(priority: Priority): string {
   return cssVar(priorityColorVar[priority]);

@@ -1,6 +1,7 @@
 import FailureTable from "@/components/eval/FailureTable/FailureTable";
 import GaugeRing from "@/components/eval/GaugeRing/GaugeRing";
 import QuestionTypeChart from "@/components/eval/QuestionTypeChart/QuestionTypeChart";
+import RecommendationCards from "@/components/eval/RecommendationCards/RecommendationCards";
 import SummaryCards from "@/components/eval/SummaryCards/SummaryCards";
 import { gradeColorVar, gradeLabel } from "@/lib/enumTokens";
 import type {
@@ -9,6 +10,7 @@ import type {
   Grade,
   PreviousEvaluation,
   QuestionTypeStat,
+  Recommendation,
 } from "@/lib/types";
 
 import styles from "./page.module.css";
@@ -47,6 +49,35 @@ const FIXTURE_TYPES: QuestionTypeStat[] = [
   { type: "ERROR_CASE", label: "오류/에러 상황 질문", count: 11, ratio: 11.0, top3Accuracy: 81.8 },
   { type: "SHORT_KEYWORD", label: "짧은 키워드 질문", count: 11, ratio: 11.0, top3Accuracy: 72.7 },
   { type: "MIXED_LANG", label: "한영 혼합 질문", count: 10, ratio: 10.0, top3Accuracy: 40.0 },
+];
+
+
+/** fixture 의 recommendations 3건. failShare 합 113.7 — 100 을 넘는다. */
+const FIXTURE_RECOMMENDATIONS: Recommendation[] = [
+  {
+    order: 1,
+    title: "설명(Description) 보강",
+    description:
+      "설명이 아예 없는 엔드포인트 2개(DELETE /orders/{id}/refund, GET /products/{id}/restock-schedule)가 전체 실패의 절반 가까이를 차지합니다. summary와 description을 채우는 것만으로 가장 크게 개선됩니다.",
+    priority: "HIGH",
+    failShare: 45.5,
+  },
+  {
+    order: 2,
+    title: "동의어·업무 용어 추가",
+    description:
+      "사용자는 '재입고', '반품', '운송장'처럼 명세에 없는 표현으로 질문합니다. 설명 안에 실제 사용자 표현을 함께 적어두면 한영 혼합 질문과 짧은 키워드 질문의 인식률이 올라갑니다.",
+    priority: "HIGH",
+    failShare: 36.4,
+  },
+  {
+    order: 3,
+    title: "유사 리소스 구분 강화",
+    description:
+      "주문 배송지와 회원 기본 주소처럼 이름이 비슷한 엔드포인트가 서로의 상위 결과를 밀어냅니다. 각 설명에 '무엇이 아닌지'를 한 줄 덧붙이면 혼동이 줄어듭니다.",
+    priority: "MEDIUM",
+    failShare: 31.8,
+  },
 ];
 
 /** fixture failures 의 앞 3건. expectedRank 는 4 / null / null 이다. */
@@ -126,7 +157,11 @@ export default function ComponentsPage() {
     <main className={styles.page}>
       <h1 className={styles.title}>컴포넌트</h1>
       <p className={styles.lead}>
-        Phase 6 진행 중. 현재 <code>GaugeRing</code>, <code>SummaryCards</code> 2 / 7.
+        Phase 6 진행 중 — <strong>5 / 7</strong>. 완료: <code>GaugeRing</code>,{" "}
+        <code>SummaryCards</code>, <code>QuestionTypeChart</code>,{" "}
+        <code>RecommendationCards</code>, <code>FailureTable</code>.
+        <br />
+        남음: <code>TargetApiCard</code>(6-3), <code>ActionPanel</code>(6-7).
       </p>
 
       {/* --- SummaryCards --- */}
@@ -286,6 +321,64 @@ export default function ComponentsPage() {
           questionTypes={FIXTURE_TYPES.map((t) => ({ ...t, top3Accuracy: 78.0 }))}
           overallTop3Accuracy={78.0}
         />
+      </section>
+
+
+      {/* --- RecommendationCards --- */}
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>RecommendationCards</h2>
+        <p className={styles.sectionNote}>
+          fixture <code>eval_A492.json</code> 의 3건. 시안의 &ldquo;개선 추천&rdquo;은
+          &ldquo;권장 조치&rdquo;로 변경 확정됐다 (§9-2).
+          <br />
+          <code>failShare</code> 합이 <strong>113.7%</strong>다. 한 실패에 원인이 둘 이상일 수
+          있어 중복 집계되기 때문이다 (계약 §2). 시안의 &ldquo;실패 원인 중 62%&rdquo; 같은
+          임의 합산 문구는 만들지 않는다 — 각주로 이유만 상시 표시한다.
+        </p>
+        <RecommendationCards recommendations={FIXTURE_RECOMMENDATIONS} />
+
+        <p className={styles.sectionNote}>
+          priority 3종 + 설명 길이 극단 + failShare 0% / 100%. 설명이 짧아도 하단부(비중 막대)가
+          바닥에 붙어 카드끼리 높이가 맞는지 본다.
+        </p>
+        <RecommendationCards
+          recommendations={[
+            { ...FIXTURE_RECOMMENDATIONS[0], order: 1, priority: "HIGH", failShare: 100 },
+            {
+              order: 2,
+              title: "짧은 설명",
+              description: "한 줄.",
+              priority: "MEDIUM",
+              failShare: 0,
+            },
+            {
+              order: 3,
+              title: "아주 긴 설명이 들어간 조치 항목",
+              description:
+                "설명이 세 줄을 넘으면 말줄임된다. 이 문장은 그것을 확인하려고 일부러 길게 적은 것이다. 실제 백엔드가 이만큼 긴 설명을 내려줄지는 알 수 없지만, 길이에 따라 카드 높이가 달라지면 비중 막대가 서로 어긋나 눈으로 비교할 수 없게 되므로 상한을 둔다. 여기서부터는 화면에 보이지 않아야 한다.",
+              priority: "LOW",
+              failShare: 12.5,
+            },
+          ]}
+        />
+
+        <p className={styles.sectionNote}>항목 1개.</p>
+        <RecommendationCards recommendations={[FIXTURE_RECOMMENDATIONS[0]]} />
+
+        <p className={styles.sectionNote}>항목 5개 — 3열 그리드가 줄바꿈된다.</p>
+        <RecommendationCards
+          recommendations={[
+            ...FIXTURE_RECOMMENDATIONS,
+            { ...FIXTURE_RECOMMENDATIONS[0], order: 4, title: "네 번째 조치", priority: "LOW", failShare: 8.3 },
+            { ...FIXTURE_RECOMMENDATIONS[1], order: 5, title: "다섯 번째 조치", priority: "MEDIUM", failShare: 4.2 },
+          ]}
+        />
+
+        <p className={styles.sectionNote}>
+          빈 배열 — <strong>섹션 제목과 각주까지 아무것도 렌더되지 않는다.</strong>
+          아래에 빈 줄만 있으면 정상이다.
+        </p>
+        <RecommendationCards recommendations={[]} />
       </section>
 
       {/* --- FailureTable --- */}
