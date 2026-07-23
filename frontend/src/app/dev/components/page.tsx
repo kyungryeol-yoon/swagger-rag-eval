@@ -8,16 +8,8 @@ import QuestionTypeChart from "@/components/eval/QuestionTypeChart/QuestionTypeC
 import RecommendationCards from "@/components/eval/RecommendationCards/RecommendationCards";
 import SummaryCards from "@/components/eval/SummaryCards/SummaryCards";
 import { gradeColorVar, gradeLabel } from "@/lib/enumTokens";
-import type {
-  EvaluationSummary,
-  Failure,
-  Grade,
-  PreviousEvaluation,
-  QuestionTypeStat,
-  QueryStat,
-  Recommendation,
-  TargetApp,
-} from "@/lib/types";
+import type { Evaluation, Failure, Grade } from "@/lib/types";
+import evalFixture from "@/mocks/eval_A492.json";
 
 import styles from "./page.module.css";
 
@@ -25,158 +17,44 @@ import styles from "./page.module.css";
  * 컴포넌트 확인 페이지. 개발 전용
  * (`app/dev/layout.tsx` 가 프로덕션에서 404 처리).
  *
- * Phase 6 는 컴포넌트를 하나씩 만든다. 지금은 GaugeRing 뿐이다.
+ * **이 페이지의 데이터는 backend fixture(eval_A492)가 단일 출처다.**
+ * frontend/src/mocks/eval_A492.json 은 그 복사본이다 (make sync-fixture).
+ * 계약이 바뀌면 fixture 를 고치고 다시 복사하면 이 페이지가 따라온다 —
+ * 도메인 값을 여기에 손으로 적지 않는다. 경계 케이스만 fixture 를 가공해 만든다.
  */
+
+// backend fixture 가 단일 출처다. JSON import 는 리터럴 타입으로 추론되어
+// grade("CRITICAL"|...) 같은 union 과 어긋나므로, 계약 타입으로 한 번 좁힌다.
+// 구조 검증은 backend 테스트(test_evaluation_contract)가 이미 한다.
+const REPORT = evalFixture as unknown as Evaluation;
+
+const FIXTURE_TARGET = REPORT.target;
+const FIXTURE_QUERIES = REPORT.queries;
+const FIXTURE_SUMMARY = REPORT.summary;
+// fixture 에는 previous 가 항상 있다(A311). 델타 뱃지 케이스에서 non-null 로 쓴다.
+const FIXTURE_PREVIOUS = REPORT.previous!;
+const FIXTURE_TYPES = REPORT.questionTypes;
+const FIXTURE_RECOMMENDATIONS = REPORT.recommendations;
+const FIXTURE_FAILURES = REPORT.failures;
 
 const VALUES = [0, 40, 78, 100];
 
-/** backend/app/fixtures/eval_A492.json 의 실제 값. 손으로 바꾸지 말 것. */
-const FIXTURE_TARGET: TargetApp = {
-  appId: "mf-worker",
-  appName: "MF Worker",
-  specVersion: "v3",
-  queryCount: 11,
-  owner: "데이터플랫폼팀",
-};
+// --- 경계 케이스: fixture 를 가공해 파생한다 (도메인 리터럴을 새로 적지 않는다) ---
 
-/** fixture 의 queries 11개. 정렬·품질 판정 확인용. */
-const FIXTURE_QUERIES: QueryStat[] = [
-  { path: "/queries/lot-status", method: "GET", summary: "랏 현재 공정 단계 조회", descriptionLength: 168, hasParamDescription: true, questionCount: 12, top3Accuracy: 100.0, grade: "GOOD", needsRegeneration: false },
-  { path: "/queries/wafer-yield-daily", method: "GET", summary: "일별 웨이퍼 수율 조회", descriptionLength: 182, hasParamDescription: true, questionCount: 11, top3Accuracy: 100.0, grade: "GOOD", needsRegeneration: false },
-  { path: "/queries/defect-summary", method: "POST", summary: "불량 유형별 집계 조회", descriptionLength: 175, hasParamDescription: true, questionCount: 10, top3Accuracy: 90.0, grade: "FAIR", needsRegeneration: false },
-  { path: "/queries/lot-trace", method: "GET", summary: "랏 이력 추적 조회", descriptionLength: 171, hasParamDescription: true, questionCount: 10, top3Accuracy: 90.0, grade: "FAIR", needsRegeneration: false },
-  { path: "/queries/inventory-wip", method: "GET", summary: "WIP 재고 현황 조회", descriptionLength: 158, hasParamDescription: true, questionCount: 9, top3Accuracy: 88.9, grade: "FAIR", needsRegeneration: false },
-  { path: "/queries/equipment-downtime", method: "GET", summary: "설비 다운타임 조회", descriptionLength: 0, hasParamDescription: false, questionCount: 10, top3Accuracy: 80.0, grade: "NEEDS_IMPROVEMENT", needsRegeneration: false },
-  { path: "/queries/recipe-history", method: "GET", summary: "레시피 변경 이력 조회", descriptionLength: 0, hasParamDescription: false, questionCount: 9, top3Accuracy: 77.8, grade: "NEEDS_IMPROVEMENT", needsRegeneration: false },
-  { path: "/queries/alarm-history", method: "POST", summary: "알람 발생 이력 조회", descriptionLength: 0, hasParamDescription: false, questionCount: 8, top3Accuracy: 75.0, grade: "NEEDS_IMPROVEMENT", needsRegeneration: false },
-  { path: "/queries/step-cycle-time", method: "GET", summary: null, descriptionLength: 0, hasParamDescription: false, questionCount: 9, top3Accuracy: 44.4, grade: "CRITICAL", needsRegeneration: true },
-  { path: "/queries/operator-shift", method: "GET", summary: null, descriptionLength: 0, hasParamDescription: false, questionCount: 7, top3Accuracy: 42.9, grade: "CRITICAL", needsRegeneration: true },
-  { path: "/queries/chamber-sensor-trend", method: "POST", summary: null, descriptionLength: 0, hasParamDescription: false, questionCount: 5, top3Accuracy: 20.0, grade: "CRITICAL", needsRegeneration: true },
-];
-
-const FIXTURE_SUMMARY: EvaluationSummary = {
-  totalQuestions: 100,
-  top1Accuracy: 61.0,
-  top3Accuracy: 78.0,
-  top1FailCount: 39,
-  top3FailCount: 22,
-  grade: "NEEDS_IMPROVEMENT",
-};
-
-const FIXTURE_PREVIOUS: PreviousEvaluation = {
-  traceId: "A311",
-  evaluatedAt: "2026-07-15T09:12:00+09:00",
-  top3Accuracy: 64.0,
-};
-
-/** fixture 의 questionTypes 7종. count 합 100, 인식률 40.0 ~ 95.5. */
-const FIXTURE_TYPES: QuestionTypeStat[] = [
-  { type: "DIRECT", label: "직접 질문", count: 22, ratio: 22.0, top3Accuracy: 95.5 },
-  { type: "USER_NL", label: "사용자 자연어 질문", count: 20, ratio: 20.0, top3Accuracy: 75.0 },
-  { type: "DOMAIN_TERM", label: "업무 용어 질문", count: 14, ratio: 14.0, top3Accuracy: 78.6 },
-  { type: "PARAMETER", label: "파라미터 기반 질문", count: 12, ratio: 12.0, top3Accuracy: 83.3 },
-  { type: "ERROR_CASE", label: "오류/에러 상황 질문", count: 11, ratio: 11.0, top3Accuracy: 81.8 },
-  { type: "SHORT_KEYWORD", label: "짧은 키워드 질문", count: 11, ratio: 11.0, top3Accuracy: 72.7 },
-  { type: "MIXED_LANG", label: "한영 혼합 질문", count: 10, ratio: 10.0, top3Accuracy: 40.0 },
-];
-
-
-/** fixture 의 recommendations 3건. failShare 합 113.7 — 100 을 넘는다. */
-const FIXTURE_RECOMMENDATIONS: Recommendation[] = [
-  {
-    order: 1,
-    title: "설명(Description) 보강",
-    description:
-      "설명이 아예 없는 엔드포인트 2개(DELETE /orders/{id}/refund, GET /products/{id}/restock-schedule)가 전체 실패의 절반 가까이를 차지합니다. summary와 description을 채우는 것만으로 가장 크게 개선됩니다.",
-    priority: "HIGH",
-    failShare: 45.5,
-  },
-  {
-    order: 2,
-    title: "동의어·업무 용어 추가",
-    description:
-      "사용자는 '재입고', '반품', '운송장'처럼 명세에 없는 표현으로 질문합니다. 설명 안에 실제 사용자 표현을 함께 적어두면 한영 혼합 질문과 짧은 키워드 질문의 인식률이 올라갑니다.",
-    priority: "HIGH",
-    failShare: 36.4,
-  },
-  {
-    order: 3,
-    title: "유사 리소스 구분 강화",
-    description:
-      "주문 배송지와 회원 기본 주소처럼 이름이 비슷한 엔드포인트가 서로의 상위 결과를 밀어냅니다. 각 설명에 '무엇이 아닌지'를 한 줄 덧붙이면 혼동이 줄어듭니다.",
-    priority: "MEDIUM",
-    failShare: 31.8,
-  },
-];
-
-/** fixture failures 의 앞 3건. expectedRank 는 4 / null / null 이다. */
-const FIXTURE_FAILURES: Failure[] = [
-  {
-    id: "q_003",
-    question: "주문의 배송 상태를 조회하는 API는 무엇인가요?",
-    questionType: "DIRECT",
-    expected: { method: "GET", path: "/orders/{id}/shipping-status" },
-    results: [
-      { rank: 1, method: "GET", path: "/orders/{id}/refund-status", score: 0.781 },
-      { rank: 2, method: "GET", path: "/orders/{id}", score: 0.759 },
-      { rank: 3, method: "PATCH", path: "/orders/{id}/shipping-address", score: 0.724 },
-    ],
-    hit: false,
-    expectedRank: 4,
-    failureCategory: "SIMILAR_RESOURCE",
-    reason:
-      "같은 주문 리소스의 '-status' 엔드포인트끼리 설명이 겹쳐 환불 상태가 배송 상태를 밀어냄",
-  },
-  {
-    id: "q_007",
-    question: "재입고 언제 되나요?",
-    questionType: "USER_NL",
-    expected: { method: "GET", path: "/products/{id}/restock-schedule" },
-    results: [
-      { rank: 1, method: "GET", path: "/products/{id}/stock", score: 0.688 },
-      { rank: 2, method: "GET", path: "/products/{id}", score: 0.671 },
-      { rank: 3, method: "GET", path: "/orders/{id}/shipping-status", score: 0.603 },
-    ],
-    hit: false,
-    expectedRank: null,
-    failureCategory: "DESCRIPTION_MISSING",
-    reason:
-      "기대 엔드포인트에 summary와 description이 모두 없어 경로 문자열 외에는 매칭할 근거가 없음",
-  },
-  {
-    id: "q_017",
-    question: "환불 신청은 어떻게 취소하나요?",
-    questionType: "USER_NL",
-    expected: { method: "DELETE", path: "/orders/{id}/refund" },
-    results: [
-      { rank: 1, method: "GET", path: "/orders/{id}/refund-status", score: 0.812 },
-      { rank: 2, method: "POST", path: "/orders/{id}/refund", score: 0.774 },
-      { rank: 3, method: "GET", path: "/orders/{id}", score: 0.701 },
-    ],
-    hit: false,
-    expectedRank: 7,
-    failureCategory: "METHOD_MISMATCH",
-    reason: "질문의 '취소'를 조회(GET) 의도로 오인식하여 DELETE 엔드포인트가 후순위로 밀림",
-  },
-];
-
+// 질문·원인이 길 때 말줄임 확인. 실패 1건을 골라 문장만 늘린다.
 const LONG_TEXT_FAILURE: Failure = {
   ...FIXTURE_FAILURES[0],
   id: "q_long",
-  question:
-    "주문한 상품의 배송이 지금 어디까지 진행됐는지, 택배사는 어디이고 운송장 번호는 무엇이며 언제쯤 도착하는지를 한 번에 확인할 수 있는 API가 따로 있나요? 아니면 주문 상세를 먼저 조회한 다음에 별도로 다시 호출해야 하나요?",
+  question: `${FIXTURE_FAILURES[0].question} 아니면 다른 조회 쿼리를 먼저 부른 다음 그 결과를 파라미터로 넘겨 다시 호출해야 하나요, 그리고 그때 기간과 라인 조건은 각각 어떤 형식으로 넣어야 하는지도 함께 알려주세요.`,
   expectedRank: 5,
-  reason:
-    "질문이 배송 조회·운송장 확인·도착 예정일이라는 세 가지 의도를 한 문장에 담고 있어 임베딩이 어느 쪽으로도 충분히 기울지 못했고, 그 결과 설명이 풍부한 주문 상세 엔드포인트가 상위를 차지했다. 질문을 쪼개면 각각은 Top-1로 잡힌다.",
+  reason: `${FIXTURE_FAILURES[0].reason} 질문이 여러 의도를 한 문장에 담고 있어 임베딩이 어느 쪽으로도 충분히 기울지 못했고, 설명이 더 풍부한 인접 쿼리가 상위를 차지했다. 질문을 쪼개면 각각은 Top-1 로 잡힌다.`,
 };
 
+// 아주 멀리 밀린 케이스(20위). 순위 밖(null)인 실패 하나를 골라 순위만 바꾼다.
 const FAR_MISS_FAILURE: Failure = {
-  ...FIXTURE_FAILURES[1],
+  ...(FIXTURE_FAILURES.find((f) => f.expectedRank == null) ?? FIXTURE_FAILURES[1]),
   id: "q_far",
-  question: "재고 수량",
   expectedRank: 20,
-  failureCategory: "SYNONYM_MISS",
-  reason: "기대 엔드포인트의 설명이 '재고 조회' 한 줄이라 '수량' 키워드와 연결되지 않음",
 };
 
 export default function ComponentsPage() {
@@ -186,12 +64,16 @@ export default function ComponentsPage() {
     <main className={styles.page}>
       <h1 className={styles.title}>컴포넌트</h1>
       <p className={styles.lead}>
-        Phase 6 진행 중 — <strong>7 / 8</strong>. 완료: <code>GaugeRing</code>,{" "}
+        Phase 6 진행 중 — <strong>8 / 8</strong>. 완료: <code>GaugeRing</code>,{" "}
+        <code>AppSummaryCard</code>, <code>QueryQualityTable</code>,{" "}
         <code>SummaryCards</code>, <code>QuestionTypeChart</code>,{" "}
         <code>RecommendationCards</code>, <code>FailureTable</code>,{" "}
         <code>GradeScale</code>, <code>ActionPanel</code>.
         <br />
-        남음: <code>TargetApiCard</code>(6-3).
+        <strong>이 페이지의 데이터는 backend fixture(eval_A492) 기준이다.</strong>{" "}
+        도메인 값은 전부 <code>@/mocks/eval_A492.json</code>(복사본)에서 오고, 경계
+        케이스만 그 값을 가공해 만든다. 계약이 바뀌면{" "}
+        <code>make sync-fixture</code> 로 다시 복사한다.
       </p>
 
 

@@ -1,0 +1,956 @@
+{
+  "traceId": "A492",
+  "evaluatedAt": "2026-07-22T11:38:00+09:00",
+  "target": {
+    "appId": "mf-worker",
+    "appName": "MF Worker",
+    "specVersion": "v3",
+    "queryCount": 11,
+    "owner": "데이터플랫폼팀"
+  },
+  "meta": {
+    "embeddingModel": "bge-m3",
+    "searchMode": "HYBRID",
+    "topK": 3,
+    "questionSource": "LLM_GENERATED_HUMAN_REVIEWED",
+    "durationMs": 48210
+  },
+  "summary": {
+    "totalQuestions": 100,
+    "top1Accuracy": 61.0,
+    "top3Accuracy": 78.0,
+    "top1FailCount": 39,
+    "top3FailCount": 22,
+    "grade": "NEEDS_IMPROVEMENT"
+  },
+  "queries": [
+    {
+      "path": "/queries/lot-status",
+      "method": "GET",
+      "summary": "랏 현재 공정 단계 조회",
+      "descriptionLength": 168,
+      "hasParamDescription": true,
+      "questionCount": 12,
+      "top3Accuracy": 100.0,
+      "grade": "GOOD",
+      "needsRegeneration": false
+    },
+    {
+      "path": "/queries/wafer-yield-daily",
+      "method": "GET",
+      "summary": "일별 웨이퍼 수율 조회",
+      "descriptionLength": 182,
+      "hasParamDescription": true,
+      "questionCount": 11,
+      "top3Accuracy": 100.0,
+      "grade": "GOOD",
+      "needsRegeneration": false
+    },
+    {
+      "path": "/queries/defect-summary",
+      "method": "POST",
+      "summary": "불량 유형별 집계 조회",
+      "descriptionLength": 175,
+      "hasParamDescription": true,
+      "questionCount": 10,
+      "top3Accuracy": 90.0,
+      "grade": "FAIR",
+      "needsRegeneration": false
+    },
+    {
+      "path": "/queries/lot-trace",
+      "method": "GET",
+      "summary": "랏 이력 추적 조회",
+      "descriptionLength": 171,
+      "hasParamDescription": true,
+      "questionCount": 10,
+      "top3Accuracy": 90.0,
+      "grade": "FAIR",
+      "needsRegeneration": false
+    },
+    {
+      "path": "/queries/inventory-wip",
+      "method": "GET",
+      "summary": "WIP 재고 현황 조회",
+      "descriptionLength": 158,
+      "hasParamDescription": true,
+      "questionCount": 9,
+      "top3Accuracy": 88.9,
+      "grade": "FAIR",
+      "needsRegeneration": false
+    },
+    {
+      "path": "/queries/equipment-downtime",
+      "method": "GET",
+      "summary": "설비 다운타임 조회",
+      "descriptionLength": 0,
+      "hasParamDescription": false,
+      "questionCount": 10,
+      "top3Accuracy": 80.0,
+      "grade": "NEEDS_IMPROVEMENT",
+      "needsRegeneration": false
+    },
+    {
+      "path": "/queries/recipe-history",
+      "method": "GET",
+      "summary": "레시피 변경 이력 조회",
+      "descriptionLength": 0,
+      "hasParamDescription": false,
+      "questionCount": 9,
+      "top3Accuracy": 77.8,
+      "grade": "NEEDS_IMPROVEMENT",
+      "needsRegeneration": false
+    },
+    {
+      "path": "/queries/alarm-history",
+      "method": "POST",
+      "summary": "알람 발생 이력 조회",
+      "descriptionLength": 0,
+      "hasParamDescription": false,
+      "questionCount": 8,
+      "top3Accuracy": 75.0,
+      "grade": "NEEDS_IMPROVEMENT",
+      "needsRegeneration": false
+    },
+    {
+      "path": "/queries/step-cycle-time",
+      "method": "GET",
+      "summary": null,
+      "descriptionLength": 0,
+      "hasParamDescription": false,
+      "questionCount": 9,
+      "top3Accuracy": 44.4,
+      "grade": "CRITICAL",
+      "needsRegeneration": true
+    },
+    {
+      "path": "/queries/operator-shift",
+      "method": "GET",
+      "summary": null,
+      "descriptionLength": 0,
+      "hasParamDescription": false,
+      "questionCount": 7,
+      "top3Accuracy": 42.9,
+      "grade": "CRITICAL",
+      "needsRegeneration": true
+    },
+    {
+      "path": "/queries/chamber-sensor-trend",
+      "method": "POST",
+      "summary": null,
+      "descriptionLength": 0,
+      "hasParamDescription": false,
+      "questionCount": 5,
+      "top3Accuracy": 20.0,
+      "grade": "CRITICAL",
+      "needsRegeneration": true
+    }
+  ],
+  "questionTypes": [
+    {
+      "type": "DIRECT",
+      "label": "직접 질문",
+      "count": 22,
+      "ratio": 22.0,
+      "top3Accuracy": 95.5
+    },
+    {
+      "type": "USER_NL",
+      "label": "사용자 자연어 질문",
+      "count": 20,
+      "ratio": 20.0,
+      "top3Accuracy": 75.0
+    },
+    {
+      "type": "DOMAIN_TERM",
+      "label": "업무 용어 질문",
+      "count": 14,
+      "ratio": 14.0,
+      "top3Accuracy": 78.6
+    },
+    {
+      "type": "PARAMETER",
+      "label": "파라미터 기반 질문",
+      "count": 12,
+      "ratio": 12.0,
+      "top3Accuracy": 83.3
+    },
+    {
+      "type": "ERROR_CASE",
+      "label": "오류/에러 상황 질문",
+      "count": 11,
+      "ratio": 11.0,
+      "top3Accuracy": 81.8
+    },
+    {
+      "type": "SHORT_KEYWORD",
+      "label": "짧은 키워드 질문",
+      "count": 11,
+      "ratio": 11.0,
+      "top3Accuracy": 72.7
+    },
+    {
+      "type": "MIXED_LANG",
+      "label": "한영 혼합 질문",
+      "count": 10,
+      "ratio": 10.0,
+      "top3Accuracy": 40.0
+    }
+  ],
+  "recommendations": [
+    {
+      "order": 1,
+      "title": "설명(Description) 보강",
+      "description": "설명이 아예 없는 조회 쿼리 3개(스텝 사이클타임, 작업자 교대, 챔버 센서 추이)가 전체 실패의 절반 이상을 차지합니다. summary와 description을 채우는 것만으로 가장 크게 개선됩니다.",
+      "priority": "HIGH",
+      "failShare": 45.5
+    },
+    {
+      "order": 2,
+      "title": "현장 용어·동의어 추가",
+      "description": "현장에서는 'eqp', '택트타임', '계보'처럼 명세에 없는 표현으로 검색합니다. 설명 안에 실제 현장 표현을 함께 적어두면 한영 혼합 질문과 짧은 키워드 질문의 인식률이 올라갑니다.",
+      "priority": "HIGH",
+      "failShare": 36.4
+    },
+    {
+      "order": 3,
+      "title": "유사 조회 구분 강화",
+      "description": "수율 집계와 불량 집계처럼 이름이 비슷한 조회 쿼리가 서로의 상위 결과를 밀어냅니다. 각 설명에 '무엇을 집계하는지'를 한 줄 덧붙이면 혼동이 줄어듭니다.",
+      "priority": "MEDIUM",
+      "failShare": 31.8
+    }
+  ],
+  "failures": [
+    {
+      "id": "q_001",
+      "question": "불량 요약 데이터를 조회하는 쿼리는 무엇인가요?",
+      "questionType": "DIRECT",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/defect-summary"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.8
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-trace",
+          "score": 0.755
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.71
+        }
+      ],
+      "hit": false,
+      "expectedRank": 4,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "'요약·집계'라는 표현이 여러 조회 쿼리 설명에 겹쳐 수율 집계 쿼리가 상위를 차지"
+    },
+    {
+      "id": "q_002",
+      "question": "특정 랏의 계보를 추적하는 쿼리 알려줘",
+      "questionType": "DOMAIN_TERM",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/lot-trace"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.8
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/recipe-history",
+          "score": 0.755
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.71
+        }
+      ],
+      "hit": false,
+      "expectedRank": 5,
+      "failureCategory": "SYNONYM_MISS",
+      "reason": "현장 용어 '계보(genealogy)'가 설명에 없어 랏 상태 조회가 이력 추적보다 먼저 잡힘"
+    },
+    {
+      "id": "q_003",
+      "question": "WIP 재고를 라인별로 거를 때 어떤 파라미터를 넣나요?",
+      "questionType": "PARAMETER",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/inventory-wip"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.8
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.755
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.71
+        }
+      ],
+      "hit": false,
+      "expectedRank": 4,
+      "failureCategory": "PARAM_MISSING",
+      "reason": "라인 필터 파라미터에 설명이 없어 '라인별'이라는 조건과 연결되지 못함"
+    },
+    {
+      "id": "q_004",
+      "question": "어제 오래 멈춘 설비 있어?",
+      "questionType": "USER_NL",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/operator-shift",
+          "score": 0.8
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/alarm-history",
+          "score": 0.755
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.71
+        }
+      ],
+      "hit": false,
+      "expectedRank": 5,
+      "failureCategory": "SYNONYM_MISS",
+      "reason": "구어체 '멈춘'이 다운타임 설명(summary 한 줄뿐)과 연결되지 않아 후순위로 밀림"
+    },
+    {
+      "id": "q_005",
+      "question": "설비 다운타임을 기간으로 조회할 때 날짜 형식은?",
+      "questionType": "PARAMETER",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.8
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.755
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.71
+        }
+      ],
+      "hit": false,
+      "expectedRank": 4,
+      "failureCategory": "PARAM_MISSING",
+      "reason": "기간 파라미터 설명이 비어 있어 날짜 형식을 묻는 질문과 매칭할 근거가 없음"
+    },
+    {
+      "id": "q_006",
+      "question": "레시피 변경 내역 조회",
+      "questionType": "DOMAIN_TERM",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/recipe-history"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-trace",
+          "score": 0.8
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.755
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.71
+        }
+      ],
+      "hit": false,
+      "expectedRank": 5,
+      "failureCategory": "SYNONYM_MISS",
+      "reason": "'변경 내역'과 '변경 이력'의 표현 차이를 좁힐 설명이 없어 랏 이력 추적이 상위를 차지"
+    },
+    {
+      "id": "q_007",
+      "question": "레시피 이력",
+      "questionType": "SHORT_KEYWORD",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/recipe-history"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-trace",
+          "score": 0.8
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.755
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.71
+        }
+      ],
+      "hit": false,
+      "expectedRank": 6,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "키워드 2개뿐인 짧은 질문은 설명 텍스트에 의존하는데 summary 한 줄로는 부족"
+    },
+    {
+      "id": "q_008",
+      "question": "알람 발생 내역 보고 싶어",
+      "questionType": "USER_NL",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/alarm-history"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.8
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.755
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/operator-shift",
+          "score": 0.71
+        }
+      ],
+      "hit": false,
+      "expectedRank": 5,
+      "failureCategory": "SYNONYM_MISS",
+      "reason": "'발생 내역'이라는 표현이 설명에 없어 설비 다운타임 조회가 먼저 잡힘"
+    },
+    {
+      "id": "q_009",
+      "question": "알람이 한 건도 없던 구간을 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "ERROR_CASE",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/alarm-history"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.8
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.755
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.71
+        }
+      ],
+      "hit": false,
+      "expectedRank": 4,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "'알람이 없는 구간'이라는 부정 조건을 설명이 다루지 않아 의도를 잡지 못함"
+    },
+    {
+      "id": "q_010",
+      "question": "step cycle time 조회 쿼리 있나요?",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.66
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-trace",
+          "score": 0.615
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.57
+        }
+      ],
+      "hit": false,
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 전혀 없어 경로 토큰 외에는 매칭할 근거가 없고 영문 질문과 결합되지 못함"
+    },
+    {
+      "id": "q_011",
+      "question": "각 step별 cycle time trend 뽑는 query",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.66
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/recipe-history",
+          "score": 0.615
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-trace",
+          "score": 0.57
+        }
+      ],
+      "hit": false,
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 비어 있어 한영 혼합 표현이 어느 토큰과도 충분히 매칭되지 않음"
+    },
+    {
+      "id": "q_012",
+      "question": "스텝 사이클타임",
+      "questionType": "SHORT_KEYWORD",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.66
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.615
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/inventory-wip",
+          "score": 0.57
+        }
+      ],
+      "hit": false,
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "짧은 키워드인데 기대 쿼리에 설명이 전혀 없어 후보에도 오르지 못함"
+    },
+    {
+      "id": "q_013",
+      "question": "공정 단계별 소요 시간을 알고 싶어요",
+      "questionType": "USER_NL",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.66
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.615
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-trace",
+          "score": 0.57
+        }
+      ],
+      "hit": false,
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "'소요 시간'이 cycle time 을 뜻하지만 설명이 없어 개념을 연결하지 못함"
+    },
+    {
+      "id": "q_014",
+      "question": "스텝별 택트타임 집계 쿼리",
+      "questionType": "DOMAIN_TERM",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.66
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/recipe-history",
+          "score": 0.615
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.57
+        }
+      ],
+      "hit": false,
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "현장 용어 '택트타임'이 설명에 없고 기대 쿼리 자체가 설명 공백이라 매칭 불가"
+    },
+    {
+      "id": "q_015",
+      "question": "operator shift 정보 조회",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/operator-shift"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/alarm-history",
+          "score": 0.66
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.615
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.57
+        }
+      ],
+      "hit": false,
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 영문 'operator shift'가 경로 토큰에만 걸려 상위 진입에 실패"
+    },
+    {
+      "id": "q_016",
+      "question": "작업자 shift 배정 query 알려줘",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/operator-shift"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/alarm-history",
+          "score": 0.66
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/recipe-history",
+          "score": 0.615
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.57
+        }
+      ],
+      "hit": false,
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "한영 혼합 질문인데 기대 쿼리에 설명이 전혀 없어 매칭 근거가 부족"
+    },
+    {
+      "id": "q_017",
+      "question": "교대 근무자 명단을 조회하고 싶어요",
+      "questionType": "USER_NL",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/operator-shift"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/alarm-history",
+          "score": 0.8
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.755
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/inventory-wip",
+          "score": 0.71
+        }
+      ],
+      "hit": false,
+      "expectedRank": 4,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "'교대 근무자'가 operator shift 를 뜻하지만 설명 공백이라 경로 부분 매칭으로만 4위"
+    },
+    {
+      "id": "q_018",
+      "question": "교대 정보가 누락된 랏을 찾으려면?",
+      "questionType": "ERROR_CASE",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/operator-shift"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/alarm-history",
+          "score": 0.66
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.615
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.57
+        }
+      ],
+      "hit": false,
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "누락 확인이라는 예외 상황을 설명이 다루지 않고 기대 쿼리도 설명이 없음"
+    },
+    {
+      "id": "q_019",
+      "question": "chamber sensor trend 조회 query",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/chamber-sensor-trend"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.66
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.615
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.57
+        }
+      ],
+      "hit": false,
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 영문 질문이 경로 토큰에만 의존하고 상위 진입에 실패"
+    },
+    {
+      "id": "q_020",
+      "question": "챔버 sensor 데이터 시계열로 뽑고 싶어",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/chamber-sensor-trend"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.66
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.615
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.57
+        }
+      ],
+      "hit": false,
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "'시계열(trend)' 표현이 설명에 없고 기대 쿼리 자체가 설명 공백이라 매칭 불가"
+    },
+    {
+      "id": "q_021",
+      "question": "챔버 온도 이력 조회하는 쿼리 있나요?",
+      "questionType": "USER_NL",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/chamber-sensor-trend"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.66
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.615
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.57
+        }
+      ],
+      "hit": false,
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "'온도 이력'이 센서 추이를 뜻하지만 설명이 없어 개념을 연결하지 못함"
+    },
+    {
+      "id": "q_022",
+      "question": "챔버 센서 추이",
+      "questionType": "SHORT_KEYWORD",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/chamber-sensor-trend"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.66
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.615
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.57
+        }
+      ],
+      "hit": false,
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "짧은 키워드인데 기대 쿼리에 설명이 전혀 없어 후보에도 오르지 못함"
+    }
+  ],
+  "previous": {
+    "traceId": "A311",
+    "evaluatedAt": "2026-07-15T09:12:00+09:00",
+    "top3Accuracy": 64.0
+  }
+}

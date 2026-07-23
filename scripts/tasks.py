@@ -138,6 +138,7 @@ COMMANDS: list[tuple[str, str]] = [
     ("lint", "린트 + 타입체크"),
     ("gen-types", "백엔드 OpenAPI -> 프론트 타입 생성"),
     ("dump-spec", "sample-api 의 openapi.json 덤프"),
+    ("sync-fixture", "backend fixture 를 frontend/src/mocks 로 복사 (dev 페이지용)"),
     ("show-quality", "sample-api 엔드포인트별 설명 품질 표"),
     ("lock", "uv.lock 재생성 (사내 저장소 전환 시)"),
     ("doctor", "환경 진단 — 사내 PC 최초 셋업 시 먼저 실행"),
@@ -213,6 +214,24 @@ def cmd_lock() -> None:
     run(["uv", "lock"], BACKEND)
     run(["uv", "lock"], SAMPLE_API)
     print("\nuv.lock 을 재생성했다. 이 락은 사내 로컬 전용이며 GitHub 로 push 하지 않는다.")
+
+
+def cmd_sync_fixture() -> None:
+    """backend fixture 를 frontend/src/mocks/ 로 복사한다.
+
+    dev 확인 페이지(app/dev/components)가 도메인 데이터를 여기서 읽는다.
+    프로젝트 밖(`../backend/...`) JSON 은 tsconfig rootDir 경계 때문에 import 가
+    안 되므로 src/ 안으로 들여온다.
+
+    **복사본은 커밋한다.** gen-types 로 만든 api-types.ts 와 같은 성격이다 —
+    폐쇄망에 파일 단위로 복사될 때 이 mock 이 함께 가야 dev 페이지가 뜬다.
+    계약이 바뀌면 fixture 를 먼저 고치고 이 타겟으로 다시 복사한다.
+    """
+    src = BACKEND / "app" / "fixtures" / "eval_A492.json"
+    dst = FRONTEND / "src" / "mocks" / "eval_A492.json"
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(src, dst)
+    print(f"복사: {src.relative_to(ROOT)} -> {dst.relative_to(ROOT)}")
 
 
 def cmd_clean() -> None:
@@ -608,6 +627,7 @@ HANDLERS = {
     "lint": cmd_lint,
     "gen-types": cmd_gen_types,
     "dump-spec": cmd_dump_spec,
+    "sync-fixture": cmd_sync_fixture,
     "show-quality": cmd_show_quality,
     "lock": cmd_lock,
     "doctor": cmd_doctor,
