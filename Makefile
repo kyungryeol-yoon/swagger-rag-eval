@@ -10,15 +10,16 @@
 # make 없이도 같은 것을 할 수 있다:
 #     python scripts/tasks.py <command>
 
-# python 실행 파일 이름이 플랫폼마다 다르다.
-# Windows 는 `python`, macOS/Linux 는 보통 `python3` 만 있다.
-# 이건 셸 분기가 아니라 make 자체의 조건문이라 cmd.exe 를 거치지 않는다.
-# 다르게 부르고 싶으면 덮어쓸 수 있다:  make PY=py test
-ifeq ($(OS),Windows_NT)
-PY ?= python
-else
+# tasks.py 를 실행할 python.
+#
+# `?=` 라서 환경변수나 인자로 덮어쓸 수 있다:
+#     make PY=python test          Windows 에서 python3 를 못 찾을 때
+#     make PY=python3.12 test      특정 버전으로 강제할 때
+#
+# venv 를 활성화해 두면 `python3` 가 그 venv 의 것으로 잡힌다 — 별도 설정이 없다.
+# 다만 tasks.py 는 프로젝트 의존성이 필요 없으므로 활성화하지 않아도 된다.
+# 지금 어떤 python 이 잡혔는지는 `make doctor` 로 확인한다.
 PY ?= python3
-endif
 
 TASKS := $(PY) scripts/tasks.py
 

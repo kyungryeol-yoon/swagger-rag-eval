@@ -55,6 +55,11 @@ make 를 구하기 어려우면 이쪽을 쓴다.
 python scripts/tasks.py <command>
 ```
 
+Windows 에서 `python3` 를 찾지 못하면 `make PY=python` 을 쓴다.
+(Windows 의 `python3.exe` 는 Microsoft Store 실행 별칭일 수 있어, 파이썬이
+설치돼 있지 않으면 스토어 창이 뜨고 아무것도 실행되지 않는다.)
+어떤 python 이 잡혔는지는 `make doctor` 의 맨 위 세 줄에서 확인한다.
+
 Makefile 에는 셸 로직이 없다. Windows 에서 make 는 레시피를 `cmd.exe` 로
 실행해서 `[ ]`·파이프·`grep` 이 전부 깨지기 때문에, 로직은 전부
 `scripts/tasks.py` 에 있다. 고칠 일이 있으면 Makefile 이 아니라 그 파일을 고친다.

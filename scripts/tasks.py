@@ -321,16 +321,27 @@ def cmd_doctor() -> None:
 
     rows.append(("--- 도구 ---", "", ""))
 
-    # tasks.py 는 시스템 python 으로 돈다. 프로젝트가 요구하는 3.12 와 달라도
-    # 정상이다 — 3.12 는 uv 가 따로 설치한다.
+    # tasks.py 는 uv 가 관리하는 3.12 가 아니라 시스템 python 으로 돈다.
+    # 어느 python 이 잡혔는지 보이지 않으면 "왜 여기선 되고 저기선 안 되지"가 된다.
     running = "{}.{}.{}".format(*sys.version_info[:3])
-    rows.append(_row("tasks.py 실행 python", running, sys.executable))
-
     if running.startswith(PROJECT_PYTHON + "."):
         note = "프로젝트 런타임과 동일"
     else:
-        note = f"프로젝트 런타임 {PROJECT_PYTHON} 와 다르지만 정상 — 3.12 는 uv 가 따로 설치한다"
-    rows.append(_row("  최소 요구", "{}.{}+".format(*MIN_PYTHON), note))
+        note = (
+            f"! 프로젝트 런타임은 {PROJECT_PYTHON} "
+            f"(tasks.py 자체는 {MIN_PYTHON[0]}.{MIN_PYTHON[1]}+ 면 동작하므로 오류는 아니다)"
+        )
+    rows.append(_row("tasks.py 실행 python", running, note))
+    rows.append(_row("  실행 경로", sys.executable))
+
+    venv = os.environ.get("VIRTUAL_ENV")
+    rows.append(
+        _row(
+            "  가상환경",
+            venv,
+            "활성화됨" if venv else "미활성 — tasks.py 는 프로젝트 의존성이 없어 상관없다",
+        )
+    )
     rows.append(_row("node", capture(["node", "-v"])))
     rows.append(_row("npm", capture(["npm", "-v"])))
     rows.append(_row("uv", capture(["uv", "--version"])))
