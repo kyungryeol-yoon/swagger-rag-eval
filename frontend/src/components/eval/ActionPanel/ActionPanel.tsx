@@ -1,4 +1,4 @@
-import { TriangleAlert } from "lucide-react";
+import { SendHorizontal } from "lucide-react";
 
 import type { Priority, Recommendation } from "@/lib/types";
 
@@ -119,8 +119,9 @@ export default function ActionPanel({ recommendations, specId }: ActionPanelProp
           설명 직접 수정
         </button>
 
-        {/* 파괴적 동작이라 아이콘으로 먼저 표시한다. 문구만으로는
-            "다시 만들기" 가 덮어쓰기라는 것이 읽히지 않는다 (§9-3). */}
+        {/* 파괴적 동작이 아니다. 이 서비스가 설명을 직접 덮어쓰지 않고
+            자동 생성 서비스로 요청을 넘길 뿐이다 (contract.md §0, §4).
+            그래서 경고가 아니라 "보낸다"는 뜻의 아이콘을 쓴다. */}
         <button
           type="button"
           className={styles.primary}
@@ -128,12 +129,14 @@ export default function ActionPanel({ recommendations, specId }: ActionPanelProp
           aria-disabled="true"
           title="평가 엔진 연동 후 활성화됩니다"
         >
-          <TriangleAlert className={styles.icon} size={14} aria-hidden="true" />
-          AI로 설명 다시 만들기
+          <SendHorizontal className={styles.icon} size={14} aria-hidden="true" />
+          자동 생성 요청 보내기
         </button>
       </div>
 
-      <p className={styles.warning}>재생성하면 기존 설명이 교체됩니다.</p>
+      <p className={styles.warning}>
+        선택한 쿼리를 Swagger 자동 생성 서비스로 전달합니다.
+      </p>
     </section>
   );
 }

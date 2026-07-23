@@ -547,6 +547,20 @@ export default function ComponentsPage() {
         <FailureTable failures={FIXTURE_FAILURES} totalFailCount={3} />
 
         <p className={styles.sectionNote}>
+          <strong>단일 메서드</strong> — DAC 이 SELECT 전용이면 모든 쿼리가 GET 이다
+          (open-questions #50). 표 전체에서 메서드가 1종뿐이면 뱃지를 숨기고 경로만
+          보인다. 뱃지가 전부 &ldquo;GET&rdquo;이면 정보를 주지 못하고 자리만 차지한다.
+        </p>
+        <FailureTable
+          failures={FIXTURE_FAILURES.map((f) => ({
+            ...f,
+            expected: { ...f.expected, method: "GET" },
+            results: f.results.map((r) => ({ ...r, method: "GET" })),
+          }))}
+          totalFailCount={22}
+        />
+
+        <p className={styles.sectionNote}>
           빈 상태 — 실패 0건(인식률 100%). 표 대신 안내를 보인다.
         </p>
         <FailureTable failures={[]} totalFailCount={0} />

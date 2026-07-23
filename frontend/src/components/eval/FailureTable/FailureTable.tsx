@@ -1,5 +1,5 @@
 import { failureCategoryLabel } from "@/lib/enumTokens";
-import { httpMethodColor } from "@/lib/httpMethod";
+import { hasMultipleMethods, httpMethodColor } from "@/lib/httpMethod";
 import type { ExpectedApi, Failure, SearchResult } from "@/lib/types";
 
 import styles from "./FailureTable.module.css";
@@ -59,6 +59,14 @@ export default function FailureTable({ failures, totalFailCount }: FailureTableP
   const visible = failures.slice(0, VISIBLE_COUNT);
   const hidden = Math.max(0, totalFailCount - visible.length);
 
+  // 화면에 보이는 실패들의 expected + results 를 통틀어 메서드가 1종뿐이면
+  // 뱃지가 정보를 주지 못한다 (open-questions #50). 그럴 땐 경로만 보인다.
+  const shownMethods = visible.flatMap((f) => [
+    f.expected,
+    ...f.results,
+  ]);
+  const showMethod = hasMultipleMethods(shownMethods);
+
   return (
     <div className={styles.root}>
       {/*
@@ -93,7 +101,7 @@ export default function FailureTable({ failures, totalFailCount }: FailureTableP
         </thead>
         <tbody role="rowgroup">
           {visible.map((failure) => (
-            <Row key={failure.id} failure={failure} />
+            <Row key={failure.id} failure={failure} showMethod={showMethod} />
           ))}
         </tbody>
       </table>
@@ -117,7 +125,7 @@ export default function FailureTable({ failures, totalFailCount }: FailureTableP
   );
 }
 
-function Row({ failure }: { failure: Failure }) {
+function Row({ failure, showMethod }: { failure: Failure; showMethod: boolean }) {
   const near = isNearMiss(failure.expectedRank);
 
   return (
@@ -127,13 +135,13 @@ function Row({ failure }: { failure: Failure }) {
       </td>
 
       <td role="cell" data-label="기대 쿼리" className={styles.cellExpected}>
-        <Endpoint api={failure.expected} />
+        <Endpoint api={failure.expected} showMethod={showMethod} />
       </td>
 
       <td role="cell" data-label="Top-3 검색 결과" className={styles.cellResults}>
         <ol className={styles.results}>
           {failure.results.map((result) => (
-            <ResultRow key={result.rank} result={result} />
+            <ResultRow key={result.rank} result={result} showMethod={showMethod} />
           ))}
         </ol>
         <p className={styles.expectedRank}>
@@ -166,23 +174,23 @@ function Row({ failure }: { failure: Failure }) {
   );
 }
 
-function Endpoint({ api }: { api: ExpectedApi }) {
+function Endpoint({ api, showMethod }: { api: ExpectedApi; showMethod: boolean }) {
   return (
     <span className={styles.endpoint}>
-      <MethodBadge method={api.method} />
+      {showMethod && <MethodBadge method={api.method} />}
       <code className={`${styles.path} tabular`}>{api.path}</code>
     </span>
   );
 }
 
-function ResultRow({ result }: { result: SearchResult }) {
+function ResultRow({ result, showMethod }: { result: SearchResult; showMethod: boolean }) {
   return (
     <li className={styles.result}>
       <span className={`${styles.rank} tabular`} aria-hidden="true">
         {result.rank}
       </span>
       <span className="srOnly">{result.rank}위</span>
-      <MethodBadge method={result.method} />
+      {showMethod && <MethodBadge method={result.method} />}
       <code className={`${styles.path} tabular`}>{result.path}</code>
       <span className={`${styles.score} tabular`}>{result.score.toFixed(3)}</span>
     </li>

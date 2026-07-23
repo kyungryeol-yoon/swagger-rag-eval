@@ -40,3 +40,25 @@ export function httpMethodColor(method: string): string {
   const name = isKnown(method) ? httpMethodColorVar[method] : FALLBACK_COLOR_VAR;
   return `var(${name})`;
 }
+
+/**
+ * 메서드가 두 종류 이상인지.
+ *
+ * DAC 이 SELECT 전용이면 모든 쿼리가 같은 메서드일 수 있다
+ * (open-questions #50, 미확인). 메서드가 하나뿐이면 뱃지가 정보를 주지 못하고
+ * 자리만 차지하므로, 화면에서 이 함수로 판단해 뱃지를 숨긴다.
+ *
+ * **#50 이 단일 메서드로 확정되면 이 함수는 항상 false 를 반환하게 된다.**
+ * 그때 위 색 매핑(`httpMethodColorVar`)과 뱃지 자체를 정리할지 판단한다.
+ * 확정 전까지는 지우지 않는다 — 지금도 fixture 는 GET/POST 를 섞어 쓴다.
+ */
+export function hasMultipleMethods(items: { method: string }[]): boolean {
+  const seen = new Set<string>();
+  for (const item of items) {
+    seen.add(item.method);
+    if (seen.size > 1) {
+      return true;
+    }
+  }
+  return false;
+}
