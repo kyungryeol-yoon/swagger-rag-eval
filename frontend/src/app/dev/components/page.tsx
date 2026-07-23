@@ -1,3 +1,4 @@
+import ActionPanel from "@/components/eval/ActionPanel/ActionPanel";
 import FailureTable from "@/components/eval/FailureTable/FailureTable";
 import GaugeRing from "@/components/eval/GaugeRing/GaugeRing";
 import GradeScale from "@/components/eval/GradeScale/GradeScale";
@@ -158,12 +159,12 @@ export default function ComponentsPage() {
     <main className={styles.page}>
       <h1 className={styles.title}>컴포넌트</h1>
       <p className={styles.lead}>
-        Phase 6 진행 중 — <strong>6 / 8</strong>. 완료: <code>GaugeRing</code>,{" "}
+        Phase 6 진행 중 — <strong>7 / 8</strong>. 완료: <code>GaugeRing</code>,{" "}
         <code>SummaryCards</code>, <code>QuestionTypeChart</code>,{" "}
         <code>RecommendationCards</code>, <code>FailureTable</code>,{" "}
-        <code>GradeScale</code>.
+        <code>GradeScale</code>, <code>ActionPanel</code>.
         <br />
-        남음: <code>TargetApiCard</code>(6-3), <code>ActionPanel</code>(6-7).
+        남음: <code>TargetApiCard</code>(6-3).
       </p>
 
       {/* --- SummaryCards --- */}
@@ -464,6 +465,58 @@ export default function ComponentsPage() {
           아래에 빈 줄만 있으면 정상이다.
         </p>
         <RecommendationCards recommendations={[]} />
+      </section>
+
+
+      {/* --- ActionPanel --- */}
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>ActionPanel</h2>
+        <p className={styles.sectionNote}>
+          시안 우하단의 &ldquo;권장 액션&rdquo;. 요약 문장은{" "}
+          <strong>가장 큰 원인 1건만 인용한다</strong> — 시안의 &ldquo;실패 원인 중
+          62%&rdquo;는 카드의 45/23/32%와 맞지 않는 값이었다 (계약 §5).
+          failShare 는 중복 집계되므로 합산 자체가 의미를 갖지 못한다.
+          <br />
+          평가 엔진이 없어 버튼은 둘 다 비활성이다. 확인 다이얼로그는 활성화 시점에
+          만든다 — 지금 만들면 <code>&apos;use client&apos;</code>가 필요해지는데
+          동작할 대상이 없다.
+        </p>
+        <ActionPanel recommendations={FIXTURE_RECOMMENDATIONS} specId="orders-v3" />
+
+        <p className={styles.sectionNote}>
+          HIGH 가 없고 MEDIUM 만 있는 경우 — 우선순위가 가장 높은 것 중에서 고른다.
+          (MEDIUM 2건 중 failShare 가 큰 &ldquo;유사 리소스 구분 강화&rdquo; 31.8%)
+        </p>
+        <ActionPanel
+          recommendations={[
+            { ...FIXTURE_RECOMMENDATIONS[1], priority: "LOW", failShare: 36.4 },
+            { ...FIXTURE_RECOMMENDATIONS[2], priority: "MEDIUM", failShare: 31.8 },
+            { ...FIXTURE_RECOMMENDATIONS[0], order: 4, priority: "MEDIUM", failShare: 20.0 },
+          ]}
+        />
+
+        <p className={styles.sectionNote}>
+          failShare 동률 — <strong>order 가 작은 쪽</strong>을 택한다. 매번 다른 항목이
+          뽑히면 화면이 흔들린다. (둘 다 HIGH · 45.5% → order 2 인
+          &ldquo;동의어·업무 용어 추가&rdquo;)
+        </p>
+        <ActionPanel
+          recommendations={[
+            { ...FIXTURE_RECOMMENDATIONS[2], order: 5, priority: "HIGH", failShare: 45.5 },
+            { ...FIXTURE_RECOMMENDATIONS[1], order: 2, priority: "HIGH", failShare: 45.5 },
+          ]}
+        />
+
+        <p className={styles.sectionNote}>
+          <code>specId</code> 없음 — 대상 표기만 빠지고 나머지는 그대로.
+        </p>
+        <ActionPanel recommendations={[FIXTURE_RECOMMENDATIONS[2]]} />
+
+        <p className={styles.sectionNote}>
+          빈 배열 — <strong>카드 자체를 렌더하지 않는다.</strong> 근거 없는 버튼만 남으면
+          무엇을 위한 조치인지 알 수 없다. 아래에 빈 줄만 있으면 정상이다.
+        </p>
+        <ActionPanel recommendations={[]} specId="orders-v3" />
       </section>
 
       {/* --- FailureTable --- */}

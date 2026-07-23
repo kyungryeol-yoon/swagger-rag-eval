@@ -1,0 +1,127 @@
+/* 다른 카드와 같은 껍데기 — surface / border / radius-md */
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.target {
+  color: var(--text-mute);
+  font-size: 11px;
+}
+
+.summary {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.cause {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.share {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* --- 버튼 --------------------------------------------------------------- */
+
+/* 시안대로 우측 정렬. */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.secondary,
+.primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.secondary {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-dim);
+}
+
+.primary {
+  border: 1px solid var(--sky);
+  background: var(--sky);
+  /* 밝은 배경 위 글자. --text 는 대비가 모자란다. */
+  color: var(--bg);
+}
+
+/* 지금은 둘 다 비활성이다. 눌리지 않는다는 것이 눈으로도 보여야 한다 —
+   활성처럼 보이는 버튼을 누르고 아무 일도 안 일어나면 고장으로 읽힌다. */
+.secondary:disabled,
+.primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.icon {
+  flex: none;
+}
+
+/* --- 안내 --------------------------------------------------------------- */
+
+/* 버튼이 활성화되기 전에도 상시 보인다. 파괴적 동작이라는 사실은
+   누를 수 있게 된 다음에 알려주면 늦다. */
+.warning {
+  margin: 0;
+  text-align: right;
+  color: var(--text-mute);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* --- 반응형 -------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .secondary,
+  .primary {
+    width: 100%;
+  }
+
+  .warning {
+    text-align: center;
+  }
+}
