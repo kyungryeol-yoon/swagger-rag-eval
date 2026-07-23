@@ -94,6 +94,23 @@ export default async function EvaluationPage({
             <span className={styles.breadcrumbCurrent}>SWAGGER SEARCH</span>
           </nav>
           <h1 className={styles.title}>RAG 검색 인식률 평가 리포트</h1>
+
+          {/*
+            평가 단위는 쿼리 하나가 아니라 DAC 앱 하나다 (contract.md §0).
+            어느 앱의 몇 개 쿼리를 평가한 것인지가 제목 바로 아래에 있어야 한다.
+            specVersion 은 재생성 전후를 구분하는 유일한 근거다 (§5).
+          */}
+          <p className={styles.subject}>
+            <span className={styles.appName}>{report.target.appName}</span>
+            <code className={`${styles.appId} tabular`}>{report.target.appId}</code>
+            <span className={styles.subjectMeta}>
+              쿼리 <span className="tabular">{report.target.queryCount}</span>개
+            </span>
+            <span className={styles.subjectMeta}>명세 {report.target.specVersion}</span>
+            {report.target.owner && (
+              <span className={styles.subjectMeta}>{report.target.owner}</span>
+            )}
+          </p>
         </div>
 
         <dl className={styles.headerMeta}>

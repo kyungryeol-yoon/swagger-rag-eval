@@ -50,7 +50,7 @@ export default function FailureTable({ failures, totalFailCount }: FailureTableP
       <div className={styles.empty}>
         <p className={styles.emptyTitle}>실패한 문항이 없습니다</p>
         <p className={styles.emptyBody}>
-          모든 질문이 Top-3 안에서 기대 API를 찾았습니다. 명세를 이대로 유지하세요.
+          모든 질문이 Top-3 안에서 기대 쿼리를 찾았습니다. 설명을 이대로 유지하세요.
         </p>
       </div>
     );
@@ -75,7 +75,7 @@ export default function FailureTable({ failures, totalFailCount }: FailureTableP
               질문
             </th>
             <th role="columnheader" scope="col" className={styles.colExpected}>
-              기대 API
+              기대 쿼리
             </th>
             <th role="columnheader" scope="col" className={styles.colResults}>
               Top-3 검색 결과
@@ -126,7 +126,7 @@ function Row({ failure }: { failure: Failure }) {
         <p className={styles.question}>&ldquo;{failure.question}&rdquo;</p>
       </td>
 
-      <td role="cell" data-label="기대 API" className={styles.cellExpected}>
+      <td role="cell" data-label="기대 쿼리" className={styles.cellExpected}>
         <Endpoint api={failure.expected} />
       </td>
 
@@ -138,8 +138,8 @@ function Row({ failure }: { failure: Failure }) {
         </ol>
         <p className={styles.expectedRank}>
           {failure.expectedRank == null
-            ? "기대 API: 순위 밖"
-            : `${failure.expectedRank}위 (기대 API 위치)`}
+            ? "기대 쿼리: 순위 밖"
+            : `${failure.expectedRank}위 (기대 쿼리 위치)`}
         </p>
       </td>
 
