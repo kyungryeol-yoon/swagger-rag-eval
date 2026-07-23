@@ -404,6 +404,51 @@ D. 공통
 - **`CORS_ORIGINS` 는 문자열로 받아 직접 쪼갠다.** pydantic-settings 는 list 타입
   필드를 환경변수에서 읽을 때 JSON 으로 파싱하려 들어서, 콤마 구분 문자열을 주면 터진다.
 
+### Phase 4.6 — 크로스 플랫폼 + 폐쇄망 패키지 저장소 (수행 완료)
+
+사내 Windows PC 에서 `make` 가 깨졌고, 사내 저장소·CA 전환이 필요해졌다.
+**컴포넌트가 아니라 빌드·설치 경로만 고친다.**
+
+```
+A. Makefile 에서 셸 로직 제거
+   scripts/tasks.py 신설(표준 라이브러리만). 모든 타겟은
+       setup:
+           python scripts/tasks.py setup
+   형태 한 줄로만. [ ] ( ) || 파이프 grep awk sed find 금지.
+   dev 는 make -j 대신 Python 이 프로세스를 띄우고 관리한다.
+   doctor 서브커맨드 신설 — 사내 PC 최초 셋업 진단.
+
+B. Python 저장소 (uv)
+   pyproject.toml 에는 주석 예시만. 실제 URL 금지.
+   전환은 환경변수로: UV_DEFAULT_INDEX / UV_SYSTEM_CERTS
+
+C. Node 저장소 (npm)
+   frontend/.npmrc.example 신설. .npmrc 는 gitignore.
+   strict-ssl=false 금지.
+
+D. 락 파일 정책 문서화 (§10)
+E. README 사내망 최초 셋업 절
+```
+
+**핵심 판단**
+
+- **`python` vs `python3`.** Windows 는 `python`, macOS/Linux 는 보통 `python3` 만 있다.
+  make 조건문 `ifeq ($(OS),Windows_NT)` 로 가른다 — 셸이 아니라 make 문법이라
+  cmd.exe 를 거치지 않는다. `make PY=py test` 로 덮어쓸 수도 있다.
+- **`UV_NATIVE_TLS` 는 더 이상 유효하지 않다.** uv 0.11 에서
+  `--native-tls` → `--system-certs`, `UV_NATIVE_TLS` → `UV_SYSTEM_CERTS` 로 바뀌었다.
+  **옛 이름은 오류 없이 조용히 무시된다.** 설정했는데 인증서 오류가 그대로면
+  이걸 가장 먼저 의심한다. (`uv sync --help` 로 현재 이름을 확인할 수 있다.)
+- **`dev` 는 자식을 별도 프로세스 그룹으로 띄운다.** 안 그러면 uvicorn `--reload` 의
+  워커와 next dev 의 자식이 남아 포트를 계속 물고 있다. POSIX 는
+  `start_new_session` + `killpg(SIGTERM)`, Windows 는
+  `CREATE_NEW_PROCESS_GROUP` + `CTRL_BREAK_EVENT`.
+- **KeyboardInterrupt 에만 기대지 않는다.** 백그라운드로 실행하면 SIGINT 가
+  무시된 채 상속돼 `KeyboardInterrupt` 가 영영 오지 않는다. SIGINT/SIGTERM/SIGBREAK
+  핸들러를 명시적으로 설치한다.
+- **로그에 서비스 이름을 붙인다.** `make -j3` 는 세 서버 출력을 그대로 섞어서
+  어느 서버가 죽었는지 알 수 없었다. Python 이 줄마다 접두사를 붙인다.
+
 ### Phase 5 — 디자인 토큰
 
 ```
@@ -636,3 +681,67 @@ SSO·DB·연동 범위가 확정되지 않은 상태에서 로컬을 너무 정�
 - 재실행 시각 + "이 결과는 N일 전 명세 기준" 경고
 - 키보드 포커스 링, `prefers-reduced-motion` 대응
 
+
+---
+
+## 10. 패키지 저장소와 락 파일 정책
+
+폐쇄망은 PyPI·npmjs 에 나갈 수 없다. 사내 index/registry 를 쓰고,
+TLS 는 사내 CA 로 재서명된다. 여기서 **락 파일이 갈라진다.**
+
+### 10-1. 전환은 환경변수로만 한다
+
+사내 URL 을 `pyproject.toml` 이나 `.npmrc` 에 박아 커밋하면
+두 저장소가 갈라지고 §6 변경 전파 루프가 깨진다. 같은 파일이 양쪽에서
+그대로 쓰이게 두고, 환경만 다르게 준다.
+
+| 대상 | 설정 | 비고 |
+|---|---|---|
+| Python index | `UV_DEFAULT_INDEX` | PEP 503 경로. 보통 `/simple` 로 끝난다 |
+| Python TLS | `UV_SYSTEM_CERTS=true` | **uv 0.11 부터의 이름.** 옛 `UV_NATIVE_TLS` 는 조용히 무시된다 |
+| npm registry | `frontend/.npmrc` | `.npmrc.example` 복사. 커밋 금지 |
+| Node TLS | `NODE_EXTRA_CA_CERTS` | npm 뿐 아니라 next build 에도 적용돼 `.npmrc` 의 `cafile` 보다 낫다 |
+
+`strict-ssl=false` 는 쓰지 않는다. 인증서 검증을 통째로 끄는 것이라
+중간자 공격과 사내 CA 재서명을 구분할 수 없게 된다. 오류의 해결이 아니라 은폐다.
+
+설정이 됐는지는 `make doctor` 로 본다. 사내 PC 최초 셋업에서 뭐가 빠졌는지
+한 화면에 나온다.
+
+### 10-2. 락 파일은 한 방향으로만 흐른다
+
+**커밋된 `uv.lock` / `package-lock.json` 은 GitHub·로컬 기준이다.**
+사내에서 `uv lock` / `npm install` 로 다시 만들어진 락은
+**사내 로컬 전용이며 GitHub 로 되돌리지 않는다.**
+
+락에는 인덱스 URL 과 아티팩트 해시가 박힌다. 사내 락을 GitHub 에 올리면
+사내 주소가 공개되고, 로컬에서는 그 락으로 설치가 안 된다.
+
+의존성이 바뀌면 §6 과 같은 방향으로 돈다.
+
+```
+의존성 변경 필요
+  → GitHub 에서 pyproject.toml / package.json 을 먼저 고친다
+  → GitHub 에서 락을 갱신하고 커밋한다
+  → 사내는 그 pyproject.toml / package.json 을 받는다
+  → 사내에서 make lock / npm install 로 사내 락을 만든다 (커밋하지 않는다)
+```
+
+사내에서 먼저 의존성을 추가하면 그 사실이 GitHub 에 남지 않아,
+다음 이식 때 "왜 여기선 안 되지"가 반복된다. **선언이 항상 먼저다.**
+
+> 애초에 새 npm 패키지는 추가하지 않는다 (CLAUDE.md 절대 규칙 1).
+> 이 절은 주로 Python 쪽과, 이미 있는 의존성의 버전 갱신에 해당한다.
+
+### 10-3. Makefile 에 셸 로직을 두지 않는다
+
+Windows 에서 make 는 레시피를 `cmd.exe` 로 실행한다. `[ -f x ]`, `( )`,
+`||`, 파이프, `grep`/`awk` 는 전부 깨진다. git bash 에서만 되는 Makefile 은
+사내 PC 에서 재현이 안 된다.
+
+모든 타겟은 `scripts/tasks.py` 를 한 줄로 부르기만 한다. 로직은 Python 에 있다.
+`python` 실행 파일 이름만 make 조건문(`ifeq ($(OS),Windows_NT)`)으로 가른다 —
+이건 셸이 아니라 make 자체의 문법이라 cmd 를 거치지 않는다.
+
+`tasks.py` 는 표준 라이브러리만 쓴다. 의존성을 설치하려는 스크립트가
+의존성을 요구하면 순환이다.

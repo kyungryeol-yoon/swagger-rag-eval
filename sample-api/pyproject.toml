@@ -24,6 +24,25 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["app"]
 
+# ---------------------------------------------------------------------------
+# 사내 패키지 저장소
+# ---------------------------------------------------------------------------
+# backend/pyproject.toml 과 동일하다. 실제 URL 은 여기 적지 않고
+# 환경변수로 전환한다:
+#
+#     UV_DEFAULT_INDEX=https://<사내 index>/simple
+#     UV_SYSTEM_CERTS=true
+#
+# 파일로 고정해야 한다면 아래 형태이며, 커밋하지 않는다:
+#
+# [[tool.uv.index]]
+# name = "internal"
+# url = "https://<사내 index>/simple"
+# default = true
+#
+# 참고: sample-api 는 사내 배포 대상이 아니다(README 참고). 그래도 사내 PC 에서
+# 시연하려면 설치는 되어야 하므로 같은 설정을 둔다.
+
 [tool.ruff]
 line-length = 100
 target-version = "py312"

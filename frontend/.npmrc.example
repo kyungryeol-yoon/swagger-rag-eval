@@ -1,0 +1,49 @@
+# 사내 npm 저장소 설정 예시
+#
+# 이 파일을 .npmrc 로 복사해서 실제 값을 채운다.
+#   cp .npmrc.example .npmrc
+#
+# **.npmrc 는 커밋하지 않는다** (frontend/.gitignore 에 등록돼 있다).
+# 사내 URL 과 인증서 경로가 공개 저장소에 올라가면 안 된다.
+#
+# 확정된 사내 값은 docs/open-questions.md #42, #43 참고.
+
+
+# --- 저장소 ----------------------------------------------------------------
+
+# 사내 Nexus / Artifactory 의 npm 프록시 주소.
+# 보통 `/repository/npm-group/` 처럼 그룹 저장소를 가리킨다.
+registry=https://<사내-nexus>/repository/npm-group/
+
+
+# --- TLS -------------------------------------------------------------------
+
+# 사내 프록시가 TLS 를 사내 CA 로 재서명하는 환경에서 필요하다.
+# 둘 중 하나만 쓰면 된다.
+#
+# (1) npm 에만 적용
+cafile=/path/to/corp-ca-bundle.pem
+#
+# (2) Node 프로세스 전체에 적용 — 이쪽을 권장한다.
+#     npm 뿐 아니라 next build, openapi-typescript 등도 같은 CA 를 쓰게 된다.
+#     .npmrc 가 아니라 환경변수로 설정한다:
+#
+#       export NODE_EXTRA_CA_CERTS=/path/to/corp-ca-bundle.pem
+#
+#     Windows PowerShell:
+#       setx NODE_EXTRA_CA_CERTS "C:\path\to\corp-ca-bundle.pem"
+
+# strict-ssl=false 는 쓰지 않는다.
+#   인증서 검증을 통째로 끄는 설정이라, 중간자 공격과 사내 CA 재서명을
+#   구분할 수 없게 된다. 인증서 오류의 해결책이 아니라 오류를 감추는 것이다.
+#   위 cafile / NODE_EXTRA_CA_CERTS 로 해결할 것.
+
+
+# --- 인증 (필요한 경우) -----------------------------------------------------
+
+# 사내 Nexus 가 익명 읽기를 막아둔 경우에만 쓴다.
+# **토큰을 이 파일에 적지 말고** 환경변수를 참조하게 한다:
+#
+#   //<사내-nexus>/repository/npm-group/:_authToken=${NPM_TOKEN}
+#
+# 그래야 실수로 커밋해도 토큰 자체는 새지 않는다.

@@ -35,16 +35,87 @@ make test
 make lint
 ```
 
-`make dev` 는 **세 개**를 띄운다. 포트가 이미 쓰이고 있으면 조용히 실패하므로,
-안 뜨는 것 같으면 `lsof -nP -iTCP -sTCP:LISTEN | grep -E ':(3000|8000|8001)'` 로 확인한다.
+`make dev` 는 **세 개**를 띄우고, 로그에 서비스 이름을 붙여준다.
+Ctrl+C 하면 자식 프로세스까지 정리한다. 하나가 죽으면 나머지도 함께 내린다.
 
 그 외 타겟은 `make help` 로 볼 수 있다. 자주 쓰는 것:
 
 | 타겟 | 하는 일 |
 |---|---|
+| `make doctor` | 환경 진단. 도구 버전·저장소·인증서·설치 상태를 표로 |
 | `make dump-spec` | sample-api 의 `openapi.json` 을 평가기 입력으로 덤프 |
 | `make show-quality` | sample-api 엔드포인트별 설명 품질을 표로 출력 |
 | `make gen-types` | 백엔드 OpenAPI → 프론트 타입 생성 (백엔드가 8000에 떠 있어야 한다) |
+| `make lock` | `uv.lock` 재생성 (사내 저장소 전환 시) |
+
+**make 가 없어도 된다.** 모든 타겟은 아래와 동일하다. Windows cmd 에서
+make 를 구하기 어려우면 이쪽을 쓴다.
+
+```bash
+python scripts/tasks.py <command>
+```
+
+Makefile 에는 셸 로직이 없다. Windows 에서 make 는 레시피를 `cmd.exe` 로
+실행해서 `[ ]`·파이프·`grep` 이 전부 깨지기 때문에, 로직은 전부
+`scripts/tasks.py` 에 있다. 고칠 일이 있으면 Makefile 이 아니라 그 파일을 고친다.
+
+## 사내망 최초 셋업
+
+폐쇄망은 PyPI·npmjs 에 나갈 수 없고 TLS 가 사내 CA 로 재서명된다.
+**설치 전에 환경변수부터 잡는다.** 자세한 배경은 [`docs/prompts.md`](docs/prompts.md) §10.
+
+### 1. 환경변수 설정
+
+```bash
+# macOS / Linux — ~/.zshrc 등에
+export UV_DEFAULT_INDEX=https://<사내 index>/simple
+export UV_SYSTEM_CERTS=true
+export NODE_EXTRA_CA_CERTS=/path/to/corp-ca-bundle.pem
+```
+
+```powershell
+# Windows PowerShell — 영구 설정
+setx UV_DEFAULT_INDEX "https://<사내 index>/simple"
+setx UV_SYSTEM_CERTS "true"
+setx NODE_EXTRA_CA_CERTS "C:\path\to\corp-ca-bundle.pem"
+```
+
+npm registry 는 환경변수가 아니라 파일로 잡는다.
+
+```bash
+cp frontend/.npmrc.example frontend/.npmrc   # 실제 값을 채운다. 커밋하지 않는다
+```
+
+> `UV_SYSTEM_CERTS` 는 uv 0.11 부터의 이름이다. 예전 문서의 `UV_NATIVE_TLS` 는
+> **오류 없이 조용히 무시된다.** 설정했는데 인증서 오류가 그대로면 이걸 의심한다.
+>
+> `strict-ssl=false` 는 쓰지 않는다. 인증서 검증을 통째로 끄는 것이라
+> 오류의 해결이 아니라 은폐다.
+
+### 2. 진단
+
+```bash
+make doctor
+```
+
+도구 버전, 활성 index/registry, 인증서 환경변수, 설치 상태가 한 화면에 나온다.
+`(없음)` 으로 표시된 항목이 곧 빠진 설정이다.
+
+### 3. 락 재생성
+
+```bash
+make lock          # uv.lock 을 사내 index 기준으로 다시 만든다
+```
+
+커밋된 락은 GitHub 기준이라 사내 index 와 맞지 않는다.
+**여기서 만들어진 락은 사내 로컬 전용이며 GitHub 로 되돌리지 않는다.**
+`package-lock.json` 도 마찬가지로, `npm ci` 가 실패하면 `npm install` 로 다시 만든다.
+
+### 4. 설치
+
+```bash
+make setup
+```
 
 ## 환경변수
 

@@ -25,6 +25,32 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["app"]
 
+# ---------------------------------------------------------------------------
+# 사내 패키지 저장소
+# ---------------------------------------------------------------------------
+# 폐쇄망에서는 PyPI 대신 사내 index 를 쓴다.
+#
+# **실제 URL 을 여기 적지 않는다.** 이 저장소는 공개돼 있다.
+# 전환은 환경변수로 한다 (backend/.env.example 참고):
+#
+#     UV_DEFAULT_INDEX=https://<사내 index>/simple
+#     UV_SYSTEM_CERTS=true
+#
+# 환경변수로 두면 같은 pyproject.toml 이 사내와 GitHub 양쪽에서 그대로 쓰인다.
+# 파일에 URL 을 박으면 두 저장소가 갈라지고, §6 변경 전파 루프가 깨진다.
+#
+# 사내에서 파일로 고정해야 한다면 아래 형태다. 커밋하지는 말 것:
+#
+# [[tool.uv.index]]
+# name = "internal"
+# url = "https://<사내 index>/simple"
+# default = true
+#
+# 주의: uv 0.11 부터 TLS 옵션 이름이 바뀌었다.
+#   구:  --native-tls   / UV_NATIVE_TLS
+#   현:  --system-certs / UV_SYSTEM_CERTS
+# 옛 이름은 조용히 무시되므로, 설정했는데 인증서 오류가 계속 나면 이걸 의심할 것.
+
 [tool.ruff]
 line-length = 100
 target-version = "py312"

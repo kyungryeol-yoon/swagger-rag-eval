@@ -1,47 +1,61 @@
-.PHONY: help setup dev dev-sample dev-backend dev-frontend build test lint gen-types dump-spec show-quality clean
+# 이 Makefile 에는 셸 로직이 없다.
+#
+# Windows 에서 make 는 레시피를 cmd.exe 로 실행한다. [ ] 테스트, 서브셸,
+# ||, 파이프, grep/awk 는 cmd 에서 그대로 깨진다. git bash 에서만 되는
+# Makefile 은 사내 PC 에서 재현이 안 된다.
+#
+# 그래서 모든 타겟은 scripts/tasks.py 를 한 줄로 부르기만 한다.
+# 로직을 고칠 일이 있으면 Makefile 이 아니라 그 파일을 고친다.
+#
+# make 없이도 같은 것을 할 수 있다:
+#     python scripts/tasks.py <command>
+
+# python 실행 파일 이름이 플랫폼마다 다르다.
+# Windows 는 `python`, macOS/Linux 는 보통 `python3` 만 있다.
+# 이건 셸 분기가 아니라 make 자체의 조건문이라 cmd.exe 를 거치지 않는다.
+# 다르게 부르고 싶으면 덮어쓸 수 있다:  make PY=py test
+ifeq ($(OS),Windows_NT)
+PY ?= python
+else
+PY ?= python3
+endif
+
+TASKS := $(PY) scripts/tasks.py
+
+.PHONY: help setup dev build test lint gen-types dump-spec show-quality lock doctor clean
 
 help:
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
-		awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2}'
+	$(TASKS) help
 
-setup: ## 의존성 설치
-	cd sample-api && uv sync
-	cd backend && uv sync
-	cd frontend && ([ -f package-lock.json ] && npm ci || npm install)
+setup:
+	$(TASKS) setup
 
-dev: ## 세 서버 동시 실행
-	@$(MAKE) -j3 dev-sample dev-backend dev-frontend
+dev:
+	$(TASKS) dev
 
-dev-sample: ## 평가 대상 API (8001)
-	cd sample-api && uv run uvicorn app.main:app --reload --port 8001
+build:
+	$(TASKS) build
 
-dev-backend: ## 평가기 API (8000)
-	cd backend && uv run uvicorn app.main:app --reload --port 8000
+test:
+	$(TASKS) test
 
-dev-frontend: ## 대시보드 (3000)
-	@[ -d frontend/node_modules ] || (cd frontend && npm install)
-	cd frontend && npm run dev
+lint:
+	$(TASKS) lint
 
-build: ## 프로덕션 빌드
-	cd frontend && npm run build
+gen-types:
+	$(TASKS) gen-types
 
-test: ## 테스트
-	cd backend && uv run pytest -q
-	cd sample-api && uv run pytest -q
+dump-spec:
+	$(TASKS) dump-spec
 
-lint: ## 린트 + 타입체크
-	cd backend && uv run ruff check . && uv run mypy app
-	cd frontend && npm run lint && npx tsc --noEmit
+show-quality:
+	$(TASKS) show-quality
 
-gen-types: ## 백엔드 OpenAPI -> 프론트 타입 생성
-	cd frontend && npm run gen:types
+lock:
+	$(TASKS) lock
 
-dump-spec: ## sample-api 의 openapi.json 덤프
-	cd sample-api && uv run python -m app.scripts.dump_openapi
-
-show-quality: ## sample-api 엔드포인트별 설명 품질 표
-	cd sample-api && uv run python -m app.scripts.show_quality
+doctor:
+	$(TASKS) doctor
 
 clean:
-	rm -rf frontend/.next frontend/out
-	find . -type d -name __pycache__ -prune -exec rm -rf {} +
+	$(TASKS) clean

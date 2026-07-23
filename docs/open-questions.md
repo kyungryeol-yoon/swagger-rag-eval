@@ -40,6 +40,10 @@
 | 34 | Ingress 경로 — 루트인가 서브패스(`/swagger-eval`)인가 | 미정 | `basePath` 결정. **Next 의 basePath 는 런타임에 못 바꾼다** — 이것만 빌드 타임 값이라, 서브패스면 환경별 빌드가 강제된다 |
 | 35 | 이미지 승격 방식 — 환경별 빌드인가 단일 이미지 다환경인가 | 미정 | 런타임 env 설계. 단일 이미지를 전제로 `NEXT_PUBLIC_` 을 하나도 쓰지 않았다(#34 만 예외). 환경별 빌드로 간다면 이 제약을 풀 수 있다 |
 | 36 | SSO 처리 위치 — Ingress/oauth2-proxy 인가 앱 내부인가 | 미정 | `AuthProvider` 범위(#4). 앞단에서 처리되면 앱은 헤더만 읽으면 되고, 앱 내부면 토큰 검증까지 Port 뒤에 들어온다 |
+| 41 | 사내 Python index URL 확정 | 미정 | `UV_DEFAULT_INDEX` 에 넣을 값. PEP 503 경로라 보통 `/simple` 로 끝난다. 값이 없으면 `make setup` 이 PyPI 로 나가려다 실패한다. **URL 을 저장소에 커밋하지 않는다** — 환경변수로만 준다 (`docs/prompts.md` §10-1) |
+| 42 | 사내 npm registry URL 확정 | 미정 | `frontend/.npmrc` 의 `registry=`. 커밋된 `package-lock.json` 에는 `registry.npmjs.org` 가 박혀 있어 사내에서 `npm ci` 가 실패한다. 그때는 `npm install` 로 사내 락을 새로 만든다(커밋 금지, §10-2) |
+| 43 | 사내 CA 인증서 배포 경로 / `NODE_EXTRA_CA_CERTS` 표준 위치 | 미정 | PC 마다 경로가 다르면 셋업 문서를 쓸 수 없다. 사내 표준 경로가 정해져 있는지, 아니면 각자 내려받는지 확인 필요. Python 쪽은 `UV_SYSTEM_CERTS=true` 로 OS 신뢰 저장소를 쓰면 경로가 필요 없다 |
+| 44 | Windows 개발 PC 를 공식 지원 대상으로 둘지 | 미정 | 현재는 지원한다는 전제로 Makefile 에서 셸 로직을 걷어냈다(Phase 4.6). WSL2 를 표준으로 정하면 이 제약이 사라지고 POSIX 만 가정할 수 있다. 다만 사내 PC 에 WSL 설치 권한이 있는지가 관건. **git bash 와 cmd 를 섞어 쓰는 지금이 가장 나쁜 상태다** — 한쪽에서만 되는 스크립트가 계속 생긴다 |
 
 ## Phase 1(스캐폴딩)에서 생긴 것
 
