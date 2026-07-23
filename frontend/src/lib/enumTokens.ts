@@ -13,7 +13,13 @@
  * (`make gen-types` 후) 여기서 컴파일 에러가 난다. 의도한 것이다.
  */
 
-import type { FailureCategory, Grade, Priority, QuestionType } from "./types";
+import type {
+  FailureCategory,
+  Grade,
+  Priority,
+  QuestionType,
+  SearchMode,
+} from "./types";
 
 /** CSS 변수명 -> `var(--...)` 형태로. style 속성에 바로 넣을 수 있다. */
 export function cssVar(name: string): string {
@@ -113,6 +119,20 @@ export function questionTypeColor(type: QuestionType): string {
 // **색을 주지 않는다.** 실패의 종류를 나누는 범주일 뿐, 어느 원인이 더 나쁘다는
 // 뜻이 아니다. 색을 붙이면 "빨간 원인이 더 심각한가?" 하고 읽게 된다.
 // 화면에서는 중립 뱃지(--surface-2 배경 + --border 테두리)로 표시한다.
+
+// ---------------------------------------------------------------------------
+// 검색 방식 (searchMode)
+// ---------------------------------------------------------------------------
+// 색이 아니라 문구만 필요하다. 재현성 정보라 화면에서는 meta 줄에만 나온다.
+//
+// 시안의 "BM25+Hybrid (K=3)" 는 중복 표기였다 — Hybrid 가 이미 BM25 + 벡터를
+// 뜻한다 (prompts.md §9-2). 여기 문구가 그 수정안이다.
+
+export const searchModeLabel: Record<SearchMode, string> = {
+  BM25: "BM25",
+  VECTOR: "벡터",
+  HYBRID: "Hybrid (BM25 + 벡터)",
+};
 
 export const failureCategoryLabel: Record<FailureCategory, string> = {
   METHOD_MISMATCH: "Method 불일치",
