@@ -3,7 +3,7 @@
   "evaluatedAt": "2026-07-22T11:38:00+09:00",
   "target": {
     "appId": "mf-worker",
-    "appName": "MF Worker 조회",
+    "appName": "MF Worker",
     "specVersion": "v3",
     "queryCount": 11,
     "owner": "데이터플랫폼팀"
@@ -25,10 +25,10 @@
   },
   "queries": [
     {
-      "path": "/orders/{id}",
+      "path": "/queries/lot-status",
       "method": "GET",
-      "summary": "주문 상세 조회",
-      "descriptionLength": 144,
+      "summary": "랏 현재 공정 단계 조회",
+      "descriptionLength": 168,
       "hasParamDescription": true,
       "questionCount": 12,
       "top3Accuracy": 100.0,
@@ -36,10 +36,10 @@
       "needsRegeneration": false
     },
     {
-      "path": "/orders/{id}/refund-status",
+      "path": "/queries/wafer-yield-daily",
       "method": "GET",
-      "summary": "주문 환불 상태 조회",
-      "descriptionLength": 206,
+      "summary": "일별 웨이퍼 수율 조회",
+      "descriptionLength": 182,
       "hasParamDescription": true,
       "questionCount": 11,
       "top3Accuracy": 100.0,
@@ -47,9 +47,42 @@
       "needsRegeneration": false
     },
     {
-      "path": "/orders/{id}/refund",
+      "path": "/queries/defect-summary",
       "method": "POST",
-      "summary": "환불 신청",
+      "summary": "불량 유형별 집계 조회",
+      "descriptionLength": 175,
+      "hasParamDescription": true,
+      "questionCount": 10,
+      "top3Accuracy": 90.0,
+      "grade": "FAIR",
+      "needsRegeneration": false
+    },
+    {
+      "path": "/queries/lot-trace",
+      "method": "GET",
+      "summary": "랏 이력 추적 조회",
+      "descriptionLength": 171,
+      "hasParamDescription": true,
+      "questionCount": 10,
+      "top3Accuracy": 90.0,
+      "grade": "FAIR",
+      "needsRegeneration": false
+    },
+    {
+      "path": "/queries/inventory-wip",
+      "method": "GET",
+      "summary": "WIP 재고 현황 조회",
+      "descriptionLength": 158,
+      "hasParamDescription": true,
+      "questionCount": 9,
+      "top3Accuracy": 88.9,
+      "grade": "FAIR",
+      "needsRegeneration": false
+    },
+    {
+      "path": "/queries/equipment-downtime",
+      "method": "GET",
+      "summary": "설비 다운타임 조회",
       "descriptionLength": 0,
       "hasParamDescription": false,
       "questionCount": 10,
@@ -58,8 +91,30 @@
       "needsRegeneration": false
     },
     {
-      "path": "/orders/{id}/refund",
-      "method": "DELETE",
+      "path": "/queries/recipe-history",
+      "method": "GET",
+      "summary": "레시피 변경 이력 조회",
+      "descriptionLength": 0,
+      "hasParamDescription": false,
+      "questionCount": 9,
+      "top3Accuracy": 77.8,
+      "grade": "NEEDS_IMPROVEMENT",
+      "needsRegeneration": false
+    },
+    {
+      "path": "/queries/alarm-history",
+      "method": "POST",
+      "summary": "알람 발생 이력 조회",
+      "descriptionLength": 0,
+      "hasParamDescription": false,
+      "questionCount": 8,
+      "top3Accuracy": 75.0,
+      "grade": "NEEDS_IMPROVEMENT",
+      "needsRegeneration": false
+    },
+    {
+      "path": "/queries/step-cycle-time",
+      "method": "GET",
       "summary": null,
       "descriptionLength": 0,
       "hasParamDescription": false,
@@ -69,79 +124,24 @@
       "needsRegeneration": true
     },
     {
-      "path": "/orders/{id}/shipping-address",
-      "method": "PATCH",
-      "summary": "배송지 변경",
-      "descriptionLength": 0,
-      "hasParamDescription": false,
-      "questionCount": 9,
-      "top3Accuracy": 66.7,
-      "grade": "CRITICAL",
-      "needsRegeneration": true
-    },
-    {
-      "path": "/orders/{id}/shipping-status",
-      "method": "GET",
-      "summary": "주문 배송 상태 조회",
-      "descriptionLength": 170,
-      "hasParamDescription": true,
-      "questionCount": 10,
-      "top3Accuracy": 90.0,
-      "grade": "FAIR",
-      "needsRegeneration": false
-    },
-    {
-      "path": "/products/{id}",
-      "method": "GET",
-      "summary": "상품 상세 조회",
-      "descriptionLength": 136,
-      "hasParamDescription": true,
-      "questionCount": 10,
-      "top3Accuracy": 100.0,
-      "grade": "GOOD",
-      "needsRegeneration": false
-    },
-    {
-      "path": "/products/{id}/stock",
-      "method": "GET",
-      "summary": "재고 조회",
-      "descriptionLength": 0,
-      "hasParamDescription": false,
-      "questionCount": 9,
-      "top3Accuracy": 77.8,
-      "grade": "NEEDS_IMPROVEMENT",
-      "needsRegeneration": false
-    },
-    {
-      "path": "/products/{id}/restock-schedule",
+      "path": "/queries/operator-shift",
       "method": "GET",
       "summary": null,
       "descriptionLength": 0,
       "hasParamDescription": false,
-      "questionCount": 8,
-      "top3Accuracy": 37.5,
+      "questionCount": 7,
+      "top3Accuracy": 42.9,
       "grade": "CRITICAL",
       "needsRegeneration": true
     },
     {
-      "path": "/users/{id}",
-      "method": "GET",
-      "summary": "회원 정보 조회",
-      "descriptionLength": 135,
-      "hasParamDescription": true,
-      "questionCount": 7,
-      "top3Accuracy": 85.7,
-      "grade": "FAIR",
-      "needsRegeneration": false
-    },
-    {
-      "path": "/users/{id}/address",
-      "method": "PATCH",
-      "summary": "주소 변경",
+      "path": "/queries/chamber-sensor-trend",
+      "method": "POST",
+      "summary": null,
       "descriptionLength": 0,
       "hasParamDescription": false,
       "questionCount": 5,
-      "top3Accuracy": 40.0,
+      "top3Accuracy": 20.0,
       "grade": "CRITICAL",
       "needsRegeneration": true
     }
@@ -201,751 +201,751 @@
     {
       "order": 1,
       "title": "설명(Description) 보강",
-      "description": "설명이 아예 없는 엔드포인트 2개(DELETE /orders/{id}/refund, GET /products/{id}/restock-schedule)가 전체 실패의 절반 가까이를 차지합니다. summary와 description을 채우는 것만으로 가장 크게 개선됩니다.",
+      "description": "설명이 아예 없는 조회 쿼리 3개(스텝 사이클타임, 작업자 교대, 챔버 센서 추이)가 전체 실패의 절반 이상을 차지합니다. summary와 description을 채우는 것만으로 가장 크게 개선됩니다.",
       "priority": "HIGH",
       "failShare": 45.5
     },
     {
       "order": 2,
-      "title": "동의어·업무 용어 추가",
-      "description": "사용자는 '재입고', '반품', '운송장'처럼 명세에 없는 표현으로 질문합니다. 설명 안에 실제 사용자 표현을 함께 적어두면 한영 혼합 질문과 짧은 키워드 질문의 인식률이 올라갑니다.",
+      "title": "현장 용어·동의어 추가",
+      "description": "현장에서는 'eqp', '택트타임', '계보'처럼 명세에 없는 표현으로 검색합니다. 설명 안에 실제 현장 표현을 함께 적어두면 한영 혼합 질문과 짧은 키워드 질문의 인식률이 올라갑니다.",
       "priority": "HIGH",
       "failShare": 36.4
     },
     {
       "order": 3,
-      "title": "유사 리소스 구분 강화",
-      "description": "주문 배송지와 회원 기본 주소처럼 이름이 비슷한 엔드포인트가 서로의 상위 결과를 밀어냅니다. 각 설명에 '무엇이 아닌지'를 한 줄 덧붙이면 혼동이 줄어듭니다.",
+      "title": "유사 조회 구분 강화",
+      "description": "수율 집계와 불량 집계처럼 이름이 비슷한 조회 쿼리가 서로의 상위 결과를 밀어냅니다. 각 설명에 '무엇을 집계하는지'를 한 줄 덧붙이면 혼동이 줄어듭니다.",
       "priority": "MEDIUM",
       "failShare": 31.8
     }
   ],
   "failures": [
     {
-      "id": "q_003",
-      "question": "주문의 배송 상태를 조회하는 API는 무엇인가요?",
+      "id": "q_001",
+      "question": "불량 요약 데이터를 조회하는 쿼리는 무엇인가요?",
       "questionType": "DIRECT",
       "expected": {
-        "method": "GET",
-        "path": "/orders/{id}/shipping-status"
+        "method": "POST",
+        "path": "/queries/defect-summary"
       },
       "results": [
         {
           "rank": 1,
           "method": "GET",
-          "path": "/orders/{id}/refund-status",
-          "score": 0.781
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.8
         },
         {
           "rank": 2,
           "method": "GET",
-          "path": "/orders/{id}",
-          "score": 0.759
+          "path": "/queries/lot-trace",
+          "score": 0.755
         },
         {
           "rank": 3,
-          "method": "PATCH",
-          "path": "/orders/{id}/shipping-address",
-          "score": 0.724
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.71
         }
       ],
       "hit": false,
       "expectedRank": 4,
       "failureCategory": "SIMILAR_RESOURCE",
-      "reason": "같은 주문 리소스의 '-status' 엔드포인트끼리 설명이 겹쳐 환불 상태가 배송 상태를 밀어냄"
+      "reason": "'요약·집계'라는 표현이 여러 조회 쿼리 설명에 겹쳐 수율 집계 쿼리가 상위를 차지"
+    },
+    {
+      "id": "q_002",
+      "question": "특정 랏의 계보를 추적하는 쿼리 알려줘",
+      "questionType": "DOMAIN_TERM",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/lot-trace"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.8
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/recipe-history",
+          "score": 0.755
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.71
+        }
+      ],
+      "hit": false,
+      "expectedRank": 5,
+      "failureCategory": "SYNONYM_MISS",
+      "reason": "현장 용어 '계보(genealogy)'가 설명에 없어 랏 상태 조회가 이력 추적보다 먼저 잡힘"
+    },
+    {
+      "id": "q_003",
+      "question": "WIP 재고를 라인별로 거를 때 어떤 파라미터를 넣나요?",
+      "questionType": "PARAMETER",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/inventory-wip"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.8
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.755
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.71
+        }
+      ],
+      "hit": false,
+      "expectedRank": 4,
+      "failureCategory": "PARAM_MISSING",
+      "reason": "라인 필터 파라미터에 설명이 없어 '라인별'이라는 조건과 연결되지 못함"
+    },
+    {
+      "id": "q_004",
+      "question": "어제 오래 멈춘 설비 있어?",
+      "questionType": "USER_NL",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/operator-shift",
+          "score": 0.8
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/alarm-history",
+          "score": 0.755
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.71
+        }
+      ],
+      "hit": false,
+      "expectedRank": 5,
+      "failureCategory": "SYNONYM_MISS",
+      "reason": "구어체 '멈춘'이 다운타임 설명(summary 한 줄뿐)과 연결되지 않아 후순위로 밀림"
+    },
+    {
+      "id": "q_005",
+      "question": "설비 다운타임을 기간으로 조회할 때 날짜 형식은?",
+      "questionType": "PARAMETER",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.8
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.755
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.71
+        }
+      ],
+      "hit": false,
+      "expectedRank": 4,
+      "failureCategory": "PARAM_MISSING",
+      "reason": "기간 파라미터 설명이 비어 있어 날짜 형식을 묻는 질문과 매칭할 근거가 없음"
+    },
+    {
+      "id": "q_006",
+      "question": "레시피 변경 내역 조회",
+      "questionType": "DOMAIN_TERM",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/recipe-history"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-trace",
+          "score": 0.8
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.755
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.71
+        }
+      ],
+      "hit": false,
+      "expectedRank": 5,
+      "failureCategory": "SYNONYM_MISS",
+      "reason": "'변경 내역'과 '변경 이력'의 표현 차이를 좁힐 설명이 없어 랏 이력 추적이 상위를 차지"
     },
     {
       "id": "q_007",
-      "question": "재입고 언제 되나요?",
-      "questionType": "USER_NL",
+      "question": "레시피 이력",
+      "questionType": "SHORT_KEYWORD",
       "expected": {
         "method": "GET",
-        "path": "/products/{id}/restock-schedule"
+        "path": "/queries/recipe-history"
       },
       "results": [
         {
           "rank": 1,
           "method": "GET",
-          "path": "/products/{id}/stock",
-          "score": 0.688
+          "path": "/queries/lot-trace",
+          "score": 0.8
         },
         {
           "rank": 2,
-          "method": "GET",
-          "path": "/products/{id}",
-          "score": 0.671
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.755
         },
         {
           "rank": 3,
           "method": "GET",
-          "path": "/orders/{id}/shipping-status",
-          "score": 0.603
+          "path": "/queries/lot-status",
+          "score": 0.71
         }
       ],
       "hit": false,
-      "expectedRank": null,
+      "expectedRank": 6,
       "failureCategory": "DESCRIPTION_MISSING",
-      "reason": "기대 엔드포인트에 summary와 description이 모두 없어 경로 문자열 외에는 매칭할 근거가 없음"
+      "reason": "키워드 2개뿐인 짧은 질문은 설명 텍스트에 의존하는데 summary 한 줄로는 부족"
+    },
+    {
+      "id": "q_008",
+      "question": "알람 발생 내역 보고 싶어",
+      "questionType": "USER_NL",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/alarm-history"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.8
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.755
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/operator-shift",
+          "score": 0.71
+        }
+      ],
+      "hit": false,
+      "expectedRank": 5,
+      "failureCategory": "SYNONYM_MISS",
+      "reason": "'발생 내역'이라는 표현이 설명에 없어 설비 다운타임 조회가 먼저 잡힘"
     },
     {
       "id": "q_009",
-      "question": "restock 일정 확인하는 endpoint 알려줘",
-      "questionType": "MIXED_LANG",
+      "question": "알람이 한 건도 없던 구간을 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "ERROR_CASE",
       "expected": {
-        "method": "GET",
-        "path": "/products/{id}/restock-schedule"
+        "method": "POST",
+        "path": "/queries/alarm-history"
       },
       "results": [
         {
           "rank": 1,
           "method": "GET",
-          "path": "/products/{id}",
-          "score": 0.641
+          "path": "/queries/equipment-downtime",
+          "score": 0.8
         },
         {
           "rank": 2,
           "method": "GET",
-          "path": "/products/{id}/stock",
-          "score": 0.629
+          "path": "/queries/lot-status",
+          "score": 0.755
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.71
+        }
+      ],
+      "hit": false,
+      "expectedRank": 4,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "'알람이 없는 구간'이라는 부정 조건을 설명이 다루지 않아 의도를 잡지 못함"
+    },
+    {
+      "id": "q_010",
+      "question": "step cycle time 조회 쿼리 있나요?",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.66
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-trace",
+          "score": 0.615
         },
         {
           "rank": 3,
           "method": "GET",
-          "path": "/orders/{id}",
-          "score": 0.552
+          "path": "/queries/equipment-downtime",
+          "score": 0.57
         }
       ],
       "hit": false,
       "expectedRank": null,
       "failureCategory": "DESCRIPTION_MISSING",
-      "reason": "영문 'restock'이 경로에만 존재하고 설명 텍스트가 비어 있어 한글 질문 부분과 결합되지 못함"
+      "reason": "설명이 전혀 없어 경로 토큰 외에는 매칭할 근거가 없고 영문 질문과 결합되지 못함"
     },
     {
       "id": "q_011",
-      "question": "주문한 상품 받을 주소를 바꾸고 싶어요",
-      "questionType": "USER_NL",
+      "question": "각 step별 cycle time trend 뽑는 query",
+      "questionType": "MIXED_LANG",
       "expected": {
-        "method": "PATCH",
-        "path": "/orders/{id}/shipping-address"
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
       },
       "results": [
         {
           "rank": 1,
-          "method": "PATCH",
-          "path": "/users/{id}/address",
-          "score": 0.742
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.66
         },
         {
           "rank": 2,
           "method": "GET",
-          "path": "/orders/{id}/shipping-status",
-          "score": 0.719
+          "path": "/queries/recipe-history",
+          "score": 0.615
         },
         {
           "rank": 3,
           "method": "GET",
-          "path": "/orders/{id}",
-          "score": 0.688
+          "path": "/queries/lot-trace",
+          "score": 0.57
         }
       ],
       "hit": false,
-      "expectedRank": 4,
-      "failureCategory": "SIMILAR_RESOURCE",
-      "reason": "회원 기본 주소 변경과 주문 배송지 변경이 모두 summary 한 줄뿐이라 구분 근거가 없음"
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 비어 있어 한영 혼합 표현이 어느 토큰과도 충분히 매칭되지 않음"
+    },
+    {
+      "id": "q_012",
+      "question": "스텝 사이클타임",
+      "questionType": "SHORT_KEYWORD",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.66
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.615
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/inventory-wip",
+          "score": 0.57
+        }
+      ],
+      "hit": false,
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "짧은 키워드인데 기대 쿼리에 설명이 전혀 없어 후보에도 오르지 못함"
     },
     {
       "id": "q_013",
-      "question": "재입고 일정",
-      "questionType": "SHORT_KEYWORD",
+      "question": "공정 단계별 소요 시간을 알고 싶어요",
+      "questionType": "USER_NL",
       "expected": {
         "method": "GET",
-        "path": "/products/{id}/restock-schedule"
+        "path": "/queries/step-cycle-time"
       },
       "results": [
         {
           "rank": 1,
           "method": "GET",
-          "path": "/products/{id}/stock",
-          "score": 0.612
+          "path": "/queries/equipment-downtime",
+          "score": 0.66
         },
         {
           "rank": 2,
           "method": "GET",
-          "path": "/products/{id}",
-          "score": 0.587
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.615
         },
         {
           "rank": 3,
           "method": "GET",
-          "path": "/orders/{id}/shipping-status",
-          "score": 0.531
+          "path": "/queries/lot-trace",
+          "score": 0.57
         }
       ],
       "hit": false,
       "expectedRank": null,
       "failureCategory": "DESCRIPTION_MISSING",
-      "reason": "키워드 2개뿐인 짧은 질문은 설명 텍스트에 의존하는데 기대 엔드포인트에 설명이 전혀 없음"
+      "reason": "'소요 시간'이 cycle time 을 뜻하지만 설명이 없어 개념을 연결하지 못함"
+    },
+    {
+      "id": "q_014",
+      "question": "스텝별 택트타임 집계 쿼리",
+      "questionType": "DOMAIN_TERM",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.66
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/recipe-history",
+          "score": 0.615
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.57
+        }
+      ],
+      "hit": false,
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "현장 용어 '택트타임'이 설명에 없고 기대 쿼리 자체가 설명 공백이라 매칭 불가"
+    },
+    {
+      "id": "q_015",
+      "question": "operator shift 정보 조회",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/operator-shift"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/alarm-history",
+          "score": 0.66
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.615
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.57
+        }
+      ],
+      "hit": false,
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 영문 'operator shift'가 경로 토큰에만 걸려 상위 진입에 실패"
+    },
+    {
+      "id": "q_016",
+      "question": "작업자 shift 배정 query 알려줘",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/operator-shift"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/alarm-history",
+          "score": 0.66
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/recipe-history",
+          "score": 0.615
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.57
+        }
+      ],
+      "hit": false,
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "한영 혼합 질문인데 기대 쿼리에 설명이 전혀 없어 매칭 근거가 부족"
     },
     {
       "id": "q_017",
-      "question": "환불 신청은 어떻게 취소하나요?",
+      "question": "교대 근무자 명단을 조회하고 싶어요",
       "questionType": "USER_NL",
       "expected": {
-        "method": "DELETE",
-        "path": "/orders/{id}/refund"
+        "method": "GET",
+        "path": "/queries/operator-shift"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/alarm-history",
+          "score": 0.8
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.755
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/inventory-wip",
+          "score": 0.71
+        }
+      ],
+      "hit": false,
+      "expectedRank": 4,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "'교대 근무자'가 operator shift 를 뜻하지만 설명 공백이라 경로 부분 매칭으로만 4위"
+    },
+    {
+      "id": "q_018",
+      "question": "교대 정보가 누락된 랏을 찾으려면?",
+      "questionType": "ERROR_CASE",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/operator-shift"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/alarm-history",
+          "score": 0.66
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.615
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.57
+        }
+      ],
+      "hit": false,
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "누락 확인이라는 예외 상황을 설명이 다루지 않고 기대 쿼리도 설명이 없음"
+    },
+    {
+      "id": "q_019",
+      "question": "chamber sensor trend 조회 query",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/chamber-sensor-trend"
       },
       "results": [
         {
           "rank": 1,
           "method": "GET",
-          "path": "/orders/{id}/refund-status",
-          "score": 0.812
+          "path": "/queries/equipment-downtime",
+          "score": 0.66
         },
         {
           "rank": 2,
           "method": "POST",
-          "path": "/orders/{id}/refund",
-          "score": 0.774
+          "path": "/queries/defect-summary",
+          "score": 0.615
         },
         {
           "rank": 3,
           "method": "GET",
-          "path": "/orders/{id}",
-          "score": 0.701
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.57
         }
       ],
       "hit": false,
-      "expectedRank": 7,
-      "failureCategory": "METHOD_MISMATCH",
-      "reason": "질문의 '취소'를 조회(GET) 의도로 오인식하여 DELETE 엔드포인트가 후순위로 밀림"
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 영문 질문이 경로 토큰에만 의존하고 상위 진입에 실패"
+    },
+    {
+      "id": "q_020",
+      "question": "챔버 sensor 데이터 시계열로 뽑고 싶어",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/chamber-sensor-trend"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.66
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.615
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.57
+        }
+      ],
+      "hit": false,
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "'시계열(trend)' 표현이 설명에 없고 기대 쿼리 자체가 설명 공백이라 매칭 불가"
+    },
+    {
+      "id": "q_021",
+      "question": "챔버 온도 이력 조회하는 쿼리 있나요?",
+      "questionType": "USER_NL",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/chamber-sensor-trend"
+      },
+      "results": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.66
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.615
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.57
+        }
+      ],
+      "hit": false,
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "'온도 이력'이 센서 추이를 뜻하지만 설명이 없어 개념을 연결하지 못함"
     },
     {
       "id": "q_022",
-      "question": "환불 접수 건을 철회 처리하려면 어떤 API를 호출하나요?",
-      "questionType": "DOMAIN_TERM",
-      "expected": {
-        "method": "DELETE",
-        "path": "/orders/{id}/refund"
-      },
-      "results": [
-        {
-          "rank": 1,
-          "method": "POST",
-          "path": "/orders/{id}/refund",
-          "score": 0.769
-        },
-        {
-          "rank": 2,
-          "method": "GET",
-          "path": "/orders/{id}/refund-status",
-          "score": 0.744
-        },
-        {
-          "rank": 3,
-          "method": "GET",
-          "path": "/orders/{id}",
-          "score": 0.662
-        }
-      ],
-      "hit": false,
-      "expectedRank": 5,
-      "failureCategory": "SYNONYM_MISS",
-      "reason": "업무 용어 '철회'가 어느 설명에도 없어 같은 경로의 POST가 먼저 잡힘"
-    },
-    {
-      "id": "q_026",
-      "question": "refund 취소는 어떤 method로 call 하나요?",
-      "questionType": "MIXED_LANG",
-      "expected": {
-        "method": "DELETE",
-        "path": "/orders/{id}/refund"
-      },
-      "results": [
-        {
-          "rank": 1,
-          "method": "POST",
-          "path": "/orders/{id}/refund",
-          "score": 0.758
-        },
-        {
-          "rank": 2,
-          "method": "GET",
-          "path": "/orders/{id}/refund-status",
-          "score": 0.731
-        },
-        {
-          "rank": 3,
-          "method": "PATCH",
-          "path": "/orders/{id}/shipping-address",
-          "score": 0.598
-        }
-      ],
-      "hit": false,
-      "expectedRank": 6,
-      "failureCategory": "METHOD_MISMATCH",
-      "reason": "경로가 동일한 POST/DELETE 중 설명이 있는 POST만 상위에 오름"
-    },
-    {
-      "id": "q_029",
-      "question": "배송지를 바꿀 때 우편번호는 필수인가요?",
-      "questionType": "PARAMETER",
-      "expected": {
-        "method": "PATCH",
-        "path": "/orders/{id}/shipping-address"
-      },
-      "results": [
-        {
-          "rank": 1,
-          "method": "GET",
-          "path": "/orders/{id}/shipping-status",
-          "score": 0.703
-        },
-        {
-          "rank": 2,
-          "method": "PATCH",
-          "path": "/users/{id}/address",
-          "score": 0.697
-        },
-        {
-          "rank": 3,
-          "method": "GET",
-          "path": "/orders/{id}",
-          "score": 0.634
-        }
-      ],
-      "hit": false,
-      "expectedRank": 4,
-      "failureCategory": "PARAM_MISSING",
-      "reason": "요청 본문 필드에 설명이 없어 '우편번호'라는 파라미터 단서를 매칭하지 못함"
-    },
-    {
-      "id": "q_034",
-      "question": "회원 정보에 등록된 주소를 수정하고 싶어요",
-      "questionType": "USER_NL",
-      "expected": {
-        "method": "PATCH",
-        "path": "/users/{id}/address"
-      },
-      "results": [
-        {
-          "rank": 1,
-          "method": "PATCH",
-          "path": "/orders/{id}/shipping-address",
-          "score": 0.726
-        },
-        {
-          "rank": 2,
-          "method": "GET",
-          "path": "/users/{id}",
-          "score": 0.711
-        },
-        {
-          "rank": 3,
-          "method": "GET",
-          "path": "/orders/{id}",
-          "score": 0.612
-        }
-      ],
-      "hit": false,
-      "expectedRank": 4,
-      "failureCategory": "SIMILAR_RESOURCE",
-      "reason": "'주소 변경'과 '배송지 변경'이 둘 다 한 줄 요약뿐이라 리소스 소속을 구분하지 못함"
-    },
-    {
-      "id": "q_041",
-      "question": "이미 환불된 주문에 환불을 또 신청하면 어떤 오류가 나나요?",
-      "questionType": "ERROR_CASE",
-      "expected": {
-        "method": "POST",
-        "path": "/orders/{id}/refund"
-      },
-      "results": [
-        {
-          "rank": 1,
-          "method": "GET",
-          "path": "/orders/{id}/refund-status",
-          "score": 0.788
-        },
-        {
-          "rank": 2,
-          "method": "DELETE",
-          "path": "/orders/{id}/refund",
-          "score": 0.664
-        },
-        {
-          "rank": 3,
-          "method": "GET",
-          "path": "/orders/{id}",
-          "score": 0.641
-        }
-      ],
-      "hit": false,
-      "expectedRank": 4,
-      "failureCategory": "METHOD_MISMATCH",
-      "reason": "'이미 환불된' 이라는 상태 표현 때문에 상태 조회 엔드포인트가 1위를 차지함"
-    },
-    {
-      "id": "q_046",
-      "question": "특정 상품의 가용 재고 수량을 확인하는 API",
-      "questionType": "DOMAIN_TERM",
-      "expected": {
-        "method": "GET",
-        "path": "/products/{id}/stock"
-      },
-      "results": [
-        {
-          "rank": 1,
-          "method": "GET",
-          "path": "/products/{id}",
-          "score": 0.771
-        },
-        {
-          "rank": 2,
-          "method": "GET",
-          "path": "/products/{id}/restock-schedule",
-          "score": 0.629
-        },
-        {
-          "rank": 3,
-          "method": "GET",
-          "path": "/orders/{id}",
-          "score": 0.574
-        }
-      ],
-      "hit": false,
-      "expectedRank": 4,
-      "failureCategory": "SYNONYM_MISS",
-      "reason": "'가용 재고'라는 표현이 없고, 상품 상세의 품절 여부 설명이 재고 질문을 흡수함"
-    },
-    {
-      "id": "q_050",
-      "question": "shipping address 변경 API 있나요?",
-      "questionType": "MIXED_LANG",
-      "expected": {
-        "method": "PATCH",
-        "path": "/orders/{id}/shipping-address"
-      },
-      "results": [
-        {
-          "rank": 1,
-          "method": "GET",
-          "path": "/orders/{id}/shipping-status",
-          "score": 0.734
-        },
-        {
-          "rank": 2,
-          "method": "PATCH",
-          "path": "/users/{id}/address",
-          "score": 0.681
-        },
-        {
-          "rank": 3,
-          "method": "GET",
-          "path": "/orders/{id}",
-          "score": 0.605
-        }
-      ],
-      "hit": false,
-      "expectedRank": 4,
-      "failureCategory": "SIMILAR_RESOURCE",
-      "reason": "영문 'shipping'이 배송 상태 조회 설명에만 등장해 그쪽으로 끌려감"
-    },
-    {
-      "id": "q_055",
-      "question": "재고 수량",
+      "question": "챔버 센서 추이",
       "questionType": "SHORT_KEYWORD",
       "expected": {
-        "method": "GET",
-        "path": "/products/{id}/stock"
-      },
-      "results": [
-        {
-          "rank": 1,
-          "method": "GET",
-          "path": "/products/{id}",
-          "score": 0.648
-        },
-        {
-          "rank": 2,
-          "method": "GET",
-          "path": "/products/{id}/restock-schedule",
-          "score": 0.561
-        },
-        {
-          "rank": 3,
-          "method": "GET",
-          "path": "/orders/{id}",
-          "score": 0.508
-        }
-      ],
-      "hit": false,
-      "expectedRank": 4,
-      "failureCategory": "SYNONYM_MISS",
-      "reason": "기대 엔드포인트의 설명이 '재고 조회' 한 줄이라 '수량' 키워드와 연결되지 않음"
-    },
-    {
-      "id": "q_058",
-      "question": "품절된 상품이 다시 들어오는 날짜를 알 수 있나요?",
-      "questionType": "USER_NL",
-      "expected": {
-        "method": "GET",
-        "path": "/products/{id}/restock-schedule"
-      },
-      "results": [
-        {
-          "rank": 1,
-          "method": "GET",
-          "path": "/products/{id}",
-          "score": 0.752
-        },
-        {
-          "rank": 2,
-          "method": "GET",
-          "path": "/products/{id}/stock",
-          "score": 0.667
-        },
-        {
-          "rank": 3,
-          "method": "GET",
-          "path": "/orders/{id}/shipping-status",
-          "score": 0.588
-        }
-      ],
-      "hit": false,
-      "expectedRank": null,
-      "failureCategory": "DESCRIPTION_MISSING",
-      "reason": "'품절' 키워드가 상품 상세 설명에만 있어 입고 예정일 엔드포인트가 후보에도 오르지 못함"
-    },
-    {
-      "id": "q_064",
-      "question": "product restock schedule 조회 가능한가요?",
-      "questionType": "MIXED_LANG",
-      "expected": {
-        "method": "GET",
-        "path": "/products/{id}/restock-schedule"
-      },
-      "results": [
-        {
-          "rank": 1,
-          "method": "GET",
-          "path": "/products/{id}",
-          "score": 0.673
-        },
-        {
-          "rank": 2,
-          "method": "GET",
-          "path": "/products/{id}/stock",
-          "score": 0.634
-        },
-        {
-          "rank": 3,
-          "method": "GET",
-          "path": "/users/{id}",
-          "score": 0.521
-        }
-      ],
-      "hit": false,
-      "expectedRank": null,
-      "failureCategory": "DESCRIPTION_MISSING",
-      "reason": "설명이 비어 있어 벡터 검색이 사실상 경로 토큰만 보게 되고 BM25 점수도 낮음"
-    },
-    {
-      "id": "q_071",
-      "question": "반품 접수를 생성하는 엔드포인트는 무엇인가요?",
-      "questionType": "DOMAIN_TERM",
-      "expected": {
         "method": "POST",
-        "path": "/orders/{id}/refund"
+        "path": "/queries/chamber-sensor-trend"
       },
       "results": [
         {
           "rank": 1,
           "method": "GET",
-          "path": "/orders/{id}/refund-status",
-          "score": 0.796
+          "path": "/queries/equipment-downtime",
+          "score": 0.66
         },
         {
           "rank": 2,
           "method": "GET",
-          "path": "/orders/{id}",
-          "score": 0.657
-        },
-        {
-          "rank": 3,
-          "method": "DELETE",
-          "path": "/orders/{id}/refund",
-          "score": 0.623
-        }
-      ],
-      "hit": false,
-      "expectedRank": 4,
-      "failureCategory": "SYNONYM_MISS",
-      "reason": "'반품'이 환불 상태 조회 설명에만 동의어로 적혀 있어 신청 엔드포인트가 밀림"
-    },
-    {
-      "id": "q_078",
-      "question": "회원 주소 수정",
-      "questionType": "SHORT_KEYWORD",
-      "expected": {
-        "method": "PATCH",
-        "path": "/users/{id}/address"
-      },
-      "results": [
-        {
-          "rank": 1,
-          "method": "GET",
-          "path": "/users/{id}",
-          "score": 0.719
-        },
-        {
-          "rank": 2,
-          "method": "PATCH",
-          "path": "/orders/{id}/shipping-address",
-          "score": 0.694
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.615
         },
         {
           "rank": 3,
           "method": "GET",
-          "path": "/orders/{id}",
-          "score": 0.551
-        }
-      ],
-      "hit": false,
-      "expectedRank": 4,
-      "failureCategory": "SIMILAR_RESOURCE",
-      "reason": "설명이 풍부한 회원 정보 조회가 같은 리소스의 주소 변경보다 먼저 잡힘"
-    },
-    {
-      "id": "q_083",
-      "question": "주문 조회할 때 넘기는 id는 주문번호인가요 회원번호인가요?",
-      "questionType": "PARAMETER",
-      "expected": {
-        "method": "GET",
-        "path": "/users/{id}"
-      },
-      "results": [
-        {
-          "rank": 1,
-          "method": "GET",
-          "path": "/orders/{id}",
-          "score": 0.804
-        },
-        {
-          "rank": 2,
-          "method": "GET",
-          "path": "/orders/{id}/refund-status",
-          "score": 0.712
-        },
-        {
-          "rank": 3,
-          "method": "GET",
-          "path": "/orders/{id}/shipping-status",
-          "score": 0.679
-        }
-      ],
-      "hit": false,
-      "expectedRank": 5,
-      "failureCategory": "PARAM_MISSING",
-      "reason": "모든 엔드포인트가 경로 파라미터 이름을 id로만 써서 어느 리소스의 식별자인지 구분되지 않음"
-    },
-    {
-      "id": "q_087",
-      "question": "user address update API가 뭔가요?",
-      "questionType": "MIXED_LANG",
-      "expected": {
-        "method": "PATCH",
-        "path": "/users/{id}/address"
-      },
-      "results": [
-        {
-          "rank": 1,
-          "method": "GET",
-          "path": "/users/{id}",
-          "score": 0.738
-        },
-        {
-          "rank": 2,
-          "method": "PATCH",
-          "path": "/orders/{id}/shipping-address",
-          "score": 0.672
-        },
-        {
-          "rank": 3,
-          "method": "GET",
-          "path": "/orders/{id}",
-          "score": 0.543
-        }
-      ],
-      "hit": false,
-      "expectedRank": 4,
-      "failureCategory": "SIMILAR_RESOURCE",
-      "reason": "영문 'user'가 회원 정보 조회 설명에만 등장해 같은 리소스의 주소 변경을 가림"
-    },
-    {
-      "id": "q_090",
-      "question": "환불 취소를 요청했는데 실패하면 어떤 응답이 오나요?",
-      "questionType": "ERROR_CASE",
-      "expected": {
-        "method": "DELETE",
-        "path": "/orders/{id}/refund"
-      },
-      "results": [
-        {
-          "rank": 1,
-          "method": "GET",
-          "path": "/orders/{id}/refund-status",
-          "score": 0.783
-        },
-        {
-          "rank": 2,
-          "method": "POST",
-          "path": "/orders/{id}/refund",
-          "score": 0.716
-        },
-        {
-          "rank": 3,
-          "method": "GET",
-          "path": "/orders/{id}",
-          "score": 0.618
+          "path": "/queries/lot-status",
+          "score": 0.57
         }
       ],
       "hit": false,
       "expectedRank": null,
       "failureCategory": "DESCRIPTION_MISSING",
-      "reason": "기대 엔드포인트에 설명도 오류 응답 정의도 없어 오류 상황 질문과 맞물릴 텍스트가 없음"
-    },
-    {
-      "id": "q_096",
-      "question": "cancel refund request 하는 API 알려주세요",
-      "questionType": "MIXED_LANG",
-      "expected": {
-        "method": "DELETE",
-        "path": "/orders/{id}/refund"
-      },
-      "results": [
-        {
-          "rank": 1,
-          "method": "POST",
-          "path": "/orders/{id}/refund",
-          "score": 0.747
-        },
-        {
-          "rank": 2,
-          "method": "GET",
-          "path": "/orders/{id}/refund-status",
-          "score": 0.725
-        },
-        {
-          "rank": 3,
-          "method": "GET",
-          "path": "/orders/{id}",
-          "score": 0.589
-        }
-      ],
-      "hit": false,
-      "expectedRank": 6,
-      "failureCategory": "METHOD_MISMATCH",
-      "reason": "'cancel'이 어느 설명에도 없어 동일 경로의 POST가 메서드 구분 없이 상위를 차지함"
+      "reason": "짧은 키워드인데 기대 쿼리에 설명이 전혀 없어 후보에도 오르지 못함"
     }
   ],
   "previous": {

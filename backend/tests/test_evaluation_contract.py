@@ -184,28 +184,31 @@ def test_expected_rank_is_outside_top_k(report: EvaluationReport) -> None:
             assert failure.expected_rank > top_k, failure.id
 
 
-def test_failures_concentrate_on_undocumented_endpoints(report: EvaluationReport) -> None:
-    """설명이 없는(EMPTY) / 한 줄뿐인(POOR) 엔드포인트가 실패의 대부분이어야 한다.
+def test_failures_concentrate_on_undocumented_queries(report: EvaluationReport) -> None:
+    """설명이 없는(EMPTY) / 한 줄뿐인(POOR) 쿼리가 실패의 대부분이어야 한다.
 
-    이 제품의 전제 자체다. GOOD 엔드포인트가 실패를 주도하면
+    이 제품의 전제 자체다. 설명이 충실한 쿼리가 실패를 주도하면
     "설명을 보강하라"는 권장 조치의 근거가 사라진다.
+
+    경로는 fixture 도메인(DAC 조회 쿼리)에 종속된다. fixture 를 다른
+    도메인으로 바꾸면 이 목록도 함께 갱신해야 검증이 유지된다.
     """
     empty = {
-        ("DELETE", "/orders/{id}/refund"),
-        ("GET", "/products/{id}/restock-schedule"),
+        ("GET", "/queries/step-cycle-time"),
+        ("GET", "/queries/operator-shift"),
+        ("POST", "/queries/chamber-sensor-trend"),
     }
     poor = {
-        ("POST", "/orders/{id}/refund"),
-        ("PATCH", "/orders/{id}/shipping-address"),
-        ("GET", "/products/{id}/stock"),
-        ("PATCH", "/users/{id}/address"),
+        ("GET", "/queries/equipment-downtime"),
+        ("GET", "/queries/recipe-history"),
+        ("POST", "/queries/alarm-history"),
     }
-    expected_apis = [(f.expected.method, f.expected.path) for f in report.failures]
+    expected_queries = [(f.expected.method, f.expected.path) for f in report.failures]
 
-    empty_or_poor = sum(1 for api in expected_apis if api in empty | poor)
-    assert empty_or_poor / len(expected_apis) >= 0.8
+    empty_or_poor = sum(1 for q in expected_queries if q in empty | poor)
+    assert empty_or_poor / len(expected_queries) >= 0.8
 
-    assert sum(1 for api in expected_apis if api in empty) >= 8
+    assert sum(1 for q in expected_queries if q in empty) >= 8
 
 
 # ---------------------------------------------------------------------------
@@ -288,9 +291,11 @@ def test_get_evaluation_returns_camel_case() -> None:
     assert body["previous"]["top3Accuracy"] == 64.0
     assert body["target"]["appId"] == "mf-worker"
     assert body["target"]["queryCount"] == 11
-    assert body["queries"][0]["descriptionLength"] == 144
+    assert body["queries"][0]["descriptionLength"] == 168
     assert body["queries"][0]["hasParamDescription"] is True
-    assert body["queries"][3]["needsRegeneration"] is True
+    # 설명 없는 EMPTY 쿼리는 재생성 후보다. 첫 needsRegeneration 쿼리로 확인한다.
+    assert any(q["needsRegeneration"] is True for q in body["queries"])
+    assert body["queries"][8]["needsRegeneration"] is True
 
 
 def test_no_snake_case_leaks_into_response() -> None:
@@ -377,7 +382,7 @@ def test_query_grade_matches_its_accuracy(report: EvaluationReport) -> None:
 
 
 def test_queries_are_unique(report: EvaluationReport) -> None:
-    """같은 경로라도 메서드가 다르면 다른 쿼리다 (POST/DELETE /orders/{id}/refund)."""
+    """같은 경로라도 메서드가 다르면 다른 쿼리다."""
     keys = [(q.method, q.path) for q in report.queries]
     assert len(set(keys)) == len(keys)
 

@@ -166,7 +166,7 @@ def test_file_repository_reads_the_dumped_openapi_spec() -> None:
     spec = repository.get_spec("openapi_sample")
     if spec is None:
         pytest.skip("openapi_sample.json 이 없다. `make dump-spec` 을 먼저 실행할 것")
-    assert spec["info"]["title"] == "Sample Commerce API"
+    assert spec["info"]["title"] == "MF Data Query API"
 
 
 def test_file_repository_returns_none_for_missing_spec() -> None:
