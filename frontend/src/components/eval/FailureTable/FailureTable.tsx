@@ -1,13 +1,14 @@
 import { failureCategoryLabel } from "@/lib/enumTokens";
 import { hasMultipleMethods, httpMethodColor } from "@/lib/httpMethod";
-import type { ExpectedApi, Failure, SearchResult } from "@/lib/types";
+import type { ExpectedApi, QuestionResult, SearchResult } from "@/lib/types";
 
 import styles from "./FailureTable.module.css";
 
 /**
- * 실패한 문항 표.
+ * 완전 실패(Top-3 밖) 문항 표.
  *
  * 서버 컴포넌트다. 정렬·필터·페이징은 후속 단계 (prompts.md §9-5).
+ * 100문항 전체 표는 Phase 7c — 여기는 top3Hit=false 인 문항만 받는다.
  *
  * 표시 개수는 기본 3건이고 나머지는 버튼으로 넘긴다. 버튼 문구는
  * **실제 실패 건수**를 쓴다 — 시안의 "나머지 97건 보기" 는 오류다.
@@ -39,7 +40,8 @@ function isNearMiss(expectedRank: number | null | undefined): boolean {
 }
 
 export type FailureTableProps = {
-  failures: Failure[];
+  /** top3Hit=false 인 문항들. 호출부가 걸러서 넘긴다. */
+  failures: QuestionResult[];
   /** 전체 실패 건수. 표에 보이는 수가 아니라 summary.top3FailCount 다. */
   totalFailCount: number;
 };
@@ -63,7 +65,7 @@ export default function FailureTable({ failures, totalFailCount }: FailureTableP
   // 뱃지가 정보를 주지 못한다 (open-questions #50). 그럴 땐 경로만 보인다.
   const shownMethods = visible.flatMap((f) => [
     f.expected,
-    ...f.results,
+    ...f.top3,
   ]);
   const showMethod = hasMultipleMethods(shownMethods);
 
@@ -101,7 +103,7 @@ export default function FailureTable({ failures, totalFailCount }: FailureTableP
         </thead>
         <tbody role="rowgroup">
           {visible.map((failure) => (
-            <Row key={failure.id} failure={failure} showMethod={showMethod} />
+            <Row key={failure.no} failure={failure} showMethod={showMethod} />
           ))}
         </tbody>
       </table>
@@ -125,7 +127,7 @@ export default function FailureTable({ failures, totalFailCount }: FailureTableP
   );
 }
 
-function Row({ failure, showMethod }: { failure: Failure; showMethod: boolean }) {
+function Row({ failure, showMethod }: { failure: QuestionResult; showMethod: boolean }) {
   const near = isNearMiss(failure.expectedRank);
 
   return (
@@ -140,7 +142,7 @@ function Row({ failure, showMethod }: { failure: Failure; showMethod: boolean })
 
       <td role="cell" data-label="Top-3 검색 결과" className={styles.cellResults}>
         <ol className={styles.results}>
-          {failure.results.map((result) => (
+          {failure.top3.map((result) => (
             <ResultRow key={result.rank} result={result} showMethod={showMethod} />
           ))}
         </ol>
@@ -152,18 +154,16 @@ function Row({ failure, showMethod }: { failure: Failure; showMethod: boolean })
       </td>
 
       <td role="cell" data-label="Hit 여부" className={styles.cellHit}>
-        {failure.hit ? (
-          <span className={`${styles.pill} ${styles.hit}`}>HIT</span>
-        ) : (
-          <span className={`${styles.pill} ${near ? styles.nearMiss : styles.miss}`}>
-            {near ? "MISS (근접)" : "MISS"}
-          </span>
-        )}
+        {/* 이 표는 top3Hit=false 만 받는다. 항상 MISS 다. */}
+        <span className={`${styles.pill} ${near ? styles.nearMiss : styles.miss}`}>
+          {near ? "MISS (근접)" : "MISS"}
+        </span>
       </td>
 
       <td role="cell" data-label="실패 구분" className={styles.cellCategory}>
         <span className={styles.category}>
-          {failureCategoryLabel[failure.failureCategory]}
+          {/* 실패 문항이라 failureCategory 는 non-null 이지만 타입은 nullable 이다. */}
+          {failure.failureCategory ? failureCategoryLabel[failure.failureCategory] : "—"}
         </span>
       </td>
 

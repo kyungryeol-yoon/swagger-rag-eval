@@ -8,7 +8,7 @@ import QuestionTypeChart from "@/components/eval/QuestionTypeChart/QuestionTypeC
 import RecommendationCards from "@/components/eval/RecommendationCards/RecommendationCards";
 import SummaryCards from "@/components/eval/SummaryCards/SummaryCards";
 import { gradeColorVar, gradeLabel } from "@/lib/enumTokens";
-import type { Evaluation, Failure, Grade } from "@/lib/types";
+import type { Evaluation, Grade, QuestionResult } from "@/lib/types";
 import evalFixture from "@/mocks/eval_A492.json";
 
 import styles from "./page.module.css";
@@ -35,25 +35,26 @@ const FIXTURE_SUMMARY = REPORT.summary;
 const FIXTURE_PREVIOUS = REPORT.previous!;
 const FIXTURE_TYPES = REPORT.questionTypes;
 const FIXTURE_RECOMMENDATIONS = REPORT.recommendations;
-const FIXTURE_FAILURES = REPORT.failures;
+// FailureTable 은 완전 실패(Top-3 밖)만 받는다. eval 페이지와 같은 필터.
+const FIXTURE_FAILURES = REPORT.questions.filter((q) => !q.top3Hit);
 
 const VALUES = [0, 40, 78, 100];
 
 // --- 경계 케이스: fixture 를 가공해 파생한다 (도메인 리터럴을 새로 적지 않는다) ---
 
 // 질문·원인이 길 때 말줄임 확인. 실패 1건을 골라 문장만 늘린다.
-const LONG_TEXT_FAILURE: Failure = {
+const LONG_TEXT_FAILURE: QuestionResult = {
   ...FIXTURE_FAILURES[0],
-  id: "q_long",
+  no: 901,
   question: `${FIXTURE_FAILURES[0].question} 아니면 다른 조회 쿼리를 먼저 부른 다음 그 결과를 파라미터로 넘겨 다시 호출해야 하나요, 그리고 그때 기간과 라인 조건은 각각 어떤 형식으로 넣어야 하는지도 함께 알려주세요.`,
   expectedRank: 5,
-  reason: `${FIXTURE_FAILURES[0].reason} 질문이 여러 의도를 한 문장에 담고 있어 임베딩이 어느 쪽으로도 충분히 기울지 못했고, 설명이 더 풍부한 인접 쿼리가 상위를 차지했다. 질문을 쪼개면 각각은 Top-1 로 잡힌다.`,
+  reason: `${FIXTURE_FAILURES[0].reason ?? ""} 질문이 여러 의도를 한 문장에 담고 있어 임베딩이 어느 쪽으로도 충분히 기울지 못했고, 설명이 더 풍부한 인접 쿼리가 상위를 차지했다. 질문을 쪼개면 각각은 Top-1 로 잡힌다.`,
 };
 
 // 아주 멀리 밀린 케이스(20위). 순위 밖(null)인 실패 하나를 골라 순위만 바꾼다.
-const FAR_MISS_FAILURE: Failure = {
-  ...(FIXTURE_FAILURES.find((f) => f.expectedRank == null) ?? FIXTURE_FAILURES[1]),
-  id: "q_far",
+const FAR_MISS_FAILURE: QuestionResult = {
+  ...(FIXTURE_FAILURES.find((q) => q.expectedRank == null) ?? FIXTURE_FAILURES[1]),
+  no: 902,
   expectedRank: 20,
 };
 
@@ -175,7 +176,8 @@ export default function ComponentsPage() {
             top3Accuracy: 0,
             top1FailCount: 0,
             top3FailCount: 0,
-            grade: "CRITICAL",
+            top1Grade: "CRITICAL",
+            top3Grade: "CRITICAL",
           }}
           previous={{ ...FIXTURE_PREVIOUS, top3Accuracy: 0 }}
         />
@@ -186,7 +188,8 @@ export default function ComponentsPage() {
             top3Accuracy: 100,
             top1FailCount: 100,
             top3FailCount: 100,
-            grade: "GOOD",
+            top1Grade: "GOOD",
+            top3Grade: "GOOD",
           }}
           previous={{ ...FIXTURE_PREVIOUS, top3Accuracy: 0 }}
         />
@@ -197,7 +200,8 @@ export default function ComponentsPage() {
             top3Accuracy: 78,
             top1FailCount: 1234,
             top3FailCount: 999,
-            grade: "NEEDS_IMPROVEMENT",
+            top1Grade: "CRITICAL",
+            top3Grade: "NEEDS_IMPROVEMENT",
           }}
           previous={FIXTURE_PREVIOUS}
         />
@@ -257,7 +261,7 @@ export default function ComponentsPage() {
           바뀌면 그 배열만 고치면 호·범례·aria 라벨이 함께 따라온다.
         </p>
         <div className={styles.alignRow}>
-          <GradeScale value={78} grade="NEEDS_IMPROVEMENT" />
+          <GradeScale metric="top3" value={78} grade="NEEDS_IMPROVEMENT" />
         </div>
 
         <p className={styles.sectionNote}>
@@ -279,7 +283,7 @@ export default function ComponentsPage() {
             ] as const
           ).map(([v, g]) => (
             <div key={v} className={styles.alignItem}>
-              <GradeScale value={v} grade={g} size={120} />
+              <GradeScale metric="top3" value={v} grade={g} size={120} />
               <span className={styles.sizeLabel}>value = {v}</span>
             </div>
           ))}
@@ -289,7 +293,7 @@ export default function ComponentsPage() {
         <div className={styles.alignRow}>
           {[120, 180, 240].map((s) => (
             <div key={s} className={styles.alignItem}>
-              <GradeScale value={78} grade="NEEDS_IMPROVEMENT" size={s} />
+              <GradeScale metric="top3" value={78} grade="NEEDS_IMPROVEMENT" size={s} />
               <span className={styles.sizeLabel}>size = {s}</span>
             </div>
           ))}
@@ -300,8 +304,8 @@ export default function ComponentsPage() {
           바늘은 값이 가리키는 곳에, 강조는 등급이 말하는 구간에 있다.
         </p>
         <div className={styles.alignRow}>
-          <GradeScale value={40} grade="GOOD" size={140} />
-          <GradeScale value={99} grade="CRITICAL" size={140} />
+          <GradeScale metric="top3" value={40} grade="GOOD" size={140} />
+          <GradeScale metric="top3" value={99} grade="CRITICAL" size={140} />
         </div>
       </section>
 
@@ -320,7 +324,7 @@ export default function ComponentsPage() {
             <span className={styles.sizeLabel}>GaugeRing — 얼마인가</span>
           </div>
           <div className={styles.alignItem}>
-            <GradeScale value={78} grade="NEEDS_IMPROVEMENT" size={180} />
+            <GradeScale metric="top3" value={78} grade="NEEDS_IMPROVEMENT" size={180} />
             <span className={styles.sizeLabel}>GradeScale — 어느 구간인가</span>
           </div>
         </div>
@@ -524,7 +528,8 @@ export default function ComponentsPage() {
           failures={FIXTURE_FAILURES.map((f) => ({
             ...f,
             expected: { ...f.expected, method: "GET" },
-            results: f.results.map((r) => ({ ...r, method: "GET" })),
+            top1: { ...f.top1, method: "GET" },
+            top3: f.top3.map((r) => ({ ...r, method: "GET" })),
           }))}
           totalFailCount={22}
         />

@@ -148,7 +148,7 @@ export default async function EvaluationPage({
         <div className={styles.gauge}>
           <GaugeRing
             value={report.summary.top3Accuracy}
-            grade={report.summary.grade}
+            grade={report.summary.top3Grade}
             size={160}
           />
         </div>
@@ -165,11 +165,12 @@ export default async function EvaluationPage({
         />
       </section>
 
-      {/* 하단: 실패 목록 */}
+      {/* 하단: 실패 목록.
+          FailureTable 은 완전 실패(Top-3 밖)만 받는다. 100문항 전체 표는 Phase 7c. */}
       <section aria-label="실패한 문항">
         <h2 className={styles.sectionTitle}>실패한 문항</h2>
         <FailureTable
-          failures={report.failures}
+          failures={report.questions.filter((q) => !q.top3Hit)}
           totalFailCount={report.summary.top3FailCount}
         />
       </section>

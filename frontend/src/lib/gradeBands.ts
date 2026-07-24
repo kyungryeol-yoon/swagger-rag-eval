@@ -20,23 +20,40 @@ export type GradeBand = {
   max: number;
 };
 
-/** contract.md §3 등급 기준. 순서가 곧 게이지의 좌→우 순서다. */
-export const GRADE_BANDS = [
-  { grade: "CRITICAL", min: 0, max: 70 },
-  { grade: "NEEDS_IMPROVEMENT", min: 70, max: 85 },
-  { grade: "FAIR", min: 85, max: 95 },
-  { grade: "GOOD", min: 95, max: 100 },
-] as const;
+/** 어느 지표의 등급인지. summary.top1Grade / top3Grade 와 짝을 이룬다. */
+export type GradeMetric = "top1" | "top3";
 
 /**
- * 등급에 해당하는 구간.
+ * contract.md §3 등급 기준. 순서가 곧 게이지의 좌→우 순서다.
+ *
+ * **지표별로 나눠 둔다.** 현재는 Top-1 과 Top-3 의 임계값이 같지만
+ * (0-70-85-95), 갈릴 수 있어서 구조를 분리한다 (open-questions #54).
+ * 임계값이 달라지면 해당 지표의 배열만 고치면 호·범례·aria 라벨이 따라온다.
+ */
+export const GRADE_BANDS = {
+  top1: [
+    { grade: "CRITICAL", min: 0, max: 70 },
+    { grade: "NEEDS_IMPROVEMENT", min: 70, max: 85 },
+    { grade: "FAIR", min: 85, max: 95 },
+    { grade: "GOOD", min: 95, max: 100 },
+  ],
+  top3: [
+    { grade: "CRITICAL", min: 0, max: 70 },
+    { grade: "NEEDS_IMPROVEMENT", min: 70, max: 85 },
+    { grade: "FAIR", min: 85, max: 95 },
+    { grade: "GOOD", min: 95, max: 100 },
+  ],
+} as const;
+
+/**
+ * 지표 안에서 등급에 해당하는 구간.
  *
  * **값이 아니라 등급으로 찾는다.** 등급은 백엔드가 확정해 내려주므로
  * 프론트가 value 로부터 구간을 추론하면 안 된다 — 백엔드 기준이 바뀌었을 때
  * 화면만 다른 값을 말하게 된다.
  */
-export function bandOf(grade: Grade): GradeBand | undefined {
-  return GRADE_BANDS.find((band) => band.grade === grade);
+export function bandOf(metric: GradeMetric, grade: Grade): GradeBand | undefined {
+  return GRADE_BANDS[metric].find((band) => band.grade === grade);
 }
 
 /** "70 ~ 85%" */

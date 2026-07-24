@@ -8,6 +8,7 @@ import {
   polarPoint,
   valueToAngle,
 } from "@/lib/gradeBands";
+import type { GradeMetric } from "@/lib/gradeBands";
 import type { Grade } from "@/lib/types";
 
 import styles from "./GradeScale.module.css";
@@ -31,7 +32,18 @@ const GAP_DEGREES = 1.5;
 /** 지름 대비 호 두께. */
 const STROKE_RATIO = 0.075;
 
+/** 지표별 라벨 접두사. Top-1 은 "정확도", Top-3 은 "인식률". */
+const METRIC_LABEL: Record<GradeMetric, string> = {
+  top1: "Top-1 정확도",
+  top3: "Top-3 인식률",
+};
+
 export type GradeScaleProps = {
+  /**
+   * 어느 지표인지. 기본값을 두지 않는다 — 호출부가 top1/top3 를 명시해야
+   * 등급 구간(GRADE_BANDS[metric])과 라벨이 그 지표 것으로 맞는다.
+   */
+  metric: GradeMetric;
   /** 0~100. 바늘 위치에만 쓴다. 범위 밖은 잘라낸다. */
   value: number;
   /** 백엔드가 확정한 등급. value 로부터 다시 계산하지 않는다. */
@@ -40,8 +52,9 @@ export type GradeScaleProps = {
   size?: number;
 };
 
-export default function GradeScale({ value, grade, size = 180 }: GradeScaleProps) {
+export default function GradeScale({ metric, value, grade, size = 180 }: GradeScaleProps) {
   const clamped = clampPercent(value);
+  const bands = GRADE_BANDS[metric];
 
   const stroke = size * STROKE_RATIO;
   const radius = size / 2 - stroke / 2;
@@ -54,7 +67,7 @@ export default function GradeScale({ value, grade, size = 180 }: GradeScaleProps
   // 바늘 끝은 호 안쪽 모서리 조금 앞에서 멈춘다. 호를 덮으면 구간색이 가려진다.
   const needleTip = polarPoint(cx, cy, radius - stroke * 0.9, needleAngle);
 
-  const band = bandOf(grade);
+  const band = bandOf(metric, grade);
   const rangeText = band ? formatBandRange(band) : null;
 
   // "Top-3 인식률 78.0%, 개선 필요 구간 (70 ~ 85%)"
@@ -62,7 +75,7 @@ export default function GradeScale({ value, grade, size = 180 }: GradeScaleProps
   const bandPhrase = rangeText
     ? `${gradeLabel[grade]} 구간 (${rangeText})`
     : `${gradeLabel[grade]} 구간`;
-  const label = `Top-3 인식률 ${clamped.toFixed(1)}%, ${bandPhrase}`;
+  const label = `${METRIC_LABEL[metric]} ${clamped.toFixed(1)}%, ${bandPhrase}`;
 
   return (
     <div className={styles.root} role="img" aria-label={label}>
@@ -75,7 +88,7 @@ export default function GradeScale({ value, grade, size = 180 }: GradeScaleProps
           aria-hidden="true"
           focusable="false"
         >
-          {GRADE_BANDS.map((b) => {
+          {bands.map((b) => {
             const d = bandArcPath(b, cx, cy, radius, GAP_DEGREES);
             if (!d) {
               return null;
@@ -113,7 +126,7 @@ export default function GradeScale({ value, grade, size = 180 }: GradeScaleProps
       </div>
 
       <ul className={styles.legend}>
-        {GRADE_BANDS.map((b) => {
+        {bands.map((b) => {
           const current = b.grade === grade;
           return (
             <li
