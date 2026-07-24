@@ -77,7 +77,8 @@ def test_ratios_are_percentages_not_fractions() -> None:
                 "top3Accuracy": 178.0,  # 100 초과
                 "top1FailCount": 39,
                 "top3FailCount": 22,
-                "grade": "NEEDS_IMPROVEMENT",
+                "top1Grade": "CRITICAL",
+                "top3Grade": "NEEDS_IMPROVEMENT",
             }
         )
 
@@ -102,10 +103,6 @@ def test_question_type_ratio_matches_count(report: EvaluationReport) -> None:
         assert stat.ratio == pytest.approx(expected), stat.type
 
 
-def test_failure_count_matches_summary(report: EvaluationReport) -> None:
-    assert len(report.failures) == report.summary.top3_fail_count
-
-
 def test_top3_accuracy_matches_fail_count(report: EvaluationReport) -> None:
     total = report.summary.total_questions
     hits = total - report.summary.top3_fail_count
@@ -117,14 +114,18 @@ def test_top1_is_never_better_than_top3(report: EvaluationReport) -> None:
     assert report.summary.top1_fail_count >= report.summary.top3_fail_count
 
 
-def test_per_type_accuracy_matches_actual_failures(report: EvaluationReport) -> None:
-    """유형별 인식률이 실패 목록에서 실제로 재구성되는지 확인한다.
+def test_per_type_accuracy_matches_actual_questions(report: EvaluationReport) -> None:
+    """유형별 인식률이 문항 목록에서 실제로 재구성되는지 확인한다.
 
-    이게 어긋나면 도넛 차트와 실패 테이블이 서로 다른 이야기를 하게 된다.
+    이게 어긋나면 도넛 차트와 문항 표가 서로 다른 이야기를 하게 된다.
     """
-    failures_by_type = Counter(f.question_type for f in report.failures)
+    total_by_type = Counter(q.question_type for q in report.questions)
+    top3_fail_by_type = Counter(
+        q.question_type for q in report.questions if not q.top3_hit
+    )
     for stat in report.question_types:
-        hits = stat.count - failures_by_type[stat.type]
+        assert total_by_type[stat.type] == stat.count, stat.type
+        hits = stat.count - top3_fail_by_type[stat.type]
         expected = round(hits / stat.count * 100, 1)
         assert stat.top3_accuracy == pytest.approx(expected), stat.type
 
@@ -140,59 +141,119 @@ def _grade_for(accuracy: float) -> Grade:
     return Grade.GOOD
 
 
-def test_grade_matches_top3_accuracy(report: EvaluationReport) -> None:
-    assert report.summary.grade == _grade_for(report.summary.top3_accuracy)
+def test_grades_match_accuracy(report: EvaluationReport) -> None:
+    """Top-1 / Top-3 등급이 각 지표에서 산출된다.
+
+    현재는 두 지표의 임계값이 같다(open-questions #54). 달라지면 이 헬퍼가
+    지표별로 갈라져야 한다.
+    """
+    assert report.summary.top1_grade == _grade_for(report.summary.top1_accuracy)
+    assert report.summary.top3_grade == _grade_for(report.summary.top3_accuracy)
 
 
 # ---------------------------------------------------------------------------
-# 실패 목록
+# 문항 100개 전체
 # ---------------------------------------------------------------------------
 
 
-def test_failure_ids_are_unique(report: EvaluationReport) -> None:
-    ids = [f.id for f in report.failures]
-    assert len(set(ids)) == len(ids)
+def test_questions_count_matches_total(report: EvaluationReport) -> None:
+    assert len(report.questions) == report.summary.total_questions
 
 
-def test_failures_are_all_misses(report: EvaluationReport) -> None:
-    assert all(f.hit is False for f in report.failures)
+def test_question_numbers_are_unique_1_to_100(report: EvaluationReport) -> None:
+    nos = sorted(q.no for q in report.questions)
+    assert nos == list(range(1, report.summary.total_questions + 1))
 
 
-def test_failure_results_are_ranked_from_one(report: EvaluationReport) -> None:
-    for failure in report.failures:
-        assert [r.rank for r in failure.results] == list(range(1, len(failure.results) + 1))
+def test_scope_counts_match_summary(report: EvaluationReport) -> None:
+    """실패 범위별 개수가 summary 의 실패 수와 정합해야 한다.
+
+    top1FailCount = TOP1_ONLY + TOP3, top3FailCount = TOP3.
+    """
+    from app.schemas.evaluation import FailureScope
+
+    scopes = Counter(q.failure_scope for q in report.questions)
+    top3_fail = scopes[FailureScope.TOP3]
+    top1_fail = scopes[FailureScope.TOP1_ONLY] + scopes[FailureScope.TOP3]
+
+    assert top3_fail == report.summary.top3_fail_count
+    assert top1_fail == report.summary.top1_fail_count
+    assert scopes[FailureScope.NONE] == (
+        report.summary.total_questions - top1_fail
+    )
 
 
-def test_failure_results_are_sorted_by_score(report: EvaluationReport) -> None:
-    for failure in report.failures:
-        scores = [r.score for r in failure.results]
-        assert scores == sorted(scores, reverse=True), failure.id
+def test_hit_flags_agree_with_scope(report: EvaluationReport) -> None:
+    """top1Hit / top3Hit 이 failureScope 와 모순되지 않아야 한다."""
+    from app.schemas.evaluation import FailureScope
+
+    for q in report.questions:
+        if q.failure_scope == FailureScope.NONE:
+            assert q.top1_hit and q.top3_hit, q.no
+        elif q.failure_scope == FailureScope.TOP1_ONLY:
+            assert not q.top1_hit and q.top3_hit, q.no
+        else:
+            assert not q.top1_hit and not q.top3_hit, q.no
 
 
-def test_expected_api_is_not_inside_top_k(report: EvaluationReport) -> None:
-    """실패인데 Top-K 안에 정답이 있으면 그건 실패가 아니다."""
-    for failure in report.failures:
-        found = {(r.method, r.path) for r in failure.results}
-        assert (failure.expected.method, failure.expected.path) not in found, failure.id
+def test_accuracy_matches_hit_flags(report: EvaluationReport) -> None:
+    total = report.summary.total_questions
+    top1_hits = sum(1 for q in report.questions if q.top1_hit)
+    top3_hits = sum(1 for q in report.questions if q.top3_hit)
+    assert report.summary.top1_accuracy == pytest.approx(round(top1_hits / total * 100, 1))
+    assert report.summary.top3_accuracy == pytest.approx(round(top3_hits / total * 100, 1))
 
 
-def test_expected_rank_is_outside_top_k(report: EvaluationReport) -> None:
-    """expectedRank 는 topK 보다 뒤여야 하고, 아예 못 찾았으면 null 이다."""
-    top_k = report.meta.top_k
-    for failure in report.failures:
-        if failure.expected_rank is not None:
-            assert failure.expected_rank > top_k, failure.id
+def test_success_questions_have_no_failure_fields(report: EvaluationReport) -> None:
+    """성공(NONE)이면 failureCategory 와 reason 이 null 이다."""
+    from app.schemas.evaluation import FailureScope
+
+    for q in report.questions:
+        if q.failure_scope == FailureScope.NONE:
+            assert q.failure_category is None and q.reason is None, q.no
+        else:
+            assert q.failure_category is not None and q.reason is not None, q.no
+
+
+def test_top3_is_ranked_and_sorted(report: EvaluationReport) -> None:
+    for q in report.questions:
+        assert [r.rank for r in q.top3] == list(range(1, len(q.top3) + 1)), q.no
+        scores = [r.score for r in q.top3]
+        assert scores == sorted(scores, reverse=True), q.no
+
+
+def test_top1_agrees_with_top3_head(report: EvaluationReport) -> None:
+    """top1 은 top3 의 1위와 같은 쿼리여야 한다."""
+    for q in report.questions:
+        head = q.top3[0]
+        assert (q.top1.method, q.top1.path) == (head.method, head.path), q.no
+
+
+def test_hit_flags_agree_with_results(report: EvaluationReport) -> None:
+    for q in report.questions:
+        exp = (q.expected.method, q.expected.path)
+        assert (q.top1_hit) == ((q.top1.method, q.top1.path) == exp), q.no
+        in_top3 = exp in {(r.method, r.path) for r in q.top3}
+        assert q.top3_hit == in_top3, q.no
+
+
+def test_questions_are_sorted_top3_top1_none(report: EvaluationReport) -> None:
+    """정렬: TOP3 → TOP1_ONLY → NONE, 그 안에서 no 오름차순."""
+    from app.schemas.evaluation import FailureScope
+
+    order = {FailureScope.TOP3: 0, FailureScope.TOP1_ONLY: 1, FailureScope.NONE: 2}
+    keys = [(order[q.failure_scope], q.no) for q in report.questions]
+    assert keys == sorted(keys)
 
 
 def test_failures_concentrate_on_undocumented_queries(report: EvaluationReport) -> None:
-    """설명이 없는(EMPTY) / 한 줄뿐인(POOR) 쿼리가 실패의 대부분이어야 한다.
+    """설명이 없는(EMPTY) / 한 줄뿐인(POOR) 쿼리가 완전 실패의 대부분이어야 한다.
 
-    이 제품의 전제 자체다. 설명이 충실한 쿼리가 실패를 주도하면
-    "설명을 보강하라"는 권장 조치의 근거가 사라진다.
-
-    경로는 fixture 도메인(DAC 조회 쿼리)에 종속된다. fixture 를 다른
-    도메인으로 바꾸면 이 목록도 함께 갱신해야 검증이 유지된다.
+    이 제품의 전제 자체다. 경로는 fixture 도메인에 종속되므로 fixture 를 바꾸면
+    이 목록도 함께 갱신해야 검증이 유지된다.
     """
+    from app.schemas.evaluation import FailureScope
+
     empty = {
         ("GET", "/queries/step-cycle-time"),
         ("GET", "/queries/operator-shift"),
@@ -203,12 +264,15 @@ def test_failures_concentrate_on_undocumented_queries(report: EvaluationReport) 
         ("GET", "/queries/recipe-history"),
         ("POST", "/queries/alarm-history"),
     }
-    expected_queries = [(f.expected.method, f.expected.path) for f in report.failures]
+    top3_fails = [
+        (q.expected.method, q.expected.path)
+        for q in report.questions
+        if q.failure_scope == FailureScope.TOP3
+    ]
 
-    empty_or_poor = sum(1 for q in expected_queries if q in empty | poor)
-    assert empty_or_poor / len(expected_queries) >= 0.8
-
-    assert sum(1 for q in expected_queries if q in empty) >= 8
+    empty_or_poor = sum(1 for q in top3_fails if q in empty | poor)
+    assert empty_or_poor / len(top3_fails) >= 0.8
+    assert sum(1 for q in top3_fails if q in empty) >= 8
 
 
 # ---------------------------------------------------------------------------
@@ -241,7 +305,7 @@ def test_previous_is_optional() -> None:
 def test_expected_rank_is_optional() -> None:
     """Top-N 밖이면 null 이어야 한다. fixture 에 실제로 null 인 건이 있어야 프론트가 대비된다."""
     raw = json.loads(FIXTURE_PATH.read_text(encoding="utf-8"))
-    assert any(f["expectedRank"] is None for f in raw["failures"])
+    assert any(q["expectedRank"] is None for q in raw["questions"])
 
 
 # ---------------------------------------------------------------------------
@@ -263,13 +327,20 @@ def test_enum_members_match_contract() -> None:
         "MIXED_LANG",
     }
     assert set(FailureCategory) == {
-        "METHOD_MISMATCH",
         "SIMILAR_RESOURCE",
-        "SYNONYM_MISS",
         "DESCRIPTION_MISSING",
+        "DESCRIPTION_WEAK",
+        "KEYWORD_MISMATCH",
+        "DOMAIN_TERM_MISSING",
+        "ERROR_CASE_MISSING",
         "PARAM_MISSING",
+        "METHOD_MISMATCH",
         "OTHER",
     }
+
+    from app.schemas.evaluation import FailureScope
+
+    assert set(FailureScope) == {"NONE", "TOP1_ONLY", "TOP3"}
 
 
 # ---------------------------------------------------------------------------
@@ -287,7 +358,11 @@ def test_get_evaluation_returns_camel_case() -> None:
     assert body["meta"]["embeddingModel"] == "bge-m3"
     assert body["questionTypes"][0]["top3Accuracy"] == 95.5
     assert body["recommendations"][0]["failShare"] == 45.5
-    assert body["failures"][0]["questionType"] == "DIRECT"
+    assert body["summary"]["top1Grade"]
+    assert body["summary"]["top3Grade"]
+    assert body["questions"][0]["failureScope"] == "TOP3"
+    assert body["questions"][0]["top1Hit"] is False
+    assert body["meta"]["rawSource"]["toolVersion"]
     assert body["previous"]["top3Accuracy"] == 64.0
     assert body["target"]["appId"] == "mf-worker"
     assert body["target"]["queryCount"] == 11
@@ -361,17 +436,19 @@ def test_query_question_counts_sum_to_total(report: EvaluationReport) -> None:
     )
 
 
-def test_query_accuracy_matches_actual_failures(report: EvaluationReport) -> None:
-    """쿼리별 인식률이 실패 목록에서 실제로 재구성되는지 확인한다.
+def test_query_accuracy_matches_actual_questions(report: EvaluationReport) -> None:
+    """쿼리별 인식률이 문항 목록에서 실제로 재구성되는지 확인한다.
 
-    어긋나면 쿼리 표와 실패 표가 서로 다른 이야기를 하게 된다.
+    어긋나면 쿼리 표와 문항 표가 서로 다른 이야기를 하게 된다.
     """
-    failures_by_query = Counter(
-        (f.expected.method, f.expected.path) for f in report.failures
+    total_by_query = Counter((q.expected.method, q.expected.path) for q in report.questions)
+    top3_fail_by_query = Counter(
+        (q.expected.method, q.expected.path) for q in report.questions if not q.top3_hit
     )
     for query in report.queries:
-        misses = failures_by_query[(query.method, query.path)]
-        hits = query.question_count - misses
+        key = (query.method, query.path)
+        assert total_by_query[key] == query.question_count, f"{query.method} {query.path}"
+        hits = query.question_count - top3_fail_by_query[key]
         expected = round(hits / query.question_count * 100, 1)
         assert query.top3_accuracy == pytest.approx(expected), f"{query.method} {query.path}"
 
@@ -387,11 +464,11 @@ def test_queries_are_unique(report: EvaluationReport) -> None:
     assert len(set(keys)) == len(keys)
 
 
-def test_every_failed_query_exists_in_queries(report: EvaluationReport) -> None:
-    """실패 목록의 기대 쿼리는 전부 쿼리 목록에 있어야 한다."""
+def test_every_expected_query_exists_in_queries(report: EvaluationReport) -> None:
+    """모든 문항의 기대 쿼리는 쿼리 목록에 있어야 한다."""
     known = {(q.method, q.path) for q in report.queries}
-    for failure in report.failures:
-        assert (failure.expected.method, failure.expected.path) in known, failure.id
+    for question in report.questions:
+        assert (question.expected.method, question.expected.path) in known, question.no
 
 
 def test_queries_without_description_need_regeneration(report: EvaluationReport) -> None:

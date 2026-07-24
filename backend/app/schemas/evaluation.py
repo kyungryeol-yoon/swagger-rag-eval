@@ -79,14 +79,30 @@ class QuestionType(StrEnum):
 
 
 class FailureCategory(StrEnum):
-    """실패 원인 분류."""
+    """실패 원인 분류. 담당자 확정 스펙 기준 (contract.md §3)."""
 
-    METHOD_MISMATCH = "METHOD_MISMATCH"
     SIMILAR_RESOURCE = "SIMILAR_RESOURCE"
-    SYNONYM_MISS = "SYNONYM_MISS"
     DESCRIPTION_MISSING = "DESCRIPTION_MISSING"
+    DESCRIPTION_WEAK = "DESCRIPTION_WEAK"
+    KEYWORD_MISMATCH = "KEYWORD_MISMATCH"
+    DOMAIN_TERM_MISSING = "DOMAIN_TERM_MISSING"
+    ERROR_CASE_MISSING = "ERROR_CASE_MISSING"
     PARAM_MISSING = "PARAM_MISSING"
+    # DAC 이 단일 메서드면 쓰이지 않는다. enum 은 유지한다 (open-questions #50).
+    METHOD_MISMATCH = "METHOD_MISMATCH"
     OTHER = "OTHER"
+
+
+class FailureScope(StrEnum):
+    """문항의 실패 범위.
+
+    평가 대상은 실패 22건이 아니라 문항 100개 전체다. 각 문항이 어디까지
+    성공했는지를 이 값으로 나눈다.
+    """
+
+    NONE = "NONE"  # Top-1 부터 맞음 (성공)
+    TOP1_ONLY = "TOP1_ONLY"  # Top-1 은 틀렸으나 Top-3 안에는 있음
+    TOP3 = "TOP3"  # Top-3 밖 (완전 실패)
 
 
 # ---------------------------------------------------------------------------
@@ -151,6 +167,19 @@ class QueryStat(ContractModel):
     )
 
 
+class RawSource(ContractModel):
+    """평가툴 원본 식별자.
+
+    평가 엔진은 이 시스템 밖에 있다(contract.md §0). 담당자 툴의 프롬프트나
+    지표가 바뀌면 결과 비교가 필요하므로, 어떤 버전의 툴이 만든 결과인지 남긴다.
+    이 백엔드의 1차 역할은 그 출력을 계약으로 변환하는 어댑터다.
+    """
+
+    tool_version: str = Field(description="평가툴 버전.")
+    prompt_version: str = Field(description="질문 생성 프롬프트 버전.")
+    generated_at: str = Field(description="평가툴이 결과를 생성한 시각(ISO 8601 + 타임존).")
+
+
 class EvaluationMeta(ContractModel):
     """재현성 정보. 같은 조건으로 다시 돌릴 수 있어야 한다."""
 
@@ -164,6 +193,10 @@ class EvaluationMeta(ContractModel):
         )
     )
     duration_ms: int = Field(ge=0, description="평가 전체 소요 시간(밀리초).")
+    raw_source: RawSource | None = Field(
+        default=None,
+        description="외부 평가툴의 원본 버전 정보. 없으면 null.",
+    )
 
 
 class EvaluationSummary(ContractModel):
@@ -178,11 +211,20 @@ class EvaluationSummary(ContractModel):
         le=100,
         description="상위 3개 안에 기대 API가 포함된 비율(%). 게이지에 표시되는 대표 수치.",
     )
-    top1_fail_count: int = Field(ge=0, description="1위가 기대 API와 달랐던 문항 수.")
+    top1_fail_count: int = Field(ge=0, description="1위가 기대 쿼리와 달랐던 문항 수.")
     top3_fail_count: int = Field(
-        ge=0, description="상위 3개 안에 기대 API가 없었던 문항 수. 실패 테이블의 전체 건수."
+        ge=0, description="상위 3개 안에 기대 쿼리가 없었던 문항 수. 완전 실패 건수."
     )
-    grade: Grade = Field(description="top3Accuracy 로 산출한 등급. 백엔드가 확정해 내려준다.")
+    top1_grade: Grade = Field(
+        description="top1Accuracy 로 산출한 등급. 백엔드가 확정해 내려준다."
+    )
+    top3_grade: Grade = Field(
+        description=(
+            "top3Accuracy 로 산출한 등급. 게이지에 표시되는 대표 등급. "
+            "**Top-1 과 Top-3 의 등급 임계값이 다를 수 있다** (open-questions #54) — "
+            "그래서 두 등급을 따로 내려준다."
+        )
+    )
 
 
 class QuestionTypeStat(ContractModel):
@@ -227,7 +269,7 @@ class ExpectedApi(ContractModel):
 
 
 class SearchResult(ContractModel):
-    """검색 결과 1건."""
+    """검색 결과 1건 (순위 포함). Top-3 목록에 쓴다."""
 
     rank: int = Field(ge=1, description="검색 순위. 1이 가장 유사.")
     method: str = Field(description="검색된 쿼리의 HTTP 메서드.")
@@ -239,24 +281,45 @@ class SearchResult(ContractModel):
     )
 
 
-class Failure(ContractModel):
-    """실패한 문항 1건."""
+class TopResult(ContractModel):
+    """1위 결과. 순위가 자명하므로 rank 를 두지 않는다."""
 
-    id: str = Field(description="문항 식별자. 예: q_017")
+    method: str = Field(description="1위 쿼리의 HTTP 메서드.")
+    path: str = Field(description="1위 쿼리의 경로.")
+    score: float = Field(ge=0, le=1, description="1위의 정규화된 유사도 점수(0~1).")
+
+
+class QuestionResult(ContractModel):
+    """문항 1개의 평가 결과.
+
+    **평가 대상은 실패만이 아니라 문항 100개 전체다.** 성공한 문항도 여기 들어온다
+    (성공이면 failureCategory 와 reason 이 null).
+    """
+
+    no: int = Field(ge=1, description="표시 순번(1~100).")
     question: str = Field(description="실제로 던진 질문 문장.")
     question_type: QuestionType = Field(description="문항 유형 enum.")
     expected: ExpectedApi = Field(description="찾아냈어야 하는 정답 쿼리.")
-    results: list[SearchResult] = Field(
-        description="실제 검색 결과 상위 목록. 보통 topK 개."
+    top1: TopResult = Field(description="1위 검색 결과.")
+    top3: list[SearchResult] = Field(description="상위 3개 검색 결과. 보통 topK 개.")
+    top1_hit: bool = Field(description="1위가 기대 쿼리와 일치했는지.")
+    top3_hit: bool = Field(description="상위 3개 안에 기대 쿼리가 있었는지.")
+    failure_scope: FailureScope = Field(
+        description="실패 범위. NONE(성공) / TOP1_ONLY / TOP3."
     )
-    hit: bool = Field(description="Top-K 안에 기대 쿼리가 있었는지. 실패 목록이므로 항상 false.")
     expected_rank: int | None = Field(
         default=None,
         ge=1,
-        description="기대 쿼리가 전체 검색 결과에서 몇 위였는지. **Top-N 밖이면 null**.",
+        description="기대 쿼리가 전체 검색 결과에서 몇 위였는지. Top-N 밖이면 null.",
     )
-    failure_category: FailureCategory = Field(description="실패 원인 분류 enum.")
-    reason: str = Field(description="사람이 읽을 실패 원인 설명. 한 문장.")
+    failure_category: FailureCategory | None = Field(
+        default=None,
+        description="실패 원인 분류. **성공(NONE)이면 null**.",
+    )
+    reason: str | None = Field(
+        default=None,
+        description="사람이 읽을 실패 원인 설명. 성공이면 null.",
+    )
 
 
 class PreviousEvaluation(ContractModel):
@@ -293,8 +356,11 @@ class EvaluationReport(ContractModel):
         description="문항 유형별 분포와 인식률. 7종 전부 내려준다."
     )
     recommendations: list[Recommendation] = Field(description="권장 조치 목록. order 오름차순.")
-    failures: list[Failure] = Field(
-        description="실패한 문항 전체. 건수는 summary.top3FailCount 와 같다."
+    questions: list[QuestionResult] = Field(
+        description=(
+            "평가 문항 전체(성공 포함). 건수는 totalQuestions 와 같다. "
+            "정렬: TOP3 실패 → TOP1_ONLY 실패 → 성공, 그 안에서 no 오름차순."
+        )
     )
     previous: PreviousEvaluation | None = Field(
         default=None,

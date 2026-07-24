@@ -32,11 +32,19 @@ export type EvaluationMeta = Schemas["EvaluationMeta"];
 export type EvaluationSummary = Schemas["EvaluationSummary"];
 export type QuestionTypeStat = Schemas["QuestionTypeStat"];
 export type Recommendation = Schemas["Recommendation"];
-export type Failure = Schemas["Failure"];
+
+/** 문항 1개의 평가 결과(성공 포함). 실패만이 아니라 100문항 전체가 이 타입이다. */
+export type QuestionResult = Schemas["QuestionResult"];
+/** 1위 검색 결과. 순위가 자명해 rank 가 없다. */
+export type TopResult = Schemas["TopResult"];
+
 /** 문항이 찾아냈어야 하는 정답 쿼리. */
 export type ExpectedApi = Schemas["ExpectedApi"];
+/** 검색 결과 1건(순위 포함). Top-3 목록용. */
 export type SearchResult = Schemas["SearchResult"];
 export type PreviousEvaluation = Schemas["PreviousEvaluation"];
+/** 외부 평가툴 원본 버전 정보 (meta.rawSource). */
+export type RawSource = Schemas["RawSource"];
 
 // --- Enum ------------------------------------------------------------------
 // 문자열 리터럴 유니온으로 생성된다.
@@ -47,3 +55,5 @@ export type Priority = Schemas["Priority"];
 export type SearchMode = Schemas["SearchMode"];
 export type QuestionType = Schemas["QuestionType"];
 export type FailureCategory = Schemas["FailureCategory"];
+/** 문항의 실패 범위. NONE(성공) / TOP1_ONLY / TOP3. */
+export type FailureScope = Schemas["FailureScope"];

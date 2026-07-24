@@ -102,6 +102,8 @@ export interface components {
              * @description 평가 전체 소요 시간(밀리초).
              */
             durationMs: number;
+            /** @description 외부 평가툴의 원본 버전 정보. 없으면 null. */
+            rawSource?: components["schemas"]["RawSource"] | null;
         };
         /**
          * EvaluationReport
@@ -142,10 +144,10 @@ export interface components {
              */
             recommendations: components["schemas"]["Recommendation"][];
             /**
-             * Failures
-             * @description 실패한 문항 전체. 건수는 summary.top3FailCount 와 같다.
+             * Questions
+             * @description 평가 문항 전체(성공 포함). 건수는 totalQuestions 와 같다. 정렬: TOP3 실패 → TOP1_ONLY 실패 → 성공, 그 안에서 no 오름차순.
              */
-            failures: components["schemas"]["Failure"][];
+            questions: components["schemas"]["QuestionResult"][];
             /** @description 직전 평가 결과. 이전 평가가 없으면 null 이며 프론트는 델타 뱃지를 숨긴다. */
             previous?: components["schemas"]["PreviousEvaluation"] | null;
         };
@@ -171,16 +173,18 @@ export interface components {
             top3Accuracy: number;
             /**
              * Top1Failcount
-             * @description 1위가 기대 API와 달랐던 문항 수.
+             * @description 1위가 기대 쿼리와 달랐던 문항 수.
              */
             top1FailCount: number;
             /**
              * Top3Failcount
-             * @description 상위 3개 안에 기대 API가 없었던 문항 수. 실패 테이블의 전체 건수.
+             * @description 상위 3개 안에 기대 쿼리가 없었던 문항 수. 완전 실패 건수.
              */
             top3FailCount: number;
-            /** @description top3Accuracy 로 산출한 등급. 백엔드가 확정해 내려준다. */
-            grade: components["schemas"]["Grade"];
+            /** @description top1Accuracy 로 산출한 등급. 백엔드가 확정해 내려준다. */
+            top1Grade: components["schemas"]["Grade"];
+            /** @description top3Accuracy 로 산출한 등급. 게이지에 표시되는 대표 등급. **Top-1 과 Top-3 의 등급 임계값이 다를 수 있다** (open-questions #54) — 그래서 두 등급을 따로 내려준다. */
+            top3Grade: components["schemas"]["Grade"];
         };
         /**
          * ExpectedApi
@@ -199,53 +203,20 @@ export interface components {
             path: string;
         };
         /**
-         * Failure
-         * @description 실패한 문항 1건.
-         */
-        Failure: {
-            /**
-             * Id
-             * @description 문항 식별자. 예: q_017
-             */
-            id: string;
-            /**
-             * Question
-             * @description 실제로 던진 질문 문장.
-             */
-            question: string;
-            /** @description 문항 유형 enum. */
-            questionType: components["schemas"]["QuestionType"];
-            /** @description 찾아냈어야 하는 정답 쿼리. */
-            expected: components["schemas"]["ExpectedApi"];
-            /**
-             * Results
-             * @description 실제 검색 결과 상위 목록. 보통 topK 개.
-             */
-            results: components["schemas"]["SearchResult"][];
-            /**
-             * Hit
-             * @description Top-K 안에 기대 쿼리가 있었는지. 실패 목록이므로 항상 false.
-             */
-            hit: boolean;
-            /**
-             * Expectedrank
-             * @description 기대 쿼리가 전체 검색 결과에서 몇 위였는지. **Top-N 밖이면 null**.
-             */
-            expectedRank?: number | null;
-            /** @description 실패 원인 분류 enum. */
-            failureCategory: components["schemas"]["FailureCategory"];
-            /**
-             * Reason
-             * @description 사람이 읽을 실패 원인 설명. 한 문장.
-             */
-            reason: string;
-        };
-        /**
          * FailureCategory
-         * @description 실패 원인 분류.
+         * @description 실패 원인 분류. 담당자 확정 스펙 기준 (contract.md §3).
          * @enum {string}
          */
-        FailureCategory: "METHOD_MISMATCH" | "SIMILAR_RESOURCE" | "SYNONYM_MISS" | "DESCRIPTION_MISSING" | "PARAM_MISSING" | "OTHER";
+        FailureCategory: "SIMILAR_RESOURCE" | "DESCRIPTION_MISSING" | "DESCRIPTION_WEAK" | "KEYWORD_MISMATCH" | "DOMAIN_TERM_MISSING" | "ERROR_CASE_MISSING" | "PARAM_MISSING" | "METHOD_MISMATCH" | "OTHER";
+        /**
+         * FailureScope
+         * @description 문항의 실패 범위.
+         *
+         *     평가 대상은 실패 22건이 아니라 문항 100개 전체다. 각 문항이 어디까지
+         *     성공했는지를 이 값으로 나눈다.
+         * @enum {string}
+         */
+        FailureScope: "NONE" | "TOP1_ONLY" | "TOP3";
         /**
          * Grade
          * @description Top-3 인식률 등급. CRITICAL <70 / NEEDS_IMPROVEMENT 70~85 / FAIR 85~95 / GOOD >=95.
@@ -336,6 +307,60 @@ export interface components {
             needsRegeneration: boolean;
         };
         /**
+         * QuestionResult
+         * @description 문항 1개의 평가 결과.
+         *
+         *     **평가 대상은 실패만이 아니라 문항 100개 전체다.** 성공한 문항도 여기 들어온다
+         *     (성공이면 failureCategory 와 reason 이 null).
+         */
+        QuestionResult: {
+            /**
+             * No
+             * @description 표시 순번(1~100).
+             */
+            no: number;
+            /**
+             * Question
+             * @description 실제로 던진 질문 문장.
+             */
+            question: string;
+            /** @description 문항 유형 enum. */
+            questionType: components["schemas"]["QuestionType"];
+            /** @description 찾아냈어야 하는 정답 쿼리. */
+            expected: components["schemas"]["ExpectedApi"];
+            /** @description 1위 검색 결과. */
+            top1: components["schemas"]["TopResult"];
+            /**
+             * Top3
+             * @description 상위 3개 검색 결과. 보통 topK 개.
+             */
+            top3: components["schemas"]["SearchResult"][];
+            /**
+             * Top1Hit
+             * @description 1위가 기대 쿼리와 일치했는지.
+             */
+            top1Hit: boolean;
+            /**
+             * Top3Hit
+             * @description 상위 3개 안에 기대 쿼리가 있었는지.
+             */
+            top3Hit: boolean;
+            /** @description 실패 범위. NONE(성공) / TOP1_ONLY / TOP3. */
+            failureScope: components["schemas"]["FailureScope"];
+            /**
+             * Expectedrank
+             * @description 기대 쿼리가 전체 검색 결과에서 몇 위였는지. Top-N 밖이면 null.
+             */
+            expectedRank?: number | null;
+            /** @description 실패 원인 분류. **성공(NONE)이면 null**. */
+            failureCategory?: components["schemas"]["FailureCategory"] | null;
+            /**
+             * Reason
+             * @description 사람이 읽을 실패 원인 설명. 성공이면 null.
+             */
+            reason?: string | null;
+        };
+        /**
          * QuestionType
          * @description 평가 문항의 유형.
          * @enum {string}
@@ -373,6 +398,31 @@ export interface components {
             top3Accuracy: number;
         };
         /**
+         * RawSource
+         * @description 평가툴 원본 식별자.
+         *
+         *     평가 엔진은 이 시스템 밖에 있다(contract.md §0). 담당자 툴의 프롬프트나
+         *     지표가 바뀌면 결과 비교가 필요하므로, 어떤 버전의 툴이 만든 결과인지 남긴다.
+         *     이 백엔드의 1차 역할은 그 출력을 계약으로 변환하는 어댑터다.
+         */
+        RawSource: {
+            /**
+             * Toolversion
+             * @description 평가툴 버전.
+             */
+            toolVersion: string;
+            /**
+             * Promptversion
+             * @description 질문 생성 프롬프트 버전.
+             */
+            promptVersion: string;
+            /**
+             * Generatedat
+             * @description 평가툴이 결과를 생성한 시각(ISO 8601 + 타임존).
+             */
+            generatedAt: string;
+        };
+        /**
          * Recommendation
          * @description 권장 조치.
          */
@@ -408,7 +458,7 @@ export interface components {
         SearchMode: "BM25" | "VECTOR" | "HYBRID";
         /**
          * SearchResult
-         * @description 검색 결과 1건.
+         * @description 검색 결과 1건 (순위 포함). Top-3 목록에 쓴다.
          */
         SearchResult: {
             /**
@@ -466,6 +516,27 @@ export interface components {
              * @description 앱 담당 조직 또는 담당자. DAC 이 제공하지 않으면 null.
              */
             owner?: string | null;
+        };
+        /**
+         * TopResult
+         * @description 1위 결과. 순위가 자명하므로 rank 를 두지 않는다.
+         */
+        TopResult: {
+            /**
+             * Method
+             * @description 1위 쿼리의 HTTP 메서드.
+             */
+            method: string;
+            /**
+             * Path
+             * @description 1위 쿼리의 경로.
+             */
+            path: string;
+            /**
+             * Score
+             * @description 1위의 정규화된 유사도 점수(0~1).
+             */
+            score: number;
         };
         /** ValidationError */
         ValidationError: {

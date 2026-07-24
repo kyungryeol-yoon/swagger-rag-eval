@@ -21,6 +21,12 @@ DAC 앱 1개  =  Swagger 1개
 엔드포인트 1개  =  등록된 SELECT 쿼리 1개
 ```
 
+**평가 엔진은 이 시스템 밖에 있다.** 담당자 툴이 DAC Swagger 로부터 질문 100개를
+생성하고 RAG 검색 후 Top-1 / Top-3 hit 를 계산한다. 이 프로젝트는 그 결과를 받아
+평가 결과서를 보여주고, 부실한 쿼리를 Swagger 자동 생성 에이전트로 넘긴다.
+따라서 **백엔드의 1차 역할은 외부 평가툴 출력을 이 계약으로 변환하는 어댑터**다.
+평가툴의 지표나 컬럼이 바뀌어도 계약과 화면은 유지되어야 한다.
+
 **이 프로젝트의 목적**은 각 쿼리의 설명(summary / description / 파라미터 설명)이
 AI 검색에 충분한지 평가하고, 부실한 쿼리를 **별도 팀의 Swagger 자동 생성
 서비스로 넘기는 것**이다. 설명을 이 서비스가 직접 고치지는 않는다.
@@ -71,7 +77,12 @@ JSON 필드 이름은 HTTP 규약을 따르므로 `method` / `path` 를 그대�
     "searchMode": "HYBRID",
     "topK": 3,
     "questionSource": "LLM_GENERATED_HUMAN_REVIEWED",
-    "durationMs": 48210
+    "durationMs": 48210,
+    "rawSource": {                    // 외부 평가툴 원본. optional
+      "toolVersion": "rageval-2.4.0",
+      "promptVersion": "qgen-2026Q2",
+      "generatedAt": "2026-07-22T11:20:00+09:00"
+    }
   },
 
   "summary": {
@@ -80,7 +91,8 @@ JSON 필드 이름은 HTTP 규약을 따르므로 `method` / `path` 를 그대�
     "top3Accuracy": 78.0,
     "top1FailCount": 39,
     "top3FailCount": 22,
-    "grade": "NEEDS_IMPROVEMENT"
+    "top1Grade": "CRITICAL",          // top1Accuracy 로 산출
+    "top3Grade": "NEEDS_IMPROVEMENT"  // top3Accuracy 로 산출. 임계값이 다를 수 있다(#54)
   },
 
   // 쿼리별 설명 품질과 인식률. 앱에 등록된 쿼리 전부.
@@ -120,21 +132,44 @@ JSON 필드 이름은 HTTP 규약을 따르므로 `method` / `path` 를 그대�
     }
   ],
 
-  "failures": [
+  // 평가 문항 전체(성공 포함). 건수 = totalQuestions.
+  // 정렬: TOP3 실패 -> TOP1_ONLY 실패 -> 성공, 그 안에서 no 오름차순.
+  "questions": [
     {
-      "id": "q_017",
-      "question": "환불 신청은 어떻게 취소하나요?",
-      "questionType": "USER_NL",
-      "expected": { "method": "DELETE", "path": "/orders/{id}/refund" },
-      "results": [
-        { "rank": 1, "method": "GET",  "path": "/orders/{id}/refund-status", "score": 0.812 },
-        { "rank": 2, "method": "POST", "path": "/orders/{id}/refund",        "score": 0.774 },
-        { "rank": 3, "method": "GET",  "path": "/orders/{id}",               "score": 0.701 }
+      "no": 17,
+      "question": "스텝 사이클타임 조회 query 있나요?",
+      "questionType": "MIXED_LANG",
+      "expected": { "method": "GET", "path": "/queries/step-cycle-time" },
+      "top1": { "method": "GET", "path": "/queries/wafer-yield-daily", "score": 0.680 },
+      "top3": [
+        { "rank": 1, "method": "GET", "path": "/queries/wafer-yield-daily", "score": 0.680 },
+        { "rank": 2, "method": "GET", "path": "/queries/lot-trace",        "score": 0.635 },
+        { "rank": 3, "method": "GET", "path": "/queries/equipment-downtime","score": 0.590 }
       ],
-      "hit": false,
-      "expectedRank": 7,
-      "failureCategory": "METHOD_MISMATCH",
-      "reason": "질문의 '취소'를 조회(GET) 의도로 오인식하여 DELETE 엔드포인트가 후순위로 밀림"
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",                    // NONE | TOP1_ONLY | TOP3
+      "expectedRank": null,                      // Top-N 밖이면 null
+      "failureCategory": "DESCRIPTION_MISSING",  // 성공이면 null
+      "reason": "기대 쿼리에 설명이 전혀 없어 경로 토큰 외에 매칭 근거가 없음"
+    },
+    {
+      "no": 3,
+      "question": "랏 상태를 조회하는 쿼리는 무엇인가요?",
+      "questionType": "DIRECT",
+      "expected": { "method": "GET", "path": "/queries/lot-status" },
+      "top1": { "method": "GET", "path": "/queries/lot-status", "score": 0.920 },
+      "top3": [
+        { "rank": 1, "method": "GET", "path": "/queries/lot-status", "score": 0.920 },
+        { "rank": 2, "method": "GET", "path": "/queries/lot-trace",  "score": 0.710 },
+        { "rank": 3, "method": "GET", "path": "/queries/inventory-wip","score": 0.640 }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",         // 성공
+      "expectedRank": 1,
+      "failureCategory": null,        // 성공이면 null
+      "reason": null
     }
   ],
 
@@ -149,7 +184,7 @@ JSON 필드 이름은 HTTP 규약을 따르므로 `method` / `path` 를 그대�
 ### 필드 규약
 
 - 모든 비율(`ratio`, `*Accuracy`, `failShare`)은 **0~100 실수**. 0~1 소수 금지.
-- `expectedRank` 는 기대 API가 전체 검색 결과에서 몇 위였는지. **Top-N 밖이면 `null`**.
+- `expectedRank` 는 기대 쿼리가 전체 검색 결과에서 몇 위였는지. **Top-N 밖이면 `null`**.
 - `previous` 는 이전 평가가 없으면 `null`. 프론트는 델타 뱃지를 숨긴다.
 - `recommendations[].failShare` 의 **합은 100을 넘을 수 있다** (한 실패에 원인이 복수).
   화면에 "원인 중복 집계" 각주 필수.
@@ -161,7 +196,20 @@ JSON 필드 이름은 HTTP 규약을 따르므로 `method` / `path` 를 그대�
   인식률(`summary.top3Accuracy`)과 다르다.
 - **`needsRegeneration` 은 백엔드가 판단한다.** 프론트가 인식률이나 설명 길이로
   다시 계산하지 않는다. 판정 기준은 `open-questions.md` #53 참고.
-- `failures[].expected` 는 "기대 쿼리" 다. 화면 라벨도 그렇게 적는다.
+
+### questions — 문항 100개 전체
+
+- **평가 대상은 실패만이 아니라 문항 전체다.** `questions` 의 길이는
+  `summary.totalQuestions` 와 같고, 성공 문항도 들어온다.
+- `failureScope` 로 실패 범위를 나눈다.
+  - `NONE` — Top-1 부터 맞음 (성공). `failureCategory` 와 `reason` 이 `null`.
+  - `TOP1_ONLY` — Top-1 은 틀렸으나 Top-3 안에는 있음.
+  - `TOP3` — Top-3 밖 (완전 실패).
+- 개수 정합: `top1FailCount = TOP1_ONLY + TOP3`, `top3FailCount = TOP3`.
+- `top1` 은 1위 결과(순위 자명해 rank 없음). `top1` 은 `top3[0]` 과 같은 쿼리다.
+- `top1Hit` / `top3Hit` 은 기대 쿼리가 각각 1위 / 상위 3위 안에 있었는지.
+- **정렬: `TOP3` → `TOP1_ONLY` → `NONE`, 그 안에서 `no` 오름차순.** 손봐야 할 것이 위로.
+- `questions[].expected` 는 "기대 쿼리" 다. 화면 라벨도 그렇게 적는다.
 
 ---
 
@@ -171,15 +219,35 @@ JSON 필드 이름은 HTTP 규약을 따르므로 `method` / `path` 를 그대�
 grade            CRITICAL | NEEDS_IMPROVEMENT | FAIR | GOOD
 priority         HIGH | MEDIUM | LOW
 searchMode       BM25 | VECTOR | HYBRID
+failureScope     NONE | TOP1_ONLY | TOP3
 questionType     DIRECT | USER_NL | DOMAIN_TERM | PARAMETER
                  | ERROR_CASE | SHORT_KEYWORD | MIXED_LANG
-failureCategory  METHOD_MISMATCH | SIMILAR_RESOURCE | SYNONYM_MISS
-                 | DESCRIPTION_MISSING | PARAM_MISSING | OTHER
+failureCategory  SIMILAR_RESOURCE | DESCRIPTION_MISSING | DESCRIPTION_WEAK
+                 | KEYWORD_MISMATCH | DOMAIN_TERM_MISSING | ERROR_CASE_MISSING
+                 | PARAM_MISSING | METHOD_MISMATCH | OTHER
 ```
+
+### failureCategory 라벨 (담당자 확정)
+
+| enum | 라벨 | 비고 |
+|---|---|---|
+| `SIMILAR_RESOURCE` | 유사 API 혼동 | |
+| `DESCRIPTION_MISSING` | 설명 누락 | |
+| `DESCRIPTION_WEAK` | 설명 키워드 부족 | 신규 |
+| `KEYWORD_MISMATCH` | 키워드 불일치 | 구 `SYNONYM_MISS` 대체 |
+| `DOMAIN_TERM_MISSING` | 도메인 키워드 부족 | 신규 |
+| `ERROR_CASE_MISSING` | 예외 상황 설명 부족 | 신규 |
+| `PARAM_MISSING` | 파라미터 설명 누락 | |
+| `METHOD_MISMATCH` | Method 불일치 | DAC 단일 메서드면 미사용. enum 유지 (#50) |
+| `OTHER` | 기타 | |
 
 ### 등급 기준
 
-| grade | Top-3 인식률 | 라벨 | 색 토큰 |
+`top1Grade` / `top3Grade` 각각 아래 표로 산출한다. **현재 두 지표의 임계값은
+같지만 다를 수 있다** (open-questions #54) — 그래서 등급을 지표별로 따로 내려준다.
+프론트의 `lib/gradeBands.ts` 도 이에 맞춰 지표별 구조로 나눈다(화면 수리 단계).
+
+| grade | 인식률 | 라벨 | 색 토큰 |
 |---|---|---|---|
 | `CRITICAL` | < 70% | 심각 | `--red` |
 | `NEEDS_IMPROVEMENT` | 70 ~ 85% | 개선 필요 | `--amber` |
@@ -293,3 +361,4 @@ failureCategory  METHOD_MISMATCH | SIMILAR_RESOURCE | SYNONYM_MISS
 |---|---|---|
 | 2026-07-22 | 최초 작성 | — |
 | 2026-07-23 | 평가 단위를 앱으로 변경, `queries` 신설, 용어를 "쿼리"로 통일, 재생성을 요청 방식으로 변경 | 미정 #1 확정 (DAC 앱 단위) |
+| 2026-07-24 | 등급을 top1Grade/top3Grade 로 분리, failures→questions(100문항 전체), failureScope 신설, failureCategory 확장, meta.rawSource 추가 | 담당자 확정 스펙 반영 |

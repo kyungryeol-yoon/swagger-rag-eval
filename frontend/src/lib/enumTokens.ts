@@ -146,11 +146,15 @@ export const searchModeLabel: Record<SearchMode, string> = {
   HYBRID: "Hybrid (BM25 + 벡터)",
 };
 
+// 담당자 확정 스펙 기준 (contract.md §3).
 export const failureCategoryLabel: Record<FailureCategory, string> = {
-  METHOD_MISMATCH: "Method 불일치",
-  SIMILAR_RESOURCE: "유사 리소스 혼동",
-  SYNONYM_MISS: "동의어 인식 실패",
+  SIMILAR_RESOURCE: "유사 API 혼동",
   DESCRIPTION_MISSING: "설명 누락",
+  DESCRIPTION_WEAK: "설명 키워드 부족",
+  KEYWORD_MISMATCH: "키워드 불일치",
+  DOMAIN_TERM_MISSING: "도메인 키워드 부족",
+  ERROR_CASE_MISSING: "예외 상황 설명 부족",
   PARAM_MISSING: "파라미터 설명 누락",
+  METHOD_MISMATCH: "Method 불일치",
   OTHER: "기타",
 };
