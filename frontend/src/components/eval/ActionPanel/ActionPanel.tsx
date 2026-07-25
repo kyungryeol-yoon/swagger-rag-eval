@@ -108,6 +108,7 @@ export default function ActionPanel({ recommendations, specId }: ActionPanelProp
         여기 해당합니다.
       </p>
 
+      {/* 큰 둥근 버튼 두 개. 좁은 컬럼에서는 세로로 늘어나 카드의 빈 높이를 채운다. */}
       <div className={styles.actions}>
         <button
           type="button"
@@ -116,7 +117,8 @@ export default function ActionPanel({ recommendations, specId }: ActionPanelProp
           aria-disabled="true"
           title="평가 엔진 연동 후 활성화됩니다"
         >
-          설명 직접 수정
+          <span className={styles.btnMain}>Swagger 직접 보강하기</span>
+          <span className={styles.btnSub}>설명 / 키워드 / 예시 추가</span>
         </button>
 
         {/* 파괴적 동작이 아니다. 이 서비스가 설명을 직접 덮어쓰지 않고
@@ -129,8 +131,11 @@ export default function ActionPanel({ recommendations, specId }: ActionPanelProp
           aria-disabled="true"
           title="평가 엔진 연동 후 활성화됩니다"
         >
-          <SendHorizontal className={styles.icon} size={14} aria-hidden="true" />
-          자동 생성 요청 보내기
+          <span className={styles.btnMain}>
+            <SendHorizontal className={styles.icon} size={16} aria-hidden="true" />
+            Swagger 재생성하기
+          </span>
+          <span className={styles.btnSub}>agent 를 통해 다시 생성하여 개선</span>
         </button>
       </div>
 
