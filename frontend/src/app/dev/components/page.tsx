@@ -35,28 +35,42 @@ const FIXTURE_SUMMARY = REPORT.summary;
 const FIXTURE_PREVIOUS = REPORT.previous!;
 const FIXTURE_TYPES = REPORT.questionTypes;
 const FIXTURE_RECOMMENDATIONS = REPORT.recommendations;
-// FailureTable 은 완전 실패(Top-3 밖)만 받는다. eval 페이지와 같은 필터.
-const FIXTURE_FAILURES = REPORT.questions.filter((q) => !q.top3Hit);
+// FailureTable 은 이제 100문항 전체를 받는다 (Phase 7c). 계약 순서 그대로.
+const FIXTURE_QUESTIONS = REPORT.questions;
 
 const VALUES = [0, 40, 78, 100];
 
 // --- 경계 케이스: fixture 를 가공해 파생한다 (도메인 리터럴을 새로 적지 않는다) ---
 
-// 질문·원인이 길 때 말줄임 확인. 실패 1건을 골라 문장만 늘린다.
-const LONG_TEXT_FAILURE: QuestionResult = {
-  ...FIXTURE_FAILURES[0],
-  no: 901,
-  question: `${FIXTURE_FAILURES[0].question} 아니면 다른 조회 쿼리를 먼저 부른 다음 그 결과를 파라미터로 넘겨 다시 호출해야 하나요, 그리고 그때 기간과 라인 조건은 각각 어떤 형식으로 넣어야 하는지도 함께 알려주세요.`,
-  expectedRank: 5,
-  reason: `${FIXTURE_FAILURES[0].reason ?? ""} 질문이 여러 의도를 한 문장에 담고 있어 임베딩이 어느 쪽으로도 충분히 기울지 못했고, 설명이 더 풍부한 인접 쿼리가 상위를 차지했다. 질문을 쪼개면 각각은 Top-1 로 잡힌다.`,
+// 실패 0건(전부 성공). 모든 문항을 NONE 으로 눕히고 summary 도 맞춰 내린다 —
+// 성공 뱃지가 중립색으로 조용한지, 필터가 "Top-3 실패 0" 을 어떻게 보이는지 확인.
+const ALL_SUCCESS_QUESTIONS: QuestionResult[] = FIXTURE_QUESTIONS.map((q) => ({
+  ...q,
+  top1: { ...q.top1, path: q.expected.path, method: q.expected.method },
+  top1Hit: true,
+  top3Hit: true,
+  failureScope: "NONE",
+  expectedRank: 1,
+  failureCategory: null,
+  reason: null,
+}));
+const ALL_SUCCESS_SUMMARY: Evaluation["summary"] = {
+  ...FIXTURE_SUMMARY,
+  top1Accuracy: 100,
+  top3Accuracy: 100,
+  top1FailCount: 0,
+  top3FailCount: 0,
+  top1Grade: "GOOD",
+  top3Grade: "GOOD",
 };
 
-// 아주 멀리 밀린 케이스(20위). 순위 밖(null)인 실패 하나를 골라 순위만 바꾼다.
-const FAR_MISS_FAILURE: QuestionResult = {
-  ...(FIXTURE_FAILURES.find((q) => q.expectedRank == null) ?? FIXTURE_FAILURES[1]),
-  no: 902,
-  expectedRank: 20,
-};
+// 단일 메서드(SELECT 전용 DAC) — 표 전체가 한 종류면 method 뱃지를 숨긴다.
+const SINGLE_METHOD_QUESTIONS: QuestionResult[] = FIXTURE_QUESTIONS.map((q) => ({
+  ...q,
+  expected: { ...q.expected, method: "GET" },
+  top1: { ...q.top1, method: "GET" },
+  top3: q.top3.map((r) => ({ ...r, method: "GET" })),
+}));
 
 export default function ComponentsPage() {
   const grades = Object.keys(gradeColorVar) as Grade[];
@@ -496,48 +510,38 @@ export default function ComponentsPage() {
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>FailureTable</h2>
         <p className={styles.sectionNote}>
-          fixture <code>eval_A492.json</code> 의 실패 앞 3건. 기본 3건만 보이고
-          나머지는 버튼으로 넘긴다. 버튼 문구는 <strong>실제 실패 건수(22건)</strong> 기준이다
-          — 시안의 &ldquo;나머지 97건 보기&rdquo;는 오류였다 (§9-1 #3).
+          fixture <code>eval_A492.json</code> 의 <strong>문항 100개 전체</strong>.
+          더 이상 실패만 받지 않고, 셀에서 <code>failureScope</code> 로 성공/부분
+          실패/완전 실패를 나눈다 (Phase 7c). 정렬은 계약이 해서 내려준다
+          (TOP3 → TOP1_ONLY → NONE, no 오름차순) — 컴포넌트는 다시 정렬하지 않는다.
           <br />
-          <code>expectedRank</code> 가 4~5면 <strong>MISS (근접)</strong> amber pill 이다.
-          한두 칸 차이로 놓친 것이라 먼저 손댈 후보이고, 6위 이하나 순위 밖과는
-          조치의 성격이 다르다.
+          <strong>여기서 확인할 것:</strong> ① 기본 5행만 보이고 &ldquo;전체 N건
+          보기&rdquo; 로 펼침 ② 펼치면 표에 스크롤이 걸리고 헤더(thead)가 고정 ③
+          실패 구분 칩(전체/Top-3 실패/Top-1 실패/성공)과 원인별 칩(건수 표시)으로
+          필터 ④ Hit 여부 셀이 색뿐 아니라 ✓/✗ 아이콘·텍스트로도 읽히는지. 상단
+          &ldquo;총 N건 중 실패 M건&rdquo; 은 <strong>summary prop</strong> 값이지
+          문항을 세서 만든 값이 아니다.
         </p>
-        <FailureTable failures={FIXTURE_FAILURES} totalFailCount={22} />
+        <FailureTable questions={FIXTURE_QUESTIONS} summary={FIXTURE_SUMMARY} />
 
         <p className={styles.sectionNote}>
-          경계: 순위 밖(null) / 근접(5위) / 아주 멀리(20위). 질문과 원인이 길면 말줄임된다.
+          <strong>실패 0건(전부 성공)</strong> — 모든 문항이 성공 뱃지(중립 회색)다.
+          &ldquo;Top-3 실패&rdquo; 필터를 누르면 &ldquo;해당하는 문항이 없습니다&rdquo;.
+          성공은 조용해야 실패가 묻히지 않는다.
         </p>
-        <FailureTable
-          failures={[FIXTURE_FAILURES[1], LONG_TEXT_FAILURE, FAR_MISS_FAILURE]}
-          totalFailCount={22}
-        />
-
-        <p className={styles.sectionNote}>
-          표시할 수 있는 건수가 전체와 같으면 &ldquo;더 있음&rdquo; 안내를 붙이지 않는다.
-        </p>
-        <FailureTable failures={FIXTURE_FAILURES} totalFailCount={3} />
+        <FailureTable questions={ALL_SUCCESS_QUESTIONS} summary={ALL_SUCCESS_SUMMARY} />
 
         <p className={styles.sectionNote}>
           <strong>단일 메서드</strong> — DAC 이 SELECT 전용이면 모든 쿼리가 GET 이다
           (open-questions #50). 표 전체에서 메서드가 1종뿐이면 뱃지를 숨기고 경로만
           보인다. 뱃지가 전부 &ldquo;GET&rdquo;이면 정보를 주지 못하고 자리만 차지한다.
         </p>
-        <FailureTable
-          failures={FIXTURE_FAILURES.map((f) => ({
-            ...f,
-            expected: { ...f.expected, method: "GET" },
-            top1: { ...f.top1, method: "GET" },
-            top3: f.top3.map((r) => ({ ...r, method: "GET" })),
-          }))}
-          totalFailCount={22}
-        />
+        <FailureTable questions={SINGLE_METHOD_QUESTIONS} summary={FIXTURE_SUMMARY} />
 
         <p className={styles.sectionNote}>
-          빈 상태 — 실패 0건(인식률 100%). 표 대신 안내를 보인다.
+          빈 상태 — 문항이 하나도 없을 때. 표 대신 안내를 보인다.
         </p>
-        <FailureTable failures={[]} totalFailCount={0} />
+        <FailureTable questions={[]} summary={FIXTURE_SUMMARY} />
       </section>
 
       {/* --- 정렬 --- */}

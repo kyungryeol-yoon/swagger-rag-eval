@@ -1,16 +1,34 @@
+/* 박스 껍데기 겸 쿼리 컨테이너. container 쿼리는 컨테이너 자신이 아니라
+   자손(.grid)만 다시 그릴 수 있으므로, 2단 배치는 .grid 에 둔다. */
 .root {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--space-6);
+  container-type: inline-size;
   padding: var(--space-5);
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
 }
 
-/* 1024 이하: 도넛+범례 위, 막대 아래로 쌓는다. */
+/* 도넛+표 | 막대. 자기 폭(viewport 아님)에 반응해, 전체 폭이든 절반 폭 칸이든
+   좁아지면 세로로 접힌다. 그래서 어디에 놓여도 두 열이 겹치지 않는다. */
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-6);
+}
+
+/* 도넛+표 위, 막대 아래로 쌓는다(세로). 대시보드의 60% 칸(약 810px)이든
+   dev 전체 폭(약 1050px)이든, 좌측 "도넛+표" 는 나란히 두면 약 470px 가 필요해
+   더 좁아지면 표가 막대 칸을 침범한다. 임계값을 넉넉히 잡아 그 폭대에선 항상
+   세로로 쌓아 겹침을 없앤다. (2단은 초광폭에서만.) */
+@container (max-width: 1120px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* 컨테이너 쿼리 미지원 폴백. viewport 기준으로도 한 번 접어둔다. */
 @media (max-width: 1024px) {
-  .root {
+  .grid {
     grid-template-columns: minmax(0, 1fr);
   }
 }

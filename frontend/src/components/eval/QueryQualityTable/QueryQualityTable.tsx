@@ -136,7 +136,9 @@ function Row({
               {query.method}
             </span>
           )}
-          <code className={`${styles.path} tabular`}>{query.path}</code>
+          <code className={`${styles.path} pathText tabular`} title={query.path}>
+            {query.path}
+          </code>
         </span>
         {query.summary ? (
           <span className={styles.summary}>{query.summary}</span>

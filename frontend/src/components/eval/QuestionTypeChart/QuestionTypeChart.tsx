@@ -117,8 +117,11 @@ export default function QuestionTypeChart({
 
   return (
     <div className={styles.root}>
-      {/* --- 분포: 도넛 + 범례 --- */}
-      <section className={styles.distribution}>
+      {/* 안쪽 그리드. container 쿼리는 컨테이너(.root)의 "자손" 만 다시 그릴 수
+          있으므로, 2단 그리드는 .root 가 아니라 이 안쪽 요소에 둔다. */}
+      <div className={styles.grid}>
+        {/* --- 분포: 도넛 + 범례 --- */}
+        <section className={styles.distribution}>
         <h3 className={styles.heading}>문항 유형 분포</h3>
 
         <div className={styles.distributionBody}>
@@ -229,6 +232,7 @@ export default function QuestionTypeChart({
           </div>
         </div>
       </section>
+      </div>
     </div>
   );
 }

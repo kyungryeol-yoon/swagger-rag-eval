@@ -1,12 +1,14 @@
-/* 다른 카드와 같은 껍데기 — surface / border / radius-md */
+/* 다른 카드와 같은 껍데기 — surface / border / radius-md.
+   container 로 두어, 좁은 사이드 컬럼에 놓이면 버튼을 세로로 편다(아래 @container). */
 .root {
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
   padding: var(--space-5);
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
 }
 
 .header {
@@ -109,6 +111,24 @@
 }
 
 /* --- 반응형 -------------------------------------------------------------- */
+
+/* 좁은 폭(사이드 컬럼 등)에서는 버튼을 세로 스택 + 전체 폭으로.
+   자기 폭(viewport 아님)에 반응하므로 전체 폭에 놓이면 그대로 가로 배치다. */
+@container (max-width: 420px) {
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .secondary,
+  .primary {
+    width: 100%;
+  }
+
+  .warning {
+    text-align: center;
+  }
+}
 
 @media (max-width: 768px) {
   .actions {

@@ -1,176 +1,330 @@
+"use client";
+
+import { Check, X } from "lucide-react";
+import { useState } from "react";
+
 import { failureCategoryLabel } from "@/lib/enumTokens";
 import { hasMultipleMethods, httpMethodColor } from "@/lib/httpMethod";
-import type { ExpectedApi, QuestionResult, SearchResult } from "@/lib/types";
+import type {
+  EvaluationSummary,
+  ExpectedApi,
+  FailureCategory,
+  FailureScope,
+  QuestionResult,
+  SearchResult,
+  TopResult,
+} from "@/lib/types";
 
 import styles from "./FailureTable.module.css";
 
 /**
- * 완전 실패(Top-3 밖) 문항 표.
+ * 문항별 평가 결과 표 — 100문항 전체 (Phase 7c).
  *
- * 서버 컴포넌트다. 정렬·필터·페이징은 후속 단계 (prompts.md §9-5).
- * 100문항 전체 표는 Phase 7c — 여기는 top3Hit=false 인 문항만 받는다.
+ * **더 이상 "실패만" 받지 않는다.** 성공 문항까지 포함한 `questions` 전체를
+ * 받아, 어디까지 성공했는지(failureScope)를 셀에서 나눈다. 평가 대상은
+ * 실패 22건이 아니라 문항 100개다 (contract.md §2).
  *
- * 표시 개수는 기본 3건이고 나머지는 버튼으로 넘긴다. 버튼 문구는
- * **실제 실패 건수**를 쓴다 — 시안의 "나머지 97건 보기" 는 오류다.
- * 실패는 22건인데 97건이라고 적혀 있었다 (contract.md §5, prompts.md §9-1 #3).
+ * 정렬·필터·펼침 상태가 필요해 클라이언트 컴포넌트다. 다만 **상단 요약 수치는
+ * 여기서 세지 않는다** — 100문항을 스캔해 실패 건수를 다시 계산하면 백엔드가
+ * 확정한 summary 와 어긋날 수 있다. summary prop 을 그대로 읽는다.
+ *
+ * 정렬은 계약이 이미 해서 내려준다: TOP3 → TOP1_ONLY → NONE, 그 안에서 no
+ * 오름차순 (contract.md §2). 여기서 다시 정렬하지 않는다 — grade 처럼, 백엔드가
+ * 확정한 순서를 신뢰한다. 필터는 그 순서를 보존한다.
  */
 
-/** 기본으로 펼쳐 보이는 건수. 나머지는 "전체 보기" 로 넘긴다. */
-const VISIBLE_COUNT = 3;
+/** 기본으로 펼쳐 보이는 행 수. 나머지는 "전체 보기" 로 넘긴다. */
+const VISIBLE_COUNT = 5;
+
+/** 실패 구분 필터의 선택 상태. "ALL" 은 전체(필터 없음). */
+type ScopeFilter = FailureScope | "ALL";
+/** 원인별 필터의 선택 상태. "ALL" 은 전체(필터 없음). */
+type CategoryFilter = FailureCategory | "ALL";
 
 /**
- * "근접" 으로 볼 마지막 순위.
+ * failureScope → 뱃지 문구·색.
  *
- * topK 가 3 이므로 4~5 위는 **한두 칸 차이로 놓친 것**이다. 이 구간은
- * 설명을 조금만 보강해도 Top-3 안으로 들어올 가능성이 높아, 6위 이하나
- * 순위 밖과는 조치의 성격이 다르다. 그래서 pill 색을 red 가 아닌 amber 로
- * 나눠서 "먼저 손댈 것" 을 눈에 띄게 한다.
- *
- * 5 는 topK(3) + 2 다. 계약이 topK 를 바꿀 수 있게 되어 있으므로
- * (meta.topK), 나중에는 이 값도 topK 에서 파생시키는 편이 낫다.
+ * TOP3 는 완전 실패라 red, TOP1_ONLY 는 Top-3 안엔 있어 "먼저 손댈" 후보라 amber,
+ * NONE(성공)은 **중립색**이다. 성공에 초록을 주면 표가 초록으로 뒤덮여 정작
+ * 눈에 띄어야 할 실패가 묻힌다. 성공은 조용해야 한다.
  */
-const NEAR_MISS_MAX_RANK = 5;
-
-function isNearMiss(expectedRank: number | null | undefined): boolean {
-  return (
-    typeof expectedRank === "number" &&
-    expectedRank > VISIBLE_COUNT &&
-    expectedRank <= NEAR_MISS_MAX_RANK
-  );
-}
-
-export type FailureTableProps = {
-  /** top3Hit=false 인 문항들. 호출부가 걸러서 넘긴다. */
-  failures: QuestionResult[];
-  /** 전체 실패 건수. 표에 보이는 수가 아니라 summary.top3FailCount 다. */
-  totalFailCount: number;
+const SCOPE_BADGE: Record<FailureScope, { label: string; className: string }> = {
+  TOP3: { label: "Top-3 실패", className: styles.scopeTop3 },
+  TOP1_ONLY: { label: "Top-1 실패", className: styles.scopeTop1 },
+  NONE: { label: "성공", className: styles.scopeNone },
 };
 
-export default function FailureTable({ failures, totalFailCount }: FailureTableProps) {
-  if (failures.length === 0) {
+/** 실패 구분 필터 칩의 순서·라벨. 정렬 방향(실패 먼저)과 같은 순서로 둔다. */
+const SCOPE_CHIPS: { value: ScopeFilter; label: string }[] = [
+  { value: "ALL", label: "전체" },
+  { value: "TOP3", label: "Top-3 실패" },
+  { value: "TOP1_ONLY", label: "Top-1 실패" },
+  { value: "NONE", label: "성공" },
+];
+
+export type FailureTableProps = {
+  /** 문항 100개 전체(성공 포함). 계약 순서 그대로 넘겨받는다. */
+  questions: QuestionResult[];
+  /** 백엔드가 확정한 요약. 상단 건수는 이 값만 쓴다 — 여기서 다시 세지 않는다. */
+  summary: EvaluationSummary;
+};
+
+export default function FailureTable({ questions, summary }: FailureTableProps) {
+  const [scope, setScope] = useState<ScopeFilter>("ALL");
+  const [category, setCategory] = useState<CategoryFilter>("ALL");
+  const [expanded, setExpanded] = useState(false);
+
+  if (questions.length === 0) {
     return (
       <div className={styles.empty}>
-        <p className={styles.emptyTitle}>실패한 문항이 없습니다</p>
-        <p className={styles.emptyBody}>
-          모든 질문이 Top-3 안에서 기대 쿼리를 찾았습니다. 설명을 이대로 유지하세요.
-        </p>
+        <p className={styles.emptyTitle}>표시할 문항이 없습니다</p>
+        <p className={styles.emptyBody}>이 평가에는 문항이 담겨 있지 않습니다.</p>
       </div>
     );
   }
 
-  const visible = failures.slice(0, VISIBLE_COUNT);
-  const hidden = Math.max(0, totalFailCount - visible.length);
+  // 메서드가 한 종류뿐이면(SELECT 전용 DAC 등) 뱃지가 정보를 주지 못한다
+  // (open-questions #50). 필터와 무관하게 전체 기준으로 한 번만 판단해,
+  // 필터를 바꿔도 뱃지 유무가 흔들리지 않게 한다.
+  const allMethods = questions.flatMap((q) => [q.expected, q.top1, ...q.top3]);
+  const showMethod = hasMultipleMethods(allMethods);
 
-  // 화면에 보이는 실패들의 expected + results 를 통틀어 메서드가 1종뿐이면
-  // 뱃지가 정보를 주지 못한다 (open-questions #50). 그럴 땐 경로만 보인다.
-  const shownMethods = visible.flatMap((f) => [
-    f.expected,
-    ...f.top3,
-  ]);
-  const showMethod = hasMultipleMethods(shownMethods);
+  // 원인별 칩에 붙일 건수. 전체 문항 기준(필터와 독립)이라 칩이 흔들리지 않는다.
+  const categoryCounts = new Map<FailureCategory, number>();
+  for (const q of questions) {
+    if (q.failureCategory) {
+      categoryCounts.set(q.failureCategory, (categoryCounts.get(q.failureCategory) ?? 0) + 1);
+    }
+  }
+  // enum 정의 순서를 따르되 실제 등장한 원인만 칩으로 만든다.
+  const presentCategories = (
+    Object.keys(failureCategoryLabel) as FailureCategory[]
+  ).filter((c) => categoryCounts.has(c));
+
+  // 두 필터는 AND 로 겹친다. 계약 순서를 보존하려 filter 만 쓴다(정렬 안 함).
+  const filtered = questions.filter((q) => {
+    if (scope !== "ALL" && q.failureScope !== scope) {
+      return false;
+    }
+    if (category !== "ALL" && q.failureCategory !== category) {
+      return false;
+    }
+    return true;
+  });
+
+  const visible = expanded ? filtered : filtered.slice(0, VISIBLE_COUNT);
+  const hidden = filtered.length - visible.length;
+  const hasMore = filtered.length > VISIBLE_COUNT;
 
   return (
     <div className={styles.root}>
-      {/*
-        display 를 카드형으로 바꾸면 브라우저가 표 시맨틱을 잃어버린다.
-        역할을 명시해두면 좁은 화면에서도 스크린 리더가 표로 읽는다.
-      */}
-      <table className={styles.table} role="table">
-        <caption className="srOnly">
-          실패한 문항 목록. 전체 {totalFailCount}건 중 {visible.length}건 표시.
-        </caption>
-        <thead role="rowgroup">
-          <tr role="row">
-            <th role="columnheader" scope="col" className={styles.colQuestion}>
-              질문
-            </th>
-            <th role="columnheader" scope="col" className={styles.colExpected}>
-              기대 쿼리
-            </th>
-            <th role="columnheader" scope="col" className={styles.colResults}>
-              Top-3 검색 결과
-            </th>
-            <th role="columnheader" scope="col" className={styles.colHit}>
-              Hit 여부
-            </th>
-            <th role="columnheader" scope="col" className={styles.colCategory}>
-              실패 구분
-            </th>
-            <th role="columnheader" scope="col" className={styles.colReason}>
-              추정 원인
-            </th>
-          </tr>
-        </thead>
-        <tbody role="rowgroup">
-          {visible.map((failure) => (
-            <Row key={failure.no} failure={failure} showMethod={showMethod} />
-          ))}
-        </tbody>
-      </table>
+      {/* 상단 요약 — summary prop 그대로. 여기서 questions 를 세지 않는다. */}
+      <p className={styles.summaryLine}>
+        전체 <span className="tabular">{summary.totalQuestions}</span>문항 중{" "}
+        <span className={styles.summaryFail}>
+          Top-3 실패 <span className="tabular">{summary.top3FailCount}</span>건
+        </span>
+        <span className={styles.summarySep} aria-hidden="true">
+          ·
+        </span>
+        <span className={styles.summaryWarn}>
+          Top-1 실패 <span className="tabular">{summary.top1FailCount}</span>건
+        </span>
+      </p>
 
-      <div className={styles.footer}>
-        <button
-          type="button"
-          className={styles.moreButton}
-          disabled
-          title="필터·정렬과 함께 구현 예정"
-        >
-          실패 {totalFailCount}건 전체 보기
-        </button>
-        {hidden > 0 && (
-          <span className={styles.footerNote}>
-            {visible.length}건 표시 중 · {hidden}건 더 있음
-          </span>
+      {/* 필터 — 클라이언트 상태로만. URL 파라미터는 아직 쓰지 않는다. */}
+      <div className={styles.filters}>
+        <div className={styles.filterGroup} role="group" aria-label="실패 구분 필터">
+          {SCOPE_CHIPS.map((chip) => {
+            const count =
+              chip.value === "ALL"
+                ? questions.length
+                : questions.filter((q) => q.failureScope === chip.value).length;
+            return (
+              <button
+                key={chip.value}
+                type="button"
+                className={`${styles.chip} ${scope === chip.value ? styles.chipActive : ""}`}
+                aria-pressed={scope === chip.value}
+                onClick={() => setScope(chip.value)}
+              >
+                {chip.label}
+                <span className={`${styles.chipCount} tabular`}>{count}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {presentCategories.length > 0 && (
+          <div className={styles.filterGroup} role="group" aria-label="원인별 필터">
+            <button
+              type="button"
+              className={`${styles.chip} ${category === "ALL" ? styles.chipActive : ""}`}
+              aria-pressed={category === "ALL"}
+              onClick={() => setCategory("ALL")}
+            >
+              전체 원인
+            </button>
+            {presentCategories.map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                className={`${styles.chip} ${category === cat ? styles.chipActive : ""}`}
+                aria-pressed={category === cat}
+                onClick={() => setCategory(cat)}
+              >
+                {failureCategoryLabel[cat]}
+                <span className={`${styles.chipCount} tabular`}>{categoryCounts.get(cat)}</span>
+              </button>
+            ))}
+          </div>
         )}
       </div>
+
+      {/*
+        펼치면 표 영역에 스크롤을 걸고 thead 를 sticky 로 고정한다.
+        100행을 한 번에 문서 흐름에 풀면 스크롤 중 헤더가 사라져 어느 열인지
+        놓친다. 가상 스크롤은 쓰지 않는다 — 100행은 브라우저가 감당한다.
+
+        display 를 카드형으로 바꾸면 표 시맨틱을 잃으므로 role 을 명시해둔다.
+      */}
+      <div className={`${styles.scrollArea} ${expanded ? styles.scrollAreaScroll : ""}`}>
+        <table className={styles.table} role="table">
+          <caption className="srOnly">
+            문항별 평가 결과. 전체 {summary.totalQuestions}문항 중 {filtered.length}건 표시.
+          </caption>
+          <thead role="rowgroup">
+            <tr role="row">
+              <th role="columnheader" scope="col" className={styles.colNo}>
+                No
+              </th>
+              <th role="columnheader" scope="col" className={styles.colQuestion}>
+                질문
+              </th>
+              <th role="columnheader" scope="col" className={styles.colExpected}>
+                기대 쿼리
+              </th>
+              <th role="columnheader" scope="col" className={styles.colTop1}>
+                Top-1 검색 결과
+              </th>
+              <th role="columnheader" scope="col" className={styles.colTop3}>
+                Top-3 검색 결과
+              </th>
+              <th role="columnheader" scope="col" className={styles.colHit}>
+                Hit 여부
+              </th>
+              <th role="columnheader" scope="col" className={styles.colScope}>
+                실패 구분
+              </th>
+              <th role="columnheader" scope="col" className={styles.colReason}>
+                추정 원인
+              </th>
+            </tr>
+          </thead>
+          <tbody role="rowgroup">
+            {visible.length === 0 ? (
+              <tr role="row">
+                <td role="cell" colSpan={8} className={styles.noMatch}>
+                  선택한 필터에 해당하는 문항이 없습니다.
+                </td>
+              </tr>
+            ) : (
+              visible.map((q) => <Row key={q.no} question={q} showMethod={showMethod} />)
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {(hasMore || expanded) && (
+        <div className={styles.footer}>
+          <button
+            type="button"
+            className={styles.moreButton}
+            aria-expanded={expanded}
+            onClick={() => setExpanded((v) => !v)}
+          >
+            {expanded ? "접기" : `전체 ${filtered.length}건 보기`}
+          </button>
+          {!expanded && (
+            <span className={styles.footerNote}>
+              {visible.length}건 표시 중 · {hidden}건 더 있음
+            </span>
+          )}
+        </div>
+      )}
     </div>
   );
 }
 
-function Row({ failure, showMethod }: { failure: QuestionResult; showMethod: boolean }) {
-  const near = isNearMiss(failure.expectedRank);
+function Row({ question, showMethod }: { question: QuestionResult; showMethod: boolean }) {
+  const scope = SCOPE_BADGE[question.failureScope];
 
   return (
     <tr role="row" className={styles.row}>
+      <td role="cell" data-label="No" className={styles.cellNo}>
+        <span className="tabular">{question.no}</span>
+      </td>
+
       <td role="cell" data-label="질문" className={styles.cellQuestion}>
-        <p className={styles.question}>&ldquo;{failure.question}&rdquo;</p>
+        <p className={styles.question}>&ldquo;{question.question}&rdquo;</p>
       </td>
 
       <td role="cell" data-label="기대 쿼리" className={styles.cellExpected}>
-        <Endpoint api={failure.expected} showMethod={showMethod} />
+        <Endpoint api={question.expected} showMethod={showMethod} />
       </td>
 
-      <td role="cell" data-label="Top-3 검색 결과" className={styles.cellResults}>
+      <td role="cell" data-label="Top-1 검색 결과" className={styles.cellTop1}>
+        <TopOne result={question.top1} hit={question.top1Hit} showMethod={showMethod} />
+      </td>
+
+      <td role="cell" data-label="Top-3 검색 결과" className={styles.cellTop3}>
         <ol className={styles.results}>
-          {failure.top3.map((result) => (
+          {question.top3.map((result) => (
             <ResultRow key={result.rank} result={result} showMethod={showMethod} />
           ))}
         </ol>
         <p className={styles.expectedRank}>
-          {failure.expectedRank == null
+          {question.expectedRank == null
             ? "기대 쿼리: 순위 밖"
-            : `${failure.expectedRank}위 (기대 쿼리 위치)`}
+            : `${question.expectedRank}위 (기대 쿼리 위치)`}
         </p>
       </td>
 
       <td role="cell" data-label="Hit 여부" className={styles.cellHit}>
-        {/* 이 표는 top3Hit=false 만 받는다. 항상 MISS 다. */}
-        <span className={`${styles.pill} ${near ? styles.nearMiss : styles.miss}`}>
-          {near ? "MISS (근접)" : "MISS"}
-        </span>
+        {/* 두 지표를 한 셀에. 색(초록/빨강)에만 기대지 않고 아이콘 모양(✓/✗)과
+            "Top-1/Top-3" 텍스트 + 스크린리더용 성공/실패로도 읽히게 한다. */}
+        <div className={styles.hit}>
+          <HitFlag label="Top-1" hit={question.top1Hit} />
+          <HitFlag label="Top-3" hit={question.top3Hit} />
+        </div>
       </td>
 
-      <td role="cell" data-label="실패 구분" className={styles.cellCategory}>
-        <span className={styles.category}>
-          {/* 실패 문항이라 failureCategory 는 non-null 이지만 타입은 nullable 이다. */}
-          {failure.failureCategory ? failureCategoryLabel[failure.failureCategory] : "—"}
-        </span>
+      <td role="cell" data-label="실패 구분" className={styles.cellScope}>
+        <span className={`${styles.scope} ${scope.className}`}>{scope.label}</span>
       </td>
 
       <td role="cell" data-label="추정 원인" className={styles.cellReason}>
-        <p className={styles.reason}>{failure.reason}</p>
+        {question.reason ? (
+          <p className={styles.reason}>{question.reason}</p>
+        ) : (
+          // 성공 문항은 원인이 없다. 빈 셀 대신 대시를 둬 "없음" 을 명시한다.
+          <span className={styles.reasonEmpty} aria-label="원인 없음">
+            —
+          </span>
+        )}
       </td>
     </tr>
+  );
+}
+
+function HitFlag({ label, hit }: { label: string; hit: boolean }) {
+  const Icon = hit ? Check : X;
+  return (
+    <span className={`${styles.hitFlag} ${hit ? styles.hitYes : styles.hitNo}`}>
+      <Icon size={13} strokeWidth={2.75} aria-hidden="true" />
+      <span className={styles.hitLabel}>{label}</span>
+      <span className="srOnly">{hit ? "성공" : "실패"}</span>
+    </span>
   );
 }
 
@@ -178,8 +332,35 @@ function Endpoint({ api, showMethod }: { api: ExpectedApi; showMethod: boolean }
   return (
     <span className={styles.endpoint}>
       {showMethod && <MethodBadge method={api.method} />}
-      <code className={`${styles.path} tabular`}>{api.path}</code>
+      <code className={`${styles.path} pathText tabular`} title={api.path}>
+        {api.path}
+      </code>
     </span>
+  );
+}
+
+function TopOne({
+  result,
+  hit,
+  showMethod,
+}: {
+  result: TopResult;
+  hit: boolean;
+  showMethod: boolean;
+}) {
+  return (
+    <div className={styles.topOne}>
+      <span className={styles.endpoint}>
+        {showMethod && <MethodBadge method={result.method} />}
+        <code className={`${styles.path} pathText tabular`} title={result.path}>
+          {result.path}
+        </code>
+      </span>
+      <span className={`${styles.score} ${styles.topOneScore} tabular`}>
+        {result.score.toFixed(3)}
+        {hit && <span className="srOnly"> (기대 쿼리 일치)</span>}
+      </span>
+    </div>
   );
 }
 
@@ -191,7 +372,9 @@ function ResultRow({ result, showMethod }: { result: SearchResult; showMethod: b
       </span>
       <span className="srOnly">{result.rank}위</span>
       {showMethod && <MethodBadge method={result.method} />}
-      <code className={`${styles.path} tabular`}>{result.path}</code>
+      <code className={`${styles.path} pathText tabular`} title={result.path}>
+        {result.path}
+      </code>
       <span className={`${styles.score} tabular`}>{result.score.toFixed(3)}</span>
     </li>
   );

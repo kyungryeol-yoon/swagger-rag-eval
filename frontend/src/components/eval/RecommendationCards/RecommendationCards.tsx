@@ -21,10 +21,16 @@ const formatPercent = (value: number) => value.toFixed(1);
 
 export type RecommendationCardsProps = {
   recommendations: Recommendation[];
+  /**
+   * "grid"(기본): 3열 그리드. 전체 폭에 놓일 때.
+   * "stack": 1열 세로 스택. 좁은 사이드 컬럼에 놓일 때. 카드 내부 구조는 그대로다.
+   */
+  layout?: "grid" | "stack";
 };
 
 export default function RecommendationCards({
   recommendations,
+  layout = "grid",
 }: RecommendationCardsProps) {
   if (recommendations.length === 0) {
     return null;
@@ -37,7 +43,7 @@ export default function RecommendationCards({
         <span className={styles.caption}>실패 원인 기반 자동 분석</span>
       </header>
 
-      <ul className={styles.grid}>
+      <ul className={`${styles.grid} ${layout === "stack" ? styles.stack : ""}`}>
         {recommendations.map((item) => (
           <Card key={item.order} item={item} />
         ))}

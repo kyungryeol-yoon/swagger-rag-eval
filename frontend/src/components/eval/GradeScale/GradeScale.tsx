@@ -50,9 +50,21 @@ export type GradeScaleProps = {
   grade: Grade;
   /** 반원의 지름(px). */
   size?: number;
+  /**
+   * 우측 구간 범례를 그릴지. 기본 true.
+   * 두 지표를 나란히 놓고 범례를 한 표로 합칠 때 false 로 끈다 —
+   * 게이지마다 범례가 반복되면 화면이 지저분해진다.
+   */
+  showLegend?: boolean;
 };
 
-export default function GradeScale({ metric, value, grade, size = 180 }: GradeScaleProps) {
+export default function GradeScale({
+  metric,
+  value,
+  grade,
+  size = 180,
+  showLegend = true,
+}: GradeScaleProps) {
   const clamped = clampPercent(value);
   const bands = GRADE_BANDS[metric];
 
@@ -125,28 +137,30 @@ export default function GradeScale({ metric, value, grade, size = 180 }: GradeSc
         </div>
       </div>
 
-      <ul className={styles.legend}>
-        {bands.map((b) => {
-          const current = b.grade === grade;
-          return (
-            <li
-              key={b.grade}
-              className={`${styles.legendRow} ${current ? styles.current : ""}`}
-            >
-              <span
-                className={styles.swatch}
-                style={{ background: gradeColor(b.grade) }}
-                aria-hidden="true"
-              />
-              <span className={styles.legendName}>{gradeLabel[b.grade]}</span>
-              <span className={`${styles.legendRange} tabular`}>
-                {formatBandRange(b)}
-              </span>
-              {current && <span className={styles.badge}>현재</span>}
-            </li>
-          );
-        })}
-      </ul>
+      {showLegend && (
+        <ul className={styles.legend}>
+          {bands.map((b) => {
+            const current = b.grade === grade;
+            return (
+              <li
+                key={b.grade}
+                className={`${styles.legendRow} ${current ? styles.current : ""}`}
+              >
+                <span
+                  className={styles.swatch}
+                  style={{ background: gradeColor(b.grade) }}
+                  aria-hidden="true"
+                />
+                <span className={styles.legendName}>{gradeLabel[b.grade]}</span>
+                <span className={`${styles.legendRange} tabular`}>
+                  {formatBandRange(b)}
+                </span>
+                {current && <span className={styles.badge}>현재</span>}
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 }

@@ -175,6 +175,55 @@ a {
   font-variant-numeric: tabular-nums;
 }
 
+/* 경로 표기 전용. 줄바꿈으로 세로로 쪼개지 않고 **한 줄**을 유지한다.
+   폭이 모자라면 말줄임(…)으로 자르고, 전체 경로는 title 속성으로 hover 확인.
+   flex 안에서도 줄어들도록 min-width:0. (예전 '/' 줄바꿈 방식은 가독성을 해쳐 폐기.) */
+.pathText {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --------------------------------------------------------------------------
+   카드 격자 규격 — 모든 카드가 같은 규격을 따른다
+   -------------------------------------------------------------------------- */
+
+/* 카드 껍데기. padding / radius / 배경 / 테두리를 한곳에서 정의해
+   페이지·컴포넌트가 같은 규격을 쓰게 한다. 행/열 gap 은 --space-4 로 통일. */
+.card {
+  padding: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+/* 카드 제목 줄. 제목(좌) + 캡션(우) 한 줄. 높이를 고정해 같은 행 카드끼리
+   제목 baseline 이 맞는다. */
+.cardHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 20px;
+  margin-bottom: var(--space-4);
+}
+
+.cardHead h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.cardHead .cardCaption {
+  color: var(--text-mute);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
 /* 화면에는 안 보이지만 스크린 리더는 읽는 텍스트. */
 .srOnly {
   position: absolute;
