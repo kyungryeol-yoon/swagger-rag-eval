@@ -88,11 +88,18 @@ export type QuestionTypeChartProps = {
   questionTypes: QuestionTypeStat[];
   /** 전체 Top-3 인식률. 막대 차트의 기준선이 된다. */
   overallTop3Accuracy: number;
+  /**
+   * 어느 부분을 그릴지. 계산 로직은 그대로 두고 렌더만 나눈다.
+   * "all"(기본): 도넛+범례 | 막대. "distribution": 도넛+범례만.
+   * "bars": 유형별 인식률 막대만. 도넛과 막대를 다른 카드로 떼어 놓을 때 쓴다.
+   */
+  show?: "all" | "distribution" | "bars";
 };
 
 export default function QuestionTypeChart({
   questionTypes,
   overallTop3Accuracy,
+  show = "all",
 }: QuestionTypeChartProps) {
   const segments = toDonutSegments(questionTypes);
   const total = questionTypes.reduce((sum, item) => sum + item.count, 0);
@@ -121,6 +128,7 @@ export default function QuestionTypeChart({
           있으므로, 2단 그리드는 .root 가 아니라 이 안쪽 요소에 둔다. */}
       <div className={styles.grid}>
         {/* --- 분포: 도넛 + 범례 --- */}
+        {show !== "bars" && (
         <section className={styles.distribution}>
         <h3 className={styles.heading}>문항 유형 분포</h3>
 
@@ -190,8 +198,10 @@ export default function QuestionTypeChart({
           </table>
         </div>
       </section>
+        )}
 
       {/* --- 유형별 인식률 막대 --- */}
+      {show !== "distribution" && (
       <section className={styles.accuracy}>
         <h3 className={styles.heading}>
           유형별 Top-3 인식률
@@ -232,6 +242,7 @@ export default function QuestionTypeChart({
           </div>
         </div>
       </section>
+        )}
       </div>
     </div>
   );

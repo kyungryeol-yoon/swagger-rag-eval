@@ -143,27 +143,25 @@
 }
 
 /* 컬럼 폭 — table-layout: fixed 이므로 여기 값이 그대로 강제된다.
-   전체 폭을 받았을 때 경로가 대부분 한 줄에 들어가도록 배분한다. */
+   7컬럼(Top-1 검색 결과 제거: 1위가 곧 Top-1 이라 중복). 2/3 폭에서도 경로가
+   한 줄에 들어가도록 배분한다. */
 .colNo {
-  width: 48px;
+  width: 44px;
 }
 .colQuestion {
   width: 22%;
 }
 .colExpected {
-  width: 15%;
-}
-.colTop1 {
-  width: 15%;
+  width: 13%;
 }
 .colTop3 {
-  width: 22%;
+  width: 24%;
 }
 .colHit {
-  width: 90px;
+  width: 82px;
 }
 .colScope {
-  width: 100px;
+  width: 90px;
 }
 .colReason {
   width: auto;
@@ -224,18 +222,6 @@
   min-width: 0;
   color: var(--text-dim);
   font-size: 12px;
-}
-
-/* --- Top-1 검색 결과 ----------------------------------------------------- */
-
-.topOne {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.topOneScore {
-  margin-left: 0;
 }
 
 /* --- Top-3 검색 결과 ----------------------------------------------------- */
@@ -441,13 +427,8 @@
 
 /* --- 반응형 -------------------------------------------------------------- */
 
-/* 1280 이하: "추정 원인" 을 접는다. 가장 길고, 실패 구분이 요약을 준다. */
-@media (max-width: 1280px) {
-  .colReason,
-  .cellReason {
-    display: none;
-  }
-}
+/* 추정 원인은 2/3 폭에서도 유지한다(담당자 확정 컬럼). 카드 모드(1024↓)에서만
+   data-label 로 접힌다 — 아래 카드 모드 규칙 참고. */
 
 /* 1024 이하: 표를 카드로 바꾼다.
    가로 스크롤로 버티면 한 행을 읽는 데 좌우로 왕복해야 한다. */

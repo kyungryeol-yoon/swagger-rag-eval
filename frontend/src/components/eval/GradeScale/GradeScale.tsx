@@ -29,7 +29,7 @@ import styles from "./GradeScale.module.css";
 /** 구간 사이 간격(도). */
 const GAP_DEGREES = 1.5;
 
-/** 지름 대비 호 두께. */
+/** 지름 대비 호 두께. 기본값. 호출부가 strokeRatio 로 더 굵게 줄 수 있다. */
 const STROKE_RATIO = 0.075;
 
 /** 지표별 라벨 접두사. Top-1 은 "정확도", Top-3 은 "인식률". */
@@ -50,6 +50,8 @@ export type GradeScaleProps = {
   grade: Grade;
   /** 반원의 지름(px). */
   size?: number;
+  /** 지름 대비 호 두께. 기본 0.075. 크게 주면 게이지가 더 굵어진다. */
+  strokeRatio?: number;
   /**
    * 우측 구간 범례를 그릴지. 기본 true.
    * 두 지표를 나란히 놓고 범례를 한 표로 합칠 때 false 로 끈다 —
@@ -63,12 +65,13 @@ export default function GradeScale({
   value,
   grade,
   size = 180,
+  strokeRatio = STROKE_RATIO,
   showLegend = true,
 }: GradeScaleProps) {
   const clamped = clampPercent(value);
   const bands = GRADE_BANDS[metric];
 
-  const stroke = size * STROKE_RATIO;
+  const stroke = size * strokeRatio;
   const radius = size / 2 - stroke / 2;
   const cx = size / 2;
   const cy = size / 2;

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import ActionPanel from "@/components/eval/ActionPanel/ActionPanel";
-import AppSummaryCard from "@/components/eval/AppSummaryCard/AppSummaryCard";
+import AppInfoCard from "@/components/eval/AppInfoCard/AppInfoCard";
 import FailureTable from "@/components/eval/FailureTable/FailureTable";
 import GaugeRing from "@/components/eval/GaugeRing/GaugeRing";
 import GradeScale from "@/components/eval/GradeScale/GradeScale";
@@ -147,9 +147,9 @@ export default async function EvaluationPage({
         </dl>
       </header>
 
-      {/* 행1: 앱 정보(1fr) + 전체 요약(3fr: 게이지 + 카드 4장 한 줄) */}
+      {/* 행1: 평가 대상 정보(고정 ~300px) + 전체 요약(게이지 + 카드 4장 한 줄) */}
       <section className={styles.overview} aria-label="요약">
-        <AppSummaryCard target={report.target} />
+        <AppInfoCard target={report.target} queries={report.queries} />
 
         <div className={`card ${styles.summaryBox}`}>
           <div className={styles.gaugeCol}>
@@ -194,8 +194,8 @@ export default async function EvaluationPage({
         </div>
       </section>
 
-      {/* 행2: 평가 기준(1fr) + 문항 유형(1.4fr) + 권장 조치(1fr). 높이 동일(stretch). */}
-      <div className={styles.rowThree}>
+      {/* 행2: 평가 기준(1fr) + 문항 유형 분포(1fr, 도넛+범례만). 좌우 동일 높이. */}
+      <div className={styles.rowTwo}>
         <section className={`card ${styles.grades}`} aria-label="지표별 등급">
           <div className="cardHead">
             <h2>평가 기준</h2>
@@ -210,6 +210,7 @@ export default async function EvaluationPage({
                 value={report.summary.top3Accuracy}
                 grade={report.summary.top3Grade}
                 size={200}
+                strokeRatio={0.11}
                 showLegend={false}
               />
             </div>
@@ -257,33 +258,45 @@ export default async function EvaluationPage({
           </div>
         </section>
 
-        {/* 질문 유형 분포 — 자기 박스. 이 폭에서는 도넛+표 위 / 막대 아래로 쌓인다. */}
+        {/* 문항 유형 분포 — 도넛+범례만. 막대는 행3 좌상단으로 떼어 놓는다. */}
         <QuestionTypeChart
           questionTypes={report.questionTypes}
           overallTop3Accuracy={report.summary.top3Accuracy}
+          show="distribution"
         />
-
-        {/* 권장 조치 — 세로 스택 3장. 유형 분포 카드와 높이를 맞춘다. */}
-        {report.recommendations.length > 0 && (
-          <div className={`card ${styles.recoBox}`}>
-            <RecommendationCards recommendations={report.recommendations} layout="stack" />
-          </div>
-        )}
       </div>
 
-      {/* 행3: 쿼리별 설명 품질 (전체 폭) */}
+      {/* 행2.5: 쿼리별 설명 품질 (전체 폭) */}
       <section aria-label="쿼리별 설명 품질">
         <QueryQualityTable queries={report.queries} />
       </section>
 
-      {/* 행4: 문항별 결과 100문항 (전체 폭).
-          8컬럼이 전체 폭을 받아 경로가 세로로 쪼개지지 않고 한 줄로 들어간다 (Phase 7e). */}
-      <section aria-label="문항별 결과">
-        <FailureTable questions={report.questions} summary={report.summary} />
-      </section>
+      {/* 행3: 좌(2fr) 유형별 막대 + 100문항 표 / 우(1fr) 권장 조치 + 권장 액션.
+          좌우 컬럼의 전체 높이만 같으면 된다 — 우측 마지막 카드가 flex-grow 로 바닥을 맞춘다. */}
+      <div className={styles.rowMain}>
+        <div className={styles.mainLeft}>
+          {/* 유형별 Top-3 인식률 막대 — 도넛과 같은 계산을 공유하되 막대만. */}
+          <QuestionTypeChart
+            questionTypes={report.questionTypes}
+            overallTop3Accuracy={report.summary.top3Accuracy}
+            show="bars"
+          />
 
-      {/* 행5: 권장 액션 (전체 폭, 우측 정렬 버튼) */}
-      <ActionPanel recommendations={report.recommendations} specId={report.target.appId} />
+          <section aria-label="문항별 결과">
+            <FailureTable questions={report.questions} summary={report.summary} />
+          </section>
+        </div>
+
+        <div className={styles.mainRight}>
+          {report.recommendations.length > 0 && (
+            <div className={`card ${styles.recoBox}`}>
+              <RecommendationCards recommendations={report.recommendations} layout="stack" />
+            </div>
+          )}
+          {/* 권장 액션 — 우 컬럼 최하단. flex-grow 로 좌측 표 높이에 바닥을 맞춘다. */}
+          <ActionPanel recommendations={report.recommendations} specId={report.target.appId} />
+        </div>
+      </div>
     </main>
   );
 }

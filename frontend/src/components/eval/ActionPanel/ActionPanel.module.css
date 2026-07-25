@@ -49,12 +49,13 @@
 
 /* --- 버튼 --------------------------------------------------------------- */
 
-/* 시안대로 우측 정렬. */
+/* 우측 정렬. margin-top:auto 로, 카드가 flex-grow 로 늘어나면 버튼이 바닥에 붙는다
+   (우 컬럼이 좌측 표보다 짧을 때 이 카드가 남는 높이를 채운다). */
 .actions {
   display: flex;
   justify-content: flex-end;
   gap: var(--space-3);
-  margin-top: var(--space-2);
+  margin-top: auto;
 }
 
 .secondary,
@@ -112,9 +113,9 @@
 
 /* --- 반응형 -------------------------------------------------------------- */
 
-/* 좁은 폭(사이드 컬럼 등)에서는 버튼을 세로 스택 + 전체 폭으로.
+/* 좁은 폭(우측 1/3 컬럼 등)에서는 버튼을 세로 스택 + 전체 폭으로.
    자기 폭(viewport 아님)에 반응하므로 전체 폭에 놓이면 그대로 가로 배치다. */
-@container (max-width: 420px) {
+@container (max-width: 520px) {
   .actions {
     flex-direction: column;
     align-items: stretch;

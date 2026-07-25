@@ -33,12 +33,10 @@
   list-style: none;
 }
 
-/* layout="stack" — 1열 세로. 옆 유형 분포 카드와 높이를 맞추려고, 남는 세로
-   공간을 세 카드가 1fr 로 균등하게 나눠 갖는다(내부가 텅 비지 않게). */
+/* layout="stack" — 1열 세로. 좁은 컬럼에 3장을 자연 높이로 쌓는다.
+   (컬럼 바닥 맞추기는 아래 권장 액션 카드가 flex-grow 로 맡는다.) */
 .stack {
-  flex: 1;
   grid-template-columns: minmax(0, 1fr);
-  grid-auto-rows: 1fr;
 }
 
 @media (max-width: 1024px) {

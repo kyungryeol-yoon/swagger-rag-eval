@@ -1,7 +1,7 @@
 /* 1440 기준. 그 이상에서는 좌우 여백만 늘어난다.
    행 사이 gap 은 --space-4 로 통일(카드 격자 규격). */
 .page {
-  max-width: 1440px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: var(--space-6) var(--space-6) var(--space-8);
   display: flex;
@@ -91,7 +91,7 @@
 
 .overview {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+  grid-template-columns: 300px minmax(0, 1fr);
   gap: var(--space-4);
   align-items: stretch;
 }
@@ -150,13 +150,36 @@
   min-width: 0;
 }
 
-/* --- 행2: 평가 기준(1fr) + 문항 유형(1.4fr) + 권장 조치(1fr) ------------ */
+/* --- 행2: 평가 기준(1fr) + 문항 유형 분포(1fr) ------------------------- */
 
-.rowThree {
+.rowTwo {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: var(--space-4);
   align-items: stretch;
+}
+
+/* --- 행3: 좌(2fr) 막대+표 / 우(1fr) 권장 조치+액션 --------------------- */
+
+.rowMain {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: stretch;
+}
+
+/* 각 컬럼은 세로 흐름, gap --space-4. */
+.mainLeft,
+.mainRight {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+/* 우 컬럼 마지막 카드(권장 액션)가 남는 높이를 채워 좌측 표와 바닥을 맞춘다. */
+.mainRight > :last-child {
+  flex: 1;
 }
 
 /* 박스는 전역 .card. 세로 레이아웃만 여기서. */
@@ -165,20 +188,27 @@
   flex-direction: column;
 }
 
-/* 게이지 + 등급 구간표를 묶어 세로 가운데. 카드 높이를 채운다. */
+/* 게이지(좌) + 등급 구간표(우)를 한 줄로 나란히, 세로 가운데 정렬. */
 .gradesBody {
   flex: 1;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: var(--space-5);
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-6);
 }
 
 .gaugeSingle {
+  flex: none;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--space-2);
+}
+
+/* 표는 게이지 오른쪽 남는 폭을 채운다. */
+.gradesBody .criteriaTable {
+  flex: 1;
+  min-width: 0;
 }
 
 .gaugeSingleCaption {
@@ -249,19 +279,24 @@
 
 /* --- 권장 조치 (세로 스택) ---------------------------------------------- */
 
-/* 전역 .card 가 박스. 내부 RecommendationCards 가 카드 높이를 꽉 채우도록
-   flex 로 늘린다(세 카드가 유형 분포 카드 높이에 맞춰 벌어진다). */
+/* 전역 .card 가 박스. 3장은 자연 높이로 쌓이고, 컬럼 바닥 맞추기는 아래
+   권장 액션 카드의 flex-grow 가 맡는다. */
 .recoBox {
-  display: flex;
-  flex-direction: column;
-}
-
-.recoBox > * {
-  flex: 1;
-  min-height: 0;
+  min-width: 0;
 }
 
 /* --- 반응형 -------------------------------------------------------------- */
+
+/* 1280 이하: 행3 을 1열로(표 위, 권장 아래). 우 컬럼 flex-grow 도 푼다. */
+@media (max-width: 1280px) {
+  .rowMain {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mainRight > :last-child {
+    flex: none;
+  }
+}
 
 /* 1024 이하: 행1·행2 를 1열로 쌓는다. */
 @media (max-width: 1024px) {
@@ -269,7 +304,7 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .rowThree {
+  .rowTwo {
     grid-template-columns: minmax(0, 1fr);
   }
 }
@@ -283,5 +318,10 @@
   .summaryBox {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  /* 좁으면 평가 기준도 게이지 위 / 표 아래로 쌓는다. */
+  .gradesBody {
+    flex-direction: column;
   }
 }

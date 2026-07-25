@@ -12,7 +12,6 @@ import type {
   FailureScope,
   QuestionResult,
   SearchResult,
-  TopResult,
 } from "@/lib/types";
 
 import styles from "./FailureTable.module.css";
@@ -204,9 +203,6 @@ export default function FailureTable({ questions, summary }: FailureTableProps) 
               <th role="columnheader" scope="col" className={styles.colExpected}>
                 기대 쿼리
               </th>
-              <th role="columnheader" scope="col" className={styles.colTop1}>
-                Top-1 검색 결과
-              </th>
               <th role="columnheader" scope="col" className={styles.colTop3}>
                 Top-3 검색 결과
               </th>
@@ -224,7 +220,7 @@ export default function FailureTable({ questions, summary }: FailureTableProps) 
           <tbody role="rowgroup">
             {visible.length === 0 ? (
               <tr role="row">
-                <td role="cell" colSpan={8} className={styles.noMatch}>
+                <td role="cell" colSpan={7} className={styles.noMatch}>
                   선택한 필터에 해당하는 문항이 없습니다.
                 </td>
               </tr>
@@ -271,10 +267,6 @@ function Row({ question, showMethod }: { question: QuestionResult; showMethod: b
 
       <td role="cell" data-label="기대 쿼리" className={styles.cellExpected}>
         <Endpoint api={question.expected} showMethod={showMethod} />
-      </td>
-
-      <td role="cell" data-label="Top-1 검색 결과" className={styles.cellTop1}>
-        <TopOne result={question.top1} hit={question.top1Hit} showMethod={showMethod} />
       </td>
 
       <td role="cell" data-label="Top-3 검색 결과" className={styles.cellTop3}>
@@ -336,31 +328,6 @@ function Endpoint({ api, showMethod }: { api: ExpectedApi; showMethod: boolean }
         {api.path}
       </code>
     </span>
-  );
-}
-
-function TopOne({
-  result,
-  hit,
-  showMethod,
-}: {
-  result: TopResult;
-  hit: boolean;
-  showMethod: boolean;
-}) {
-  return (
-    <div className={styles.topOne}>
-      <span className={styles.endpoint}>
-        {showMethod && <MethodBadge method={result.method} />}
-        <code className={`${styles.path} pathText tabular`} title={result.path}>
-          {result.path}
-        </code>
-      </span>
-      <span className={`${styles.score} ${styles.topOneScore} tabular`}>
-        {result.score.toFixed(3)}
-        {hit && <span className="srOnly"> (기대 쿼리 일치)</span>}
-      </span>
-    </div>
   );
 }
 
