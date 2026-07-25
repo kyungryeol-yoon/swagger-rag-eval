@@ -21,6 +21,9 @@ type Schemas = components["schemas"];
 /** GET /api/v1/evaluations/{trace_id} 의 응답. 대시보드 전체가 이것 하나로 그려진다. */
 export type Evaluation = Schemas["EvaluationReport"];
 
+/** GET /api/v1/evaluations 목록의 한 항목. 목록·최신 리다이렉트용 최소 필드. */
+export type EvaluationListItem = Schemas["EvaluationListItem"];
+
 // --- 구성 요소 -------------------------------------------------------------
 
 /** 평가 대상 DAC 앱. 평가 단위는 쿼리 하나가 아니라 앱 하나다 (contract.md §0). */

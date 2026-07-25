@@ -23,7 +23,7 @@ from app.main import app
 from app.ports.auth import AuthProvider, User
 from app.ports.llm import Embedder, LLMClient
 from app.ports.spec_repository import SpecRepository
-from app.schemas.evaluation import EvaluationReport
+from app.schemas.evaluation import EvaluationListItem, EvaluationReport
 
 client = TestClient(app)
 
@@ -58,7 +58,11 @@ def test_local_adapter_satisfies_the_protocol() -> None:
 
 def test_port_protocols_expose_expected_signatures() -> None:
     """구현이 비어 있는 Port도 시그니처는 고정돼 있어야 한다."""
-    assert set(SpecRepository.__protocol_attrs__) == {"get_evaluation", "get_spec"}
+    assert set(SpecRepository.__protocol_attrs__) == {
+        "list_evaluations",
+        "get_evaluation",
+        "get_spec",
+    }
     assert set(AuthProvider.__protocol_attrs__) == {"get_current_user"}
     assert set(LLMClient.__protocol_attrs__) == {"complete"}
     assert set(Embedder.__protocol_attrs__) == {"embed"}
@@ -95,6 +99,18 @@ class FakeSpecRepository:
     def __init__(self, report: EvaluationReport | None) -> None:
         self._report = report
         self.seen: list[str] = []
+
+    def list_evaluations(self) -> list[EvaluationListItem]:
+        if self._report is None:
+            return []
+        return [
+            EvaluationListItem(
+                trace_id=self._report.trace_id,
+                app_name=self._report.target.app_name,
+                evaluated_at=self._report.evaluated_at,
+                top3_accuracy=self._report.summary.top3_accuracy,
+            )
+        ]
 
     def get_evaluation(self, trace_id: str) -> EvaluationReport | None:
         self.seen.append(trace_id)
@@ -158,6 +174,16 @@ def test_file_repository_reads_the_fixture() -> None:
 def test_file_repository_returns_none_for_missing_evaluation() -> None:
     repository = FileSpecRepository(settings.fixture_dir)
     assert repository.get_evaluation("NOPE") is None
+
+
+def test_file_repository_lists_evaluations_newest_first() -> None:
+    """fixtures 의 eval_*.json 을 요약해 최신순으로 준다."""
+    repository = FileSpecRepository(settings.fixture_dir)
+    items = repository.list_evaluations()
+    trace_ids = [item.trace_id for item in items]
+    assert {"A492", "A311"} <= set(trace_ids)
+    # evaluatedAt 내림차순
+    assert items == sorted(items, key=lambda item: item.evaluated_at, reverse=True)
 
 
 def test_file_repository_reads_the_dumped_openapi_spec() -> None:

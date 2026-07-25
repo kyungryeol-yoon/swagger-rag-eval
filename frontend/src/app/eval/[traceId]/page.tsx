@@ -114,6 +114,26 @@ export default async function EvaluationPage({
             <span className={styles.breadcrumbCurrent}>SWAGGER SEARCH</span>
           </nav>
           <h1 className={styles.title}>RAG 검색 인식률 평가 리포트</h1>
+
+          {/* 어떤 버전의 외부 평가툴 결과인지 추적용(meta.rawSource). 없으면 숨김. */}
+          {report.meta.rawSource && (
+            <p className={styles.rawSource}>
+              <span>
+                평가툴{" "}
+                <span className="tabular">{report.meta.rawSource.toolVersion}</span>
+              </span>
+              <span>
+                프롬프트{" "}
+                <span className="tabular">{report.meta.rawSource.promptVersion}</span>
+              </span>
+              <span>
+                생성{" "}
+                <span className="tabular">
+                  {formatDateTime(report.meta.rawSource.generatedAt)}
+                </span>
+              </span>
+            </p>
+          )}
         </div>
 
         {/* 재현성 메타 한 줄. 항목이 늘면 줄바꿈으로 흡수된다. */}

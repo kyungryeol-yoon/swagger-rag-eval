@@ -11,12 +11,25 @@ from typing import Annotated
 from fastapi import APIRouter, HTTPException, Path, status
 
 from app.api.deps import SpecRepositoryDep
-from app.schemas.evaluation import EvaluationReport
+from app.schemas.evaluation import EvaluationListItem, EvaluationReport
 
 router = APIRouter(prefix="/api/v1/evaluations", tags=["evaluations"])
 
 # trace_id 가 저장소 키로 내려가므로 형태를 강제한다.
 TRACE_ID_PATTERN = r"^[A-Za-z0-9_-]{1,32}$"
+
+
+@router.get(
+    "",
+    response_model=list[EvaluationListItem],
+    summary="평가 목록 조회",
+    description=(
+        "저장된 평가들의 요약 목록을 최신순으로 반환합니다. 목록 화면과 "
+        "'최신 평가로 리다이렉트'에 씁니다. 100문항 전체는 개별 조회로 가져옵니다."
+    ),
+)
+def list_evaluations(repository: SpecRepositoryDep) -> list[EvaluationListItem]:
+    return repository.list_evaluations()
 
 
 @router.get(

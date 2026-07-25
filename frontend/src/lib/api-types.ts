@@ -4,6 +4,26 @@
  */
 
 export interface paths {
+    "/api/v1/evaluations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 평가 목록 조회
+         * @description 저장된 평가들의 요약 목록을 최신순으로 반환합니다. 목록 화면과 '최신 평가로 리다이렉트'에 씁니다. 100문항 전체는 개별 조회로 가져옵니다.
+         */
+        get: operations["list_evaluations_api_v1_evaluations_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/evaluations/{trace_id}": {
         parameters: {
             query?: never;
@@ -75,6 +95,35 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * EvaluationListItem
+         * @description GET /api/v1/evaluations 목록의 한 항목.
+         *
+         *     목록 화면·최신 리다이렉트에 필요한 최소 필드만 담는다. 100문항 전체를
+         *     싣지 않는다 — 목록은 가볍게, 상세는 개별 조회로.
+         */
+        EvaluationListItem: {
+            /**
+             * Traceid
+             * @description 평가 실행의 추적 ID.
+             */
+            traceId: string;
+            /**
+             * Appname
+             * @description 평가 대상 앱 이름.
+             */
+            appName: string;
+            /**
+             * Evaluatedat
+             * @description 평가 실행 시각(ISO 8601 + 타임존). 최신순 정렬 기준.
+             */
+            evaluatedAt: string;
+            /**
+             * Top3Accuracy
+             * @description 대표 지표. 목록에서 앱 상태를 한눈에 보이게 한다.
+             */
+            top3Accuracy: number;
+        };
         /**
          * EvaluationMeta
          * @description 재현성 정보. 같은 조건으로 다시 돌릴 수 있어야 한다.
@@ -560,6 +609,26 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    list_evaluations_api_v1_evaluations_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EvaluationListItem"][];
+                };
+            };
+        };
+    };
     get_evaluation_api_v1_evaluations__trace_id__get: {
         parameters: {
             query?: never;

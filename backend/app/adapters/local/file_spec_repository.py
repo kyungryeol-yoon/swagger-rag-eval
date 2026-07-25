@@ -13,7 +13,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from app.schemas.evaluation import EvaluationReport
+from app.schemas.evaluation import EvaluationListItem, EvaluationReport
 
 # ID가 그대로 파일 경로가 되므로 형태를 강제한다.
 # 라우터에서도 막고 있지만, 저장소는 자기 입력을 스스로 지켜야 한다
@@ -26,6 +26,29 @@ class FileSpecRepository:
 
     def __init__(self, fixture_dir: Path) -> None:
         self._fixture_dir = fixture_dir
+
+    def list_evaluations(self) -> list[EvaluationListItem]:
+        # eval_{trace_id}.json 을 훑어 요약 필드만 뽑는다. 100문항 전체를
+        # model_validate 하지 않는다 — 목록은 가벼워야 한다.
+        items: list[EvaluationListItem] = []
+        for path in self._fixture_dir.glob("eval_*.json"):
+            try:
+                payload: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))
+                items.append(
+                    EvaluationListItem(
+                        trace_id=payload["traceId"],
+                        app_name=payload["target"]["appName"],
+                        evaluated_at=payload["evaluatedAt"],
+                        top3_accuracy=payload["summary"]["top3Accuracy"],
+                    )
+                )
+            except (KeyError, ValueError):
+                # 형식이 깨진 파일 하나가 목록 전체를 막지 않게 건너뛴다.
+                continue
+
+        # 최신순(evaluatedAt 내림차순). ISO 8601 문자열은 사전식 정렬이 곧 시간순이다.
+        items.sort(key=lambda item: item.evaluated_at, reverse=True)
+        return items
 
     def get_evaluation(self, trace_id: str) -> EvaluationReport | None:
         payload = self._read_json(f"eval_{trace_id}", key=trace_id)

@@ -335,6 +335,21 @@ class PreviousEvaluation(ContractModel):
 # ---------------------------------------------------------------------------
 
 
+class EvaluationListItem(ContractModel):
+    """GET /api/v1/evaluations 목록의 한 항목.
+
+    목록 화면·최신 리다이렉트에 필요한 최소 필드만 담는다. 100문항 전체를
+    싣지 않는다 — 목록은 가볍게, 상세는 개별 조회로.
+    """
+
+    trace_id: str = Field(description="평가 실행의 추적 ID.")
+    app_name: str = Field(description="평가 대상 앱 이름.")
+    evaluated_at: str = Field(description="평가 실행 시각(ISO 8601 + 타임존). 최신순 정렬 기준.")
+    top3_accuracy: float = Field(
+        ge=0, le=100, description="대표 지표. 목록에서 앱 상태를 한눈에 보이게 한다."
+    )
+
+
 class EvaluationReport(ContractModel):
     """GET /api/v1/evaluations/{trace_id} 의 응답.
 
