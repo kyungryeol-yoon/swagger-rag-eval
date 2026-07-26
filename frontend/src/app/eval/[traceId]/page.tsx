@@ -9,6 +9,7 @@ import QueryQualityTable from "@/components/eval/QueryQualityTable/QueryQualityT
 import QuestionTypeChart from "@/components/eval/QuestionTypeChart/QuestionTypeChart";
 import RecommendationCards from "@/components/eval/RecommendationCards/RecommendationCards";
 import SummaryCards, { formatDelta } from "@/components/eval/SummaryCards/SummaryCards";
+import ThemeToggle from "@/components/common/ThemeToggle/ThemeToggle";
 import { serverApiBase } from "@/lib/config";
 import { gradeColor, gradeLabel, searchModeLabel } from "@/lib/enumTokens";
 import { GRADE_BANDS, formatBandRange } from "@/lib/gradeBands";
@@ -136,7 +137,8 @@ export default async function EvaluationPage({
           )}
         </div>
 
-        {/* 재현성 메타 한 줄. 항목이 늘면 줄바꿈으로 흡수된다. */}
+        {/* 재현성 메타 한 줄 + 테마 토글. 항목이 늘면 줄바꿈으로 흡수된다. */}
+        <div className={styles.headerRight}>
         <dl className={styles.headerMeta}>
           <div className={styles.metaItem}>
             <dt>평가일</dt>
@@ -165,6 +167,9 @@ export default async function EvaluationPage({
             <dd>{formatQuestionSource(report.meta.questionSource)}</dd>
           </div>
         </dl>
+
+          <ThemeToggle />
+        </div>
       </header>
 
       {/* 행1: 평가 대상 정보(고정 ~300px) + 전체 요약(게이지 + 카드 4장 한 줄) */}

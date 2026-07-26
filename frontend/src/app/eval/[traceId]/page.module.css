@@ -69,6 +69,14 @@
   color: var(--border);
 }
 
+/* 우측 그룹: 재현성 메타(좌) + 테마 토글(우 끝). 좁아지면 아래로 흐른다. */
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+  flex-wrap: wrap;
+}
+
 .headerMeta {
   display: flex;
   flex-wrap: wrap;

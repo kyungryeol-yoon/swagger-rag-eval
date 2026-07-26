@@ -103,6 +103,9 @@
   /* 어두운 배경에서는 그림자가 잘 안 보인다. 경계선을 함께 얹어 카드를 띄운다. */
   --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.32);
 
+  /* 스크롤바·기본 폼 컨트롤을 다크로. 수동 테마일 때는 아래 data-theme 블록이 덮는다. */
+  color-scheme: dark;
+
   /* 카드 accent(SummaryCards) 의 "원색 opacity 배경 + 테두리" 세기.
      다크에서는 은은한 배경 + 중간 테두리. 라이트에서는 흰 배경에 배경이 무너지므로
      배경을 더 옅게, 테두리는 원색 그대로(아래 라이트 블록에서 재정의). */
@@ -132,18 +135,58 @@
 }
 
 /* ==========================================================================
-   라이트 모드 — OS 설정(prefers-color-scheme: light)에 따라 자동 전환
+   라이트 모드 — 3단계(auto / light / dark)
    --------------------------------------------------------------------------
    같은 변수명을 라이트 값으로 재정의만 한다. 컴포넌트는 이미 전부 var(--token)
-   이므로 여기 값만 바꾸면 따라온다. 토글 UI·JS·localStorage 는 쓰지 않는다.
+   이므로 여기 값만 바꾸면 따라온다.
 
    **원색만 재정의하면 의미 토큰(grade/priority/chart-type)은 자동 반영된다** —
    그것들은 var(--red) 처럼 원색을 참조하고, var() 는 사용 시점에 해석되기 때문이다.
+
+   전환 방식(Phase 8a):
+     - 기본(:root) = 다크. 위 블록이 그대로 남는다.
+     - `<html data-theme="light">` = 강제 라이트. `dark` = 강제 다크(기본값이라 값 재정의 불필요).
+     - data-theme 가 없으면(auto) `prefers-color-scheme` 로 OS 를 따른다.
+   data-theme 는 layout.tsx 의 인라인 스크립트가 첫 페인트 전에 얹고(FOUC 방지),
+   ThemeToggle 이 갱신한다. **아래 두 라이트 블록의 값은 항상 동일하게 유지할 것** —
+   하나는 수동(light), 하나는 auto+OS라이트용이며 내용이 갈리면 두 경로가 어긋난다.
    ========================================================================== */
 
+/* (1) 수동 라이트: OS 가 다크여도 이긴다. */
+:root[data-theme="light"] {
+  /* 표면/텍스트 */
+  --bg: #f6f8fc;
+  --surface: #ffffff;
+  --surface-2: #f0f3f9;
+  --border: #dde3ec;
+
+  --text: #0f172a;
+  --text-dim: #475569;
+  --text-mute: #94a3b8;
+
+  /* 강조색 — 다크의 네온을 흰 배경에서 읽히게 채도↓ 명도↓. */
+  --sky: #0284c7;
+  --violet: #7c3aed;
+  --green: #16a34a;
+  --amber: #d97706;
+  --red: #dc2626;
+  --indigo: #4f46e5;
+  --pink: #db2777;
+
+  /* 카드 accent: 흰 배경에선 배경을 더 옅게, 테두리는 원색 그대로(진하게). */
+  --card-accent-bg-alpha: 6%;
+  --card-accent-border-alpha: 100%;
+
+  /* 어두운 그림자는 흰 배경에서 지저분하다. 은은한 회색 그림자로. */
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.06), 0 10px 24px rgb(15 23 42 / 0.08);
+
+  color-scheme: light;
+}
+
+/* (2) auto(설정 안 함): data-theme 가 없을 때만 OS 설정을 따른다.
+   data-theme="dark" 로 강제한 경우엔 이 블록이 매칭되지 않아 기본(다크)이 유지된다. */
 @media (prefers-color-scheme: light) {
-  :root {
-    /* 표면/텍스트 */
+  :root:not([data-theme]) {
     --bg: #f6f8fc;
     --surface: #ffffff;
     --surface-2: #f0f3f9;
@@ -153,7 +196,6 @@
     --text-dim: #475569;
     --text-mute: #94a3b8;
 
-    /* 강조색 — 다크의 네온을 흰 배경에서 읽히게 채도↓ 명도↓. */
     --sky: #0284c7;
     --violet: #7c3aed;
     --green: #16a34a;
@@ -162,12 +204,12 @@
     --indigo: #4f46e5;
     --pink: #db2777;
 
-    /* 카드 accent: 흰 배경에선 배경을 더 옅게, 테두리는 원색 그대로(진하게). */
     --card-accent-bg-alpha: 6%;
     --card-accent-border-alpha: 100%;
 
-    /* 어두운 그림자는 흰 배경에서 지저분하다. 은은한 회색 그림자로. */
     --shadow-card: 0 1px 2px rgb(15 23 42 / 0.06), 0 10px 24px rgb(15 23 42 / 0.08);
+
+    color-scheme: light;
   }
 }
 
@@ -188,9 +230,8 @@ body {
 }
 
 body {
-  /* OS 설정을 따른다. color-scheme 을 지정해야 스크롤바·기본 폼 컨트롤도
-     라이트/다크로 함께 전환된다. */
-  color-scheme: light dark;
+  /* color-scheme(스크롤바·기본 폼 컨트롤 전환)은 :root 에서 테마별로 지정한다.
+     여기서 다시 잡으면 수동 테마가 body 에서 덮여버린다. */
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);

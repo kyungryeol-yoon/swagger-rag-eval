@@ -115,6 +115,12 @@
 | 48 | 사내 브라우저 버전 — `color-mix()` 지원 여부 | `SummaryCards` 가 카드 배경·테두리 투명도에 `color-mix(in srgb, var(--accent) 9%, transparent)` 를 쓴다. Chrome/Edge 111+, Safari 16.2+ 필요. 미지원이면 카드가 색 없이 `--surface` 배경으로 보인다(레이아웃은 안 깨지도록 폴백 선언을 앞에 뒀다). 사내 표준 브라우저가 그보다 낮으면 색 단계마다 토큰을 따로 정의해야 한다 | 확인 필요 | |
 | 40 | 폰트 파일 경로와 `BASE_PATH` 충돌 | `public/` 정적 파일에는 Next 가 basePath 접두사를 붙여주지 않아, 서브패스 배포(#34)면 `/fonts/...` 가 404 가 된다 | **해결 (2026-07-22)** | `public/fonts/` 를 없애고 `src/styles/fonts/` 로 옮겼다. `next/font/local`(`src/app/fonts.ts`)이 번들러를 거치므로 basePath 를 바꿔도 깨지지 않는다. 폰트 파일이 아직 없어 설정은 주석 처리 상태이며, `globals.css` 는 `--font-sans`/`--font-mono` 만 보므로 파일이 오면 두 줄만 고치면 된다 |
 
+## Phase 8(라이트 모드)에서 생긴 것
+
+| # | 항목 | 왜 필요한가 | 상태 | 답변 |
+|---|---|---|---|---|
+| 58 | 런타임 테마 토글에 localStorage 를 써도 되는지 | Phase 8 에서 라이트 모드를 `prefers-color-scheme` 자동 전환으로만 넣고, 수동 토글은 "유저 설정 저장 부담"을 이유로 미뤘다 | **확정 (2026-07-26)** | **써도 된다. Phase 8a 에서 3단계(auto/light/dark) 토글을 추가했다.** localStorage 1키(`theme`)는 **서버 저장이 아니라 브라우저 로컬**이라 DB·유저관리가 필요 없다 — 미뤘던 근거가 성립하지 않는다. FOUC 방지용 인라인 스크립트(layout.tsx `<head>`) 1개와 `'use client'` 컴포넌트 1개(`components/common/ThemeToggle`)만 새로 생겼고, 나머지 서버 컴포넌트 구조는 그대로다. auto 는 data-theme 를 비워 CSS 가 OS 를 실시간으로 따른다 |
+
 ---
 
 ## 기록 규칙
