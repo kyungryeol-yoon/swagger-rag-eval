@@ -1,112 +1,224 @@
-/* loading / error / not-found 공용 골격.
-   실제 페이지(page.module.css)와 같은 폭·여백을 써야 화면이 튀지 않는다. */
+/* 로딩 스켈레톤 전용.
+   **page.module.css 의 격자를 그대로 따라간다** — 폭·gap·중단점이 다르면
+   데이터가 도착하는 순간 레이아웃이 튄다. 한쪽을 고치면 다른 쪽도 고친다.
+
+   안내 화면(에러·없음·빈 목록)의 껍데기는 여기 없다.
+   components/common/StateNotice 가 세 화면 공용으로 들고 있다. */
 
 .page {
-  max-width: 1440px;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: var(--space-7) var(--space-6) var(--space-8);
+  padding: var(--space-6) var(--space-6) var(--space-8);
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
+  gap: var(--space-4);
 }
 
-@media (max-width: 768px) {
-  .page {
-    padding: var(--space-5) var(--space-4) var(--space-7);
-    gap: var(--space-5);
-  }
-}
+/* --- 스켈레톤 조각 -------------------------------------------------------- */
 
-/* --- 스켈레톤 ------------------------------------------------------------ */
+/* 회색 블록 하나. 색은 **--border** 다. --surface-2 는 카드 배경(--surface)과
+   거의 같은 밝기라(다크 #0f172a vs #111827, 라이트 #f0f3f9 vs #ffffff) 카드
+   안에서는 블록이 보이지 않는다 — 스켈레톤이 아니라 빈 카드로 읽힌다.
+   --border 는 두 배경 위 모두에서 구분되도록 정해진 값이라 여기에 맞는다.
 
+   깜빡이지 않는다 — 화면 전체가 블록이라 전부 깜빡이면 어지럽고,
+   prefers-reduced-motion 대응도 따로 필요해진다. */
 .bar,
-.block,
 .ring,
-.card {
+.statCard,
+.tableHead,
+.tableRow,
+.tableRowTall,
+.recoCard,
+.button {
   display: block;
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: var(--border);
   border-radius: var(--radius-sm);
 }
 
-.bar {
-  margin-bottom: var(--space-2);
-}
+/* --- 카드 껍데기 (전역 .card 와 같은 규격) -------------------------------- */
 
-.block {
-  border-radius: var(--radius-md);
-}
-
-.headerRow {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-5);
-  flex-wrap: wrap;
-  padding-bottom: var(--space-5);
-  border-bottom: 1px solid var(--border);
-}
-
-.metaRow {
-  display: flex;
-  gap: var(--space-5);
-  flex-wrap: wrap;
-}
-
-.hero {
-  display: grid;
-  grid-template-columns: max-content minmax(0, 1fr);
-  align-items: center;
-  gap: var(--space-6);
+.appCard,
+.summaryBox,
+.chartCard,
+.actionCard {
   padding: var(--space-5);
   background: var(--surface);
   border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.appCard,
+.chartCard,
+.actionCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.table {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* --- 헤더 ---------------------------------------------------------------- */
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4) var(--space-5);
+  flex-wrap: wrap;
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+
+.headerMain {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.headerMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* --- 행1: 앱 정보(300px) + 요약 ------------------------------------------ */
+
+.overview {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: stretch;
+}
+
+.summaryBox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.summaryCards {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.statCard {
+  height: 74px;
   border-radius: var(--radius-md);
 }
 
-@media (max-width: 1024px) {
-  .hero {
-    grid-template-columns: minmax(0, 1fr);
-    justify-items: center;
-  }
+/* --- 행2: 평가 기준 + 문항 유형 ------------------------------------------ */
+
+.rowTwo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: stretch;
 }
 
+.chartBody {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.lines {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* 게이지·도넛 자리. 링 모양으로 비워 둬야 원형 차트가 올 자리임이 읽힌다. */
 .ring {
+  flex: none;
   width: 160px;
   height: 160px;
   border-radius: 50%;
   background: transparent;
-  border: 16px solid var(--border);
+  border: 18px solid var(--border);
 }
 
-.cardRow {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: var(--space-4);
-  width: 100%;
-}
-
-@media (max-width: 1024px) {
-  .cardRow {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 768px) {
-  .cardRow {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-.card {
+.ringSm {
+  width: 88px;
   height: 88px;
+  border-width: 10px;
+}
+
+/* --- 표 ------------------------------------------------------------------ */
+
+.tableHead {
+  height: 38px;
+  border-radius: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.tableRow,
+.tableRowTall {
+  height: 44px;
+  border-radius: 0;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+}
+
+/* 문항 표는 한 행에 질문·기대·Top-3 가 겹쳐 들어가 훨씬 높다. */
+.tableRowTall {
+  height: 92px;
+}
+
+/* --- 행3: 좌(2fr) + 우(1fr) ---------------------------------------------- */
+
+.rowMain {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: stretch;
+}
+
+.mainCol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.recoCard {
+  height: 116px;
   border-radius: var(--radius-md);
 }
 
+.button {
+  height: 56px;
+  border-radius: var(--radius-md);
+}
+
+/* --- 폭 / 높이 ----------------------------------------------------------- */
+
+.full {
+  width: 100%;
+}
 .w80 {
   width: 80px;
 }
 .w120 {
   width: 120px;
+}
+.w160 {
+  width: 160px;
+}
+.w200 {
+  width: 200px;
+  max-width: 100%;
 }
 .w280 {
   width: 280px;
@@ -115,94 +227,49 @@
 .h10 {
   height: 10px;
 }
+.h14 {
+  height: 14px;
+}
+.h16 {
+  height: 16px;
+}
 .h22 {
   height: 22px;
 }
-.h28 {
-  height: 28px;
-}
-.h280 {
-  height: 280px;
-}
-.h320 {
-  height: 320px;
+
+/* --- 반응형 — page.module.css 와 같은 중단점 ------------------------------ */
+
+@media (max-width: 1280px) {
+  .rowMain {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
-/* --- 안내 화면(error / not-found) ---------------------------------------- */
+@media (max-width: 1024px) {
+  .overview {
+    grid-template-columns: minmax(0, 1fr);
+  }
 
-.notice {
-  max-width: 620px;
-  margin: var(--space-8) auto;
-  padding: var(--space-6);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  .rowTwo {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
-.noticeTitle {
-  margin: 0 0 var(--space-3);
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text);
-}
+@media (max-width: 768px) {
+  .page {
+    padding: var(--space-5) var(--space-4) var(--space-7);
+  }
 
-.noticeBody {
-  margin: 0 0 var(--space-4);
-  color: var(--text-dim);
-  font-size: 13px;
-  line-height: 1.7;
-}
+  .summaryBox {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-.checklist {
-  margin: 0 0 var(--space-5);
-  padding: var(--space-4);
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text-dim);
-  font-size: 13px;
-  line-height: 1.8;
-}
+  .summaryCards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 
-.checklist ol {
-  margin: 0;
-  padding-left: var(--space-5);
-}
-
-.checklist code {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--text);
-}
-
-.detail {
-  margin: 0 0 var(--space-5);
-  color: var(--text-mute);
-  font-size: 12px;
-  font-family: var(--font-mono);
-  word-break: break-all;
-}
-
-.actions {
-  display: flex;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-}
-
-.button {
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--surface-2);
-  color: var(--text);
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.buttonPrimary {
-  composes: button;
-  border-color: var(--sky);
-  color: var(--sky);
+  .chartBody {
+    flex-direction: column;
+  }
 }

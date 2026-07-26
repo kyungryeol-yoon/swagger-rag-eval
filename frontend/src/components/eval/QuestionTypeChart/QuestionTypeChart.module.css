@@ -16,6 +16,11 @@
   gap: var(--space-6);
 }
 
+/* 도넛만 / 막대만 그릴 때. 한 칸짜리를 2단 격자에 넣으면 카드의 절반이 빈다. */
+.gridSingle {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 /* 도넛+표 위, 막대 아래로 쌓는다(세로). 대시보드의 60% 칸(약 810px)이든
    dev 전체 폭(약 1050px)이든, 좌측 "도넛+표" 는 나란히 두면 약 470px 가 필요해
    더 좁아지면 표가 막대 칸을 침범한다. 임계값을 넉넉히 잡아 그 폭대에선 항상
@@ -227,6 +232,21 @@
 }
 
 /* 트랙 열과 정확히 같은 영역. 그리드 열 계산식을 그대로 되짚는다. */
+/* 유형 목록이 비었을 때. 빈 원과 빈 범례 대신 이 문구만 남긴다. */
+.emptyTitle {
+  margin: 0 0 var(--space-2);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.emptyBody {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
 .overlay {
   position: absolute;
   top: var(--space-3);

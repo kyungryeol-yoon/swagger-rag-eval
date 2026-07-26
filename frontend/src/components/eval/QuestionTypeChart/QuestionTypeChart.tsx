@@ -101,6 +101,19 @@ export default function QuestionTypeChart({
   overallTop3Accuracy,
   show = "all",
 }: QuestionTypeChartProps) {
+  // 유형 목록 자체가 비면 도넛도 막대도 그릴 것이 없다. 빈 원과 빈 범례를
+  // 남기면 "유형이 없다" 가 아니라 "차트가 깨졌다" 로 읽힌다.
+  if (questionTypes.length === 0) {
+    return (
+      <div className={styles.root}>
+        <p className={styles.emptyTitle}>문항 유형 정보가 없습니다</p>
+        <p className={styles.emptyBody}>
+          이 평가 결과에는 문항 유형 분류가 담겨 있지 않습니다.
+        </p>
+      </div>
+    );
+  }
+
   const segments = toDonutSegments(questionTypes);
   const total = questionTypes.reduce((sum, item) => sum + item.count, 0);
   const visible = segments.filter((segment) => segment.sweepAngle > 0);
@@ -110,7 +123,19 @@ export default function QuestionTypeChart({
   const gap = visible.length > 1 ? GAP_DEGREES : 0;
 
   // 낮은 인식률이 위로 온다. 개선 대상이 먼저 보여야 한다.
-  const ranked = [...questionTypes].sort((a, b) => a.top3Accuracy - b.top3Accuracy);
+  //
+  // **문항이 0개인 유형은 막대에서 뺀다.** 그런 유형의 top3Accuracy 는 0 으로
+  // 내려오는데(나눌 것이 없다), 막대로 그리면 길이 0 짜리 막대가 맨 위에 서서
+  // "이 유형은 전부 실패" 처럼 보인다. 아무도 묻지 않은 유형일 뿐이다.
+  // 범례에는 남긴다 — 0건이라는 사실 자체는 정보다.
+  const ranked = questionTypes
+    .filter((item) => item.count > 0)
+    .sort((a, b) => a.top3Accuracy - b.top3Accuracy);
+
+  // 기준선 위치와 라벨 정렬. 양 끝에서는 라벨을 안쪽으로 붙여 카드를 넘지 않게 한다.
+  const refPosition = Math.min(100, Math.max(0, overallTop3Accuracy));
+  const refLabelShift =
+    refPosition <= 6 ? "translateX(0)" : refPosition >= 94 ? "translateX(-100%)" : undefined;
 
   const donutLabel = `문항 유형 분포. 전체 ${total}개. ${questionTypes
     .map((item) => `${questionTypeLabel[item.type]} ${item.count}개`)
@@ -126,7 +151,9 @@ export default function QuestionTypeChart({
     <div className={styles.root}>
       {/* 안쪽 그리드. container 쿼리는 컨테이너(.root)의 "자손" 만 다시 그릴 수
           있으므로, 2단 그리드는 .root 가 아니라 이 안쪽 요소에 둔다. */}
-      <div className={styles.grid}>
+      {/* 한쪽만 그릴 때는 2단 격자를 쓰지 않는다. 그대로 두면 도넛이나 막대가
+          카드의 절반만 채우고 나머지 절반이 빈 채로 남는다. */}
+      <div className={`${styles.grid} ${show === "all" ? "" : styles.gridSingle}`}>
         {/* --- 분포: 도넛 + 범례 --- */}
         {show !== "bars" && (
         <section className={styles.distribution}>
@@ -189,8 +216,10 @@ export default function QuestionTypeChart({
                   <td className={`${styles.numeric} tabular`}>
                     {formatPercent(item.ratio)}%
                   </td>
+                  {/* 문항이 0건이면 인식률이라는 값 자체가 없다. 0.0% 로 적으면
+                      "다 틀렸다" 로 읽힌다 — 대시로 없음을 명시한다. */}
                   <td className={`${styles.numeric} tabular`}>
-                    {formatPercent(item.top3Accuracy)}%
+                    {item.count > 0 ? `${formatPercent(item.top3Accuracy)}%` : "—"}
                   </td>
                 </tr>
               ))}
@@ -233,11 +262,16 @@ export default function QuestionTypeChart({
             등급을 다시 계산하지 않고도 같은 효과를 낸다.
           */}
           <div className={styles.overlay} aria-hidden="true">
-            <div
-              className={styles.refLine}
-              style={{ left: `${Math.min(100, Math.max(0, overallTop3Accuracy))}%` }}
-            >
-              <span className={styles.refLabel}>전체 {formatPercent(overallTop3Accuracy)}%</span>
+            <div className={styles.refLine} style={{ left: `${refPosition}%` }}>
+              {/*
+                라벨은 기본적으로 선 위에 가운데 정렬된다. 그런데 인식률이 0%
+                이거나 100% 면 절반이 트랙 밖으로 빠져나가 옆 카드를 침범한다
+                (실패 0건 / 전부 실패 fixture 에서 실제로 그렇다).
+                양 끝에서는 안쪽으로 붙인다.
+              */}
+              <span className={styles.refLabel} style={{ transform: refLabelShift }}>
+                전체 {formatPercent(overallTop3Accuracy)}%
+              </span>
             </div>
           </div>
         </div>

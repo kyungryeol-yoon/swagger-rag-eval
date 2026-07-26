@@ -5,6 +5,30 @@
   background: var(--surface);
 }
 
+/* 쿼리가 없을 때. 머리글만 남은 빈 표 대신 이 카드를 그린다 —
+   빈 표는 "데이터 없음" 이 아니라 "덜 그려짐" 으로 읽힌다. */
+.empty {
+  padding: var(--space-7) var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  text-align: center;
+}
+
+.emptyTitle {
+  margin: 0 0 var(--space-2);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.emptyBody {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
 .table {
   width: 100%;
   border-collapse: collapse;

@@ -1,0 +1,4148 @@
+{
+  "traceId": "E100",
+  "evaluatedAt": "2026-06-01T10:00:00+09:00",
+  "target": {
+    "appId": "mf-worker",
+    "appName": "MF Worker (전건 적중)",
+    "specVersion": "v9",
+    "owner": "데이터플랫폼팀",
+    "queryCount": 5
+  },
+  "meta": {
+    "embeddingModel": "bge-m3",
+    "searchMode": "HYBRID",
+    "topK": 3,
+    "questionSource": "LLM_GENERATED_HUMAN_REVIEWED",
+    "durationMs": 41200,
+    "rawSource": {
+      "toolVersion": "rageval-2.4.0",
+      "promptVersion": "qgen-2026Q2",
+      "generatedAt": "2026-06-01T09:58:00+09:00"
+    }
+  },
+  "summary": {
+    "totalQuestions": 100,
+    "top1Accuracy": 100.0,
+    "top3Accuracy": 100.0,
+    "top1FailCount": 0,
+    "top3FailCount": 0,
+    "top1Grade": "GOOD",
+    "top3Grade": "GOOD"
+  },
+  "queries": [
+    {
+      "path": "/queries/lot-status",
+      "method": "GET",
+      "summary": "랏 현재 공정 단계 조회",
+      "descriptionLength": 168,
+      "hasParamDescription": true,
+      "questionCount": 20,
+      "top3Accuracy": 100.0,
+      "grade": "GOOD",
+      "needsRegeneration": false
+    },
+    {
+      "path": "/queries/wafer-yield-daily",
+      "method": "GET",
+      "summary": "일간 웨이퍼 수율 집계",
+      "descriptionLength": 142,
+      "hasParamDescription": true,
+      "questionCount": 20,
+      "top3Accuracy": 100.0,
+      "grade": "GOOD",
+      "needsRegeneration": false
+    },
+    {
+      "path": "/queries/defect-summary",
+      "method": "POST",
+      "summary": "불량 유형별 집계",
+      "descriptionLength": 120,
+      "hasParamDescription": true,
+      "questionCount": 20,
+      "top3Accuracy": 100.0,
+      "grade": "GOOD",
+      "needsRegeneration": false
+    },
+    {
+      "path": "/queries/equipment-downtime",
+      "method": "GET",
+      "summary": "설비 비가동 시간 조회",
+      "descriptionLength": 120,
+      "hasParamDescription": true,
+      "questionCount": 20,
+      "top3Accuracy": 100.0,
+      "grade": "GOOD",
+      "needsRegeneration": false
+    },
+    {
+      "path": "/queries/step-cycle-time",
+      "method": "GET",
+      "summary": "스텝별 사이클타임 조회",
+      "descriptionLength": 120,
+      "hasParamDescription": true,
+      "questionCount": 20,
+      "top3Accuracy": 100.0,
+      "grade": "GOOD",
+      "needsRegeneration": false
+    }
+  ],
+  "questionTypes": [
+    {
+      "type": "DIRECT",
+      "label": "직접 질문",
+      "count": 15,
+      "ratio": 15.0,
+      "top3Accuracy": 100.0
+    },
+    {
+      "type": "USER_NL",
+      "label": "사용자 자연어 질문",
+      "count": 15,
+      "ratio": 15.0,
+      "top3Accuracy": 100.0
+    },
+    {
+      "type": "DOMAIN_TERM",
+      "label": "업무 용어 질문",
+      "count": 14,
+      "ratio": 14.0,
+      "top3Accuracy": 100.0
+    },
+    {
+      "type": "PARAMETER",
+      "label": "파라미터 기반 질문",
+      "count": 14,
+      "ratio": 14.0,
+      "top3Accuracy": 100.0
+    },
+    {
+      "type": "ERROR_CASE",
+      "label": "오류/에러 상황 질문",
+      "count": 14,
+      "ratio": 14.0,
+      "top3Accuracy": 100.0
+    },
+    {
+      "type": "SHORT_KEYWORD",
+      "label": "짧은 키워드 질문",
+      "count": 14,
+      "ratio": 14.0,
+      "top3Accuracy": 100.0
+    },
+    {
+      "type": "MIXED_LANG",
+      "label": "한영 혼합 질문",
+      "count": 14,
+      "ratio": 14.0,
+      "top3Accuracy": 100.0
+    }
+  ],
+  "recommendations": [],
+  "questions": [
+    {
+      "no": 1,
+      "question": "랏 번호로 지금 어느 공정에 있는지 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "DIRECT",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/lot-status"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/lot-status",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 2,
+      "question": "어제 웨이퍼 수율을 라인별로 보고 싶습니다?",
+      "questionType": "USER_NL",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 3,
+      "question": "불량 유형별 집계를 주간 단위로 뽑으려면?",
+      "questionType": "DOMAIN_TERM",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/defect-summary"
+      },
+      "top1": {
+        "method": "POST",
+        "path": "/queries/defect-summary",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 4,
+      "question": "설비가 멈춰 있던 시간을 설비별로 확인하고 싶어요?",
+      "questionType": "PARAMETER",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 5,
+      "question": "스텝별 사이클타임 추이를 보려면 무엇을 호출하나요?",
+      "questionType": "ERROR_CASE",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 6,
+      "question": "eqp 다운타임 top5?",
+      "questionType": "SHORT_KEYWORD",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/lot-status"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/lot-status",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 7,
+      "question": "wafer yield 어제 기준으로 알려줘?",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 8,
+      "question": "랏 계보를 거슬러 올라가려면 어떤 조회를 쓰나요?",
+      "questionType": "DIRECT",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/defect-summary"
+      },
+      "top1": {
+        "method": "POST",
+        "path": "/queries/defect-summary",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 9,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다?",
+      "questionType": "USER_NL",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 10,
+      "question": "챔버 센서 값이 비어 있을 때는 어떻게 확인하나요?",
+      "questionType": "DOMAIN_TERM",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 11,
+      "question": "랏 번호로 지금 어느 공정에 있는지 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "PARAMETER",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/lot-status"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/lot-status",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 12,
+      "question": "어제 웨이퍼 수율을 라인별로 보고 싶습니다?",
+      "questionType": "ERROR_CASE",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 13,
+      "question": "불량 유형별 집계를 주간 단위로 뽑으려면?",
+      "questionType": "SHORT_KEYWORD",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/defect-summary"
+      },
+      "top1": {
+        "method": "POST",
+        "path": "/queries/defect-summary",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 14,
+      "question": "설비가 멈춰 있던 시간을 설비별로 확인하고 싶어요?",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 15,
+      "question": "스텝별 사이클타임 추이를 보려면 무엇을 호출하나요?",
+      "questionType": "DIRECT",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 16,
+      "question": "eqp 다운타임 top5?",
+      "questionType": "USER_NL",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/lot-status"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/lot-status",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 17,
+      "question": "wafer yield 어제 기준으로 알려줘?",
+      "questionType": "DOMAIN_TERM",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 18,
+      "question": "랏 계보를 거슬러 올라가려면 어떤 조회를 쓰나요?",
+      "questionType": "PARAMETER",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/defect-summary"
+      },
+      "top1": {
+        "method": "POST",
+        "path": "/queries/defect-summary",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 19,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다?",
+      "questionType": "ERROR_CASE",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 20,
+      "question": "챔버 센서 값이 비어 있을 때는 어떻게 확인하나요?",
+      "questionType": "SHORT_KEYWORD",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 21,
+      "question": "랏 번호로 지금 어느 공정에 있는지 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/lot-status"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/lot-status",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 22,
+      "question": "어제 웨이퍼 수율을 라인별로 보고 싶습니다?",
+      "questionType": "DIRECT",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 23,
+      "question": "불량 유형별 집계를 주간 단위로 뽑으려면?",
+      "questionType": "USER_NL",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/defect-summary"
+      },
+      "top1": {
+        "method": "POST",
+        "path": "/queries/defect-summary",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 24,
+      "question": "설비가 멈춰 있던 시간을 설비별로 확인하고 싶어요?",
+      "questionType": "DOMAIN_TERM",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 25,
+      "question": "스텝별 사이클타임 추이를 보려면 무엇을 호출하나요?",
+      "questionType": "PARAMETER",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 26,
+      "question": "eqp 다운타임 top5?",
+      "questionType": "ERROR_CASE",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/lot-status"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/lot-status",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 27,
+      "question": "wafer yield 어제 기준으로 알려줘?",
+      "questionType": "SHORT_KEYWORD",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 28,
+      "question": "랏 계보를 거슬러 올라가려면 어떤 조회를 쓰나요?",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/defect-summary"
+      },
+      "top1": {
+        "method": "POST",
+        "path": "/queries/defect-summary",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 29,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다?",
+      "questionType": "DIRECT",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 30,
+      "question": "챔버 센서 값이 비어 있을 때는 어떻게 확인하나요?",
+      "questionType": "USER_NL",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 31,
+      "question": "랏 번호로 지금 어느 공정에 있는지 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "DOMAIN_TERM",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/lot-status"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/lot-status",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 32,
+      "question": "어제 웨이퍼 수율을 라인별로 보고 싶습니다?",
+      "questionType": "PARAMETER",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 33,
+      "question": "불량 유형별 집계를 주간 단위로 뽑으려면?",
+      "questionType": "ERROR_CASE",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/defect-summary"
+      },
+      "top1": {
+        "method": "POST",
+        "path": "/queries/defect-summary",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 34,
+      "question": "설비가 멈춰 있던 시간을 설비별로 확인하고 싶어요?",
+      "questionType": "SHORT_KEYWORD",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 35,
+      "question": "스텝별 사이클타임 추이를 보려면 무엇을 호출하나요?",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 36,
+      "question": "eqp 다운타임 top5?",
+      "questionType": "DIRECT",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/lot-status"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/lot-status",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 37,
+      "question": "wafer yield 어제 기준으로 알려줘?",
+      "questionType": "USER_NL",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 38,
+      "question": "랏 계보를 거슬러 올라가려면 어떤 조회를 쓰나요?",
+      "questionType": "DOMAIN_TERM",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/defect-summary"
+      },
+      "top1": {
+        "method": "POST",
+        "path": "/queries/defect-summary",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 39,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다?",
+      "questionType": "PARAMETER",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 40,
+      "question": "챔버 센서 값이 비어 있을 때는 어떻게 확인하나요?",
+      "questionType": "ERROR_CASE",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 41,
+      "question": "랏 번호로 지금 어느 공정에 있는지 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "SHORT_KEYWORD",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/lot-status"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/lot-status",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 42,
+      "question": "어제 웨이퍼 수율을 라인별로 보고 싶습니다?",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 43,
+      "question": "불량 유형별 집계를 주간 단위로 뽑으려면?",
+      "questionType": "DIRECT",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/defect-summary"
+      },
+      "top1": {
+        "method": "POST",
+        "path": "/queries/defect-summary",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 44,
+      "question": "설비가 멈춰 있던 시간을 설비별로 확인하고 싶어요?",
+      "questionType": "USER_NL",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 45,
+      "question": "스텝별 사이클타임 추이를 보려면 무엇을 호출하나요?",
+      "questionType": "DOMAIN_TERM",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 46,
+      "question": "eqp 다운타임 top5?",
+      "questionType": "PARAMETER",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/lot-status"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/lot-status",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 47,
+      "question": "wafer yield 어제 기준으로 알려줘?",
+      "questionType": "ERROR_CASE",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 48,
+      "question": "랏 계보를 거슬러 올라가려면 어떤 조회를 쓰나요?",
+      "questionType": "SHORT_KEYWORD",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/defect-summary"
+      },
+      "top1": {
+        "method": "POST",
+        "path": "/queries/defect-summary",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 49,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다?",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 50,
+      "question": "챔버 센서 값이 비어 있을 때는 어떻게 확인하나요?",
+      "questionType": "DIRECT",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 51,
+      "question": "랏 번호로 지금 어느 공정에 있는지 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "USER_NL",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/lot-status"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/lot-status",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 52,
+      "question": "어제 웨이퍼 수율을 라인별로 보고 싶습니다?",
+      "questionType": "DOMAIN_TERM",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 53,
+      "question": "불량 유형별 집계를 주간 단위로 뽑으려면?",
+      "questionType": "PARAMETER",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/defect-summary"
+      },
+      "top1": {
+        "method": "POST",
+        "path": "/queries/defect-summary",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 54,
+      "question": "설비가 멈춰 있던 시간을 설비별로 확인하고 싶어요?",
+      "questionType": "ERROR_CASE",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 55,
+      "question": "스텝별 사이클타임 추이를 보려면 무엇을 호출하나요?",
+      "questionType": "SHORT_KEYWORD",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 56,
+      "question": "eqp 다운타임 top5?",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/lot-status"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/lot-status",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 57,
+      "question": "wafer yield 어제 기준으로 알려줘?",
+      "questionType": "DIRECT",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 58,
+      "question": "랏 계보를 거슬러 올라가려면 어떤 조회를 쓰나요?",
+      "questionType": "USER_NL",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/defect-summary"
+      },
+      "top1": {
+        "method": "POST",
+        "path": "/queries/defect-summary",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 59,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다?",
+      "questionType": "DOMAIN_TERM",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 60,
+      "question": "챔버 센서 값이 비어 있을 때는 어떻게 확인하나요?",
+      "questionType": "PARAMETER",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 61,
+      "question": "랏 번호로 지금 어느 공정에 있는지 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "ERROR_CASE",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/lot-status"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/lot-status",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 62,
+      "question": "어제 웨이퍼 수율을 라인별로 보고 싶습니다?",
+      "questionType": "SHORT_KEYWORD",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 63,
+      "question": "불량 유형별 집계를 주간 단위로 뽑으려면?",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/defect-summary"
+      },
+      "top1": {
+        "method": "POST",
+        "path": "/queries/defect-summary",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 64,
+      "question": "설비가 멈춰 있던 시간을 설비별로 확인하고 싶어요?",
+      "questionType": "DIRECT",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 65,
+      "question": "스텝별 사이클타임 추이를 보려면 무엇을 호출하나요?",
+      "questionType": "USER_NL",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 66,
+      "question": "eqp 다운타임 top5?",
+      "questionType": "DOMAIN_TERM",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/lot-status"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/lot-status",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 67,
+      "question": "wafer yield 어제 기준으로 알려줘?",
+      "questionType": "PARAMETER",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 68,
+      "question": "랏 계보를 거슬러 올라가려면 어떤 조회를 쓰나요?",
+      "questionType": "ERROR_CASE",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/defect-summary"
+      },
+      "top1": {
+        "method": "POST",
+        "path": "/queries/defect-summary",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 69,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다?",
+      "questionType": "SHORT_KEYWORD",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 70,
+      "question": "챔버 센서 값이 비어 있을 때는 어떻게 확인하나요?",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 71,
+      "question": "랏 번호로 지금 어느 공정에 있는지 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "DIRECT",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/lot-status"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/lot-status",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 72,
+      "question": "어제 웨이퍼 수율을 라인별로 보고 싶습니다?",
+      "questionType": "USER_NL",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 73,
+      "question": "불량 유형별 집계를 주간 단위로 뽑으려면?",
+      "questionType": "DOMAIN_TERM",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/defect-summary"
+      },
+      "top1": {
+        "method": "POST",
+        "path": "/queries/defect-summary",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 74,
+      "question": "설비가 멈춰 있던 시간을 설비별로 확인하고 싶어요?",
+      "questionType": "PARAMETER",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 75,
+      "question": "스텝별 사이클타임 추이를 보려면 무엇을 호출하나요?",
+      "questionType": "ERROR_CASE",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 76,
+      "question": "eqp 다운타임 top5?",
+      "questionType": "SHORT_KEYWORD",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/lot-status"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/lot-status",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 77,
+      "question": "wafer yield 어제 기준으로 알려줘?",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 78,
+      "question": "랏 계보를 거슬러 올라가려면 어떤 조회를 쓰나요?",
+      "questionType": "DIRECT",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/defect-summary"
+      },
+      "top1": {
+        "method": "POST",
+        "path": "/queries/defect-summary",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 79,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다?",
+      "questionType": "USER_NL",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 80,
+      "question": "챔버 센서 값이 비어 있을 때는 어떻게 확인하나요?",
+      "questionType": "DOMAIN_TERM",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 81,
+      "question": "랏 번호로 지금 어느 공정에 있는지 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "PARAMETER",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/lot-status"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/lot-status",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 82,
+      "question": "어제 웨이퍼 수율을 라인별로 보고 싶습니다?",
+      "questionType": "ERROR_CASE",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 83,
+      "question": "불량 유형별 집계를 주간 단위로 뽑으려면?",
+      "questionType": "SHORT_KEYWORD",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/defect-summary"
+      },
+      "top1": {
+        "method": "POST",
+        "path": "/queries/defect-summary",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 84,
+      "question": "설비가 멈춰 있던 시간을 설비별로 확인하고 싶어요?",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 85,
+      "question": "스텝별 사이클타임 추이를 보려면 무엇을 호출하나요?",
+      "questionType": "DIRECT",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 86,
+      "question": "eqp 다운타임 top5?",
+      "questionType": "USER_NL",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/lot-status"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/lot-status",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 87,
+      "question": "wafer yield 어제 기준으로 알려줘?",
+      "questionType": "DOMAIN_TERM",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 88,
+      "question": "랏 계보를 거슬러 올라가려면 어떤 조회를 쓰나요?",
+      "questionType": "PARAMETER",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/defect-summary"
+      },
+      "top1": {
+        "method": "POST",
+        "path": "/queries/defect-summary",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 89,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다?",
+      "questionType": "ERROR_CASE",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 90,
+      "question": "챔버 센서 값이 비어 있을 때는 어떻게 확인하나요?",
+      "questionType": "SHORT_KEYWORD",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 91,
+      "question": "랏 번호로 지금 어느 공정에 있는지 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/lot-status"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/lot-status",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 92,
+      "question": "어제 웨이퍼 수율을 라인별로 보고 싶습니다?",
+      "questionType": "DIRECT",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 93,
+      "question": "불량 유형별 집계를 주간 단위로 뽑으려면?",
+      "questionType": "USER_NL",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/defect-summary"
+      },
+      "top1": {
+        "method": "POST",
+        "path": "/queries/defect-summary",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 94,
+      "question": "설비가 멈춰 있던 시간을 설비별로 확인하고 싶어요?",
+      "questionType": "DOMAIN_TERM",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 95,
+      "question": "스텝별 사이클타임 추이를 보려면 무엇을 호출하나요?",
+      "questionType": "PARAMETER",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 96,
+      "question": "eqp 다운타임 top5?",
+      "questionType": "ERROR_CASE",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/lot-status"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/lot-status",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 97,
+      "question": "wafer yield 어제 기준으로 알려줘?",
+      "questionType": "SHORT_KEYWORD",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/wafer-yield-daily",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 98,
+      "question": "랏 계보를 거슬러 올라가려면 어떤 조회를 쓰나요?",
+      "questionType": "MIXED_LANG",
+      "expected": {
+        "method": "POST",
+        "path": "/queries/defect-summary"
+      },
+      "top1": {
+        "method": "POST",
+        "path": "/queries/defect-summary",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "POST",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 99,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다?",
+      "questionType": "DIRECT",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/equipment-downtime",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 100,
+      "question": "챔버 센서 값이 비어 있을 때는 어떻게 확인하나요?",
+      "questionType": "USER_NL",
+      "expected": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time"
+      },
+      "top1": {
+        "method": "GET",
+        "path": "/queries/step-cycle-time",
+        "score": 0.91
+      },
+      "top3": [
+        {
+          "rank": 1,
+          "method": "GET",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "method": "GET",
+          "path": "/queries/lot-status",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "method": "GET",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    }
+  ],
+  "previous": {
+    "traceId": "E099",
+    "evaluatedAt": "2026-06-01T09:00:00+09:00",
+    "top3Accuracy": 88.0
+  }
+}

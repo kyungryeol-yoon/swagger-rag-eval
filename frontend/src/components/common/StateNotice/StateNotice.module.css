@@ -1,0 +1,79 @@
+/* 에러 / 없음 / 빈 목록 공용 껍데기.
+   본문 화면과 같은 토큰만 쓴다 — 색·간격을 하드코딩하지 않는다. */
+
+.notice {
+  max-width: 620px;
+  margin: var(--space-8) auto;
+  padding: var(--space-6);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.title {
+  margin: 0 0 var(--space-3);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.body {
+  margin: 0 0 var(--space-4);
+  color: var(--text-dim);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.body p {
+  margin: 0 0 var(--space-2);
+}
+
+.body p:last-child {
+  margin-bottom: 0;
+}
+
+.checklist {
+  margin: 0 0 var(--space-5);
+  padding: var(--space-4);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.checklist ol {
+  margin: 0;
+  padding-left: var(--space-5);
+}
+
+.checklist code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text);
+}
+
+/* 원인 상세. 여러 줄이 올 수 있어(계약 위반 필드 목록) pre 로 받는다.
+   가로로 넘치면 카드를 뚫으므로 반드시 접거나 스크롤한다. */
+.detail {
+  margin: 0 0 var(--space-5);
+  padding: var(--space-3);
+  max-height: 240px;
+  overflow: auto;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-mute);
+  font-size: 12px;
+  font-family: var(--font-mono);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import styles from "./states.module.css";
+import StateNotice from "@/components/common/StateNotice/StateNotice";
 
 /**
  * 에러 화면.
@@ -13,7 +13,13 @@ import styles from "./states.module.css";
  * (docs/prompts.md §9-4).
  *
  * 로컬에서 이 화면이 뜨는 가장 흔한 이유는 백엔드가 안 떠 있는 것이다.
+ * 원인 요약은 **개발 환경에서만** 보여준다 — 운영에서는 Next 가 message 를
+ * 지우고 digest 만 남기므로 보여줄 것도 없고, 남아 있다 해도 내부 경로나
+ * 주소를 사용자 화면에 흘릴 이유가 없다.
  */
+
+const isDevelopment = process.env.NODE_ENV === "development";
+
 export default function Error({
   error,
   reset,
@@ -22,39 +28,53 @@ export default function Error({
   reset: () => void;
 }) {
   return (
-    <main className={styles.notice}>
-      <h1 className={styles.noticeTitle}>평가 리포트를 불러오지 못했습니다</h1>
-
-      <p className={styles.noticeBody}>
-        백엔드 API에 연결하지 못했거나 응답이 올바르지 않습니다.
-        대시보드는 백엔드 없이는 아무것도 표시할 수 없습니다.
-      </p>
-
-      <div className={styles.checklist}>
-        <ol>
-          <li>
-            백엔드(8000)가 실행 중인지 확인합니다 — <code>make dev</code>
-          </li>
-          <li>
-            직접 열어봅니다 — <code>http://localhost:8000/health</code>
-          </li>
-          <li>
-            평가 결과가 있는지 봅니다 — <code>http://localhost:8000/ready</code>
-          </li>
-          <li>
-            주소가 다르면 <code>API_BASE_URL</code> 을 확인합니다
-          </li>
-        </ol>
-      </div>
-
-      {error.message && <p className={styles.detail}>{error.message}</p>}
-      {error.digest && <p className={styles.detail}>digest: {error.digest}</p>}
-
-      <div className={styles.actions}>
-        <button type="button" className={styles.buttonPrimary} onClick={reset}>
+    <StateNotice
+      title="평가 리포트를 불러오지 못했습니다"
+      steps={[
+        <>
+          백엔드(8000)가 실행 중인지 확인합니다 — <code>make dev</code>
+        </>,
+        <>
+          직접 열어봅니다 — <code>http://localhost:8000/health</code>
+        </>,
+        <>
+          평가 결과가 읽히는지 봅니다 — <code>http://localhost:8000/ready</code>
+        </>,
+        <>
+          주소가 다르면 <code>API_BASE_URL</code> 을 확인합니다
+        </>,
+      ]}
+      detail={isDevelopment ? formatCause(error) : undefined}
+      actions={
+        <button
+          type="button"
+          className="noticeButton noticeButtonPrimary"
+          onClick={reset}
+        >
           다시 시도
         </button>
-      </div>
-    </main>
+      }
+    >
+      <p>
+        백엔드 API에 연결하지 못했거나 응답이 올바르지 않습니다. 대시보드는 백엔드
+        없이는 아무것도 표시할 수 없습니다.
+      </p>
+      {/* digest 는 운영에서 로그와 화면을 잇는 유일한 끈이라 항상 남긴다. */}
+      {error.digest && <p>오류 식별자: {error.digest}</p>}
+    </StateNotice>
   );
+}
+
+/**
+ * 개발 환경에서 보여줄 원인 요약.
+ *
+ * `lib/api.ts` 가 message 에 원인·호출 주소·백엔드가 준 detail 을 줄바꿈으로
+ * 이어 붙여 둔다. 계약 위반이면 어느 필드가 없는지가 여기 그대로 들어온다.
+ */
+function formatCause(error: Error & { digest?: string }): string {
+  const lines = [error.message];
+  if (error.digest) {
+    lines.push(`digest: ${error.digest}`);
+  }
+  return lines.join("\n");
 }

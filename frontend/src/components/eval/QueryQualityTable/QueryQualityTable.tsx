@@ -39,6 +39,19 @@ function sortForAction(queries: QueryStat[]): QueryStat[] {
 }
 
 export default function QueryQualityTable({ queries }: QueryQualityTableProps) {
+  // 쿼리가 하나도 없으면 머리글만 남은 빈 표가 된다. 그건 "데이터가 없다" 가
+  // 아니라 "화면이 덜 그려졌다" 로 읽힌다.
+  if (queries.length === 0) {
+    return (
+      <div className={styles.empty}>
+        <p className={styles.emptyTitle}>등록된 쿼리가 없습니다</p>
+        <p className={styles.emptyBody}>
+          이 앱의 Swagger 에 조회 쿼리가 하나도 등록되어 있지 않습니다.
+        </p>
+      </div>
+    );
+  }
+
   const rows = sortForAction(queries);
   const showMethod = hasMultipleMethods(queries);
   const selectedCount = queries.filter((q) => q.needsRegeneration).length;

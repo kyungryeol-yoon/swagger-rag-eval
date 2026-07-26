@@ -7,13 +7,14 @@ import logging
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, status
+from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.api.deps import SpecRepositoryDep
 from app.api.v1 import evaluations
 from app.core.config import settings
+from app.services.adapter import ContractViolation
 
 logger = logging.getLogger("app")
 
@@ -53,6 +54,28 @@ app.add_middleware(
 app.include_router(evaluations.router)
 
 
+@app.exception_handler(ContractViolation)
+def contract_violation_handler(request: Request, exc: ContractViolation) -> JSONResponse:
+    """저장된 평가 결과가 계약을 만족하지 않을 때.
+
+    **클라이언트 잘못이 아니므로 500 이다.** 외부 평가툴이 낸 결과가 깨진 것이고,
+    고쳐야 할 것은 원본 데이터다. 그래서 `detail` 에 어느 필드가 왜 틀렸는지를
+    그대로 실어 보낸다 — 대시보드의 error.tsx 가 개발 환경에서 이 문장을
+    보여주면, 브라우저만 보고도 원본 JSON 의 어느 줄을 고칠지 알 수 있다.
+
+    조용히 200 을 주고 화면을 반쯤 그리게 두지 않는다.
+    """
+    logger.error("계약 위반: %s", exc)
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={
+            "detail": str(exc),
+            "source": exc.source,
+            "problems": exc.problems,
+        },
+    )
+
+
 @app.get("/health", tags=["system"], summary="헬스 체크")
 def health() -> dict[str, str]:
     """프로세스가 살아 있는지만 본다. 의존 자원은 확인하지 않는다.
@@ -74,6 +97,14 @@ def ready(repository: SpecRepositoryDep) -> JSONResponse:
     trace_id = settings.readiness_trace_id
     try:
         found = repository.get_evaluation(trace_id) is not None
+    except ContractViolation as exc:
+        # 읽히긴 했는데 계약을 만족하지 않는다. 트래픽을 받아 봐야 화면이 깨지므로
+        # 마찬가지로 not_ready 다. 다만 "못 읽었다" 와는 원인이 다르니 구분해 적는다.
+        logger.error("레디니스 체크 실패: %s", exc)
+        return JSONResponse(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            content={"status": "not_ready", "reason": f"계약 위반: {exc.source}"},
+        )
     except Exception:
         logger.exception("레디니스 체크 실패: 저장소를 읽지 못했습니다")
         return JSONResponse(

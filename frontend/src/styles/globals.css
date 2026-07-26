@@ -311,6 +311,29 @@ a {
   white-space: nowrap;
 }
 
+/* 안내 화면(에러·없음·빈 목록)의 버튼·링크. 세 화면이 각자 정의하면
+   같은 자리에 서로 다른 버튼이 놓인다. button 과 a 에 모두 붙는다. */
+.noticeButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* 그 화면에서 할 일이 하나뿐일 때 그 하나. 한 화면에 둘 이상 두지 않는다. */
+.noticeButtonPrimary {
+  border-color: var(--sky);
+  color: var(--sky);
+}
+
 /* 화면에는 안 보이지만 스크린 리더는 읽는 텍스트. */
 .srOnly {
   position: absolute;

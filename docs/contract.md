@@ -197,6 +197,31 @@ JSON 필드 이름은 HTTP 규약을 따르므로 `method` / `path` 를 그대�
 - **`needsRegeneration` 은 백엔드가 판단한다.** 프론트가 인식률이나 설명 길이로
   다시 계산하지 않는다. 판정 기준은 `open-questions.md` #53 참고.
 
+### 선택 필드 · 빈 배열이 왔을 때 (Phase 10)
+
+외부 평가툴이 항상 모든 필드를 채워 주지는 않는다. **누가 그 부재를 처리하는지를
+여기 적어 둔다** — 계약에 선택 필드를 추가할 때는 이 표에 한 줄을 함께 추가한다.
+표에 없는 자리가 생기면 화면 어딘가가 빈 채로 남는다.
+
+| 자리 | 없을 때 | 처리하는 곳 |
+|---|---|---|
+| `target.owner` | 담당 표기를 그리지 않음 | `AppInfoCard` |
+| `meta.rawSource` | 헤더의 평가툴 출처 줄을 통째로 숨김 | `eval/[traceId]/page.tsx` |
+| `previous` | 델타 뱃지를 숨김(자리를 남기지 않음) | `page.tsx`, `SummaryCards` |
+| `queries[].summary` | "설명 없음" 으로 표기 | `QueryQualityTable` |
+| `questions[].expectedRank` | "기대 쿼리: 순위 밖" | `FailureTable` |
+| `questions[].failureCategory` | 원인 필터 칩에서 제외 | `FailureTable` |
+| `questions[].reason` | 대시(—)로 "없음" 을 명시 | `FailureTable` |
+| `queries` 가 빈 배열 | 빈 표 대신 "등록된 쿼리가 없습니다" 카드, 경로 접이식 자체를 생략 | `QueryQualityTable`, `AppInfoCard` |
+| `questionTypes` 가 빈 배열 | 빈 도넛 대신 "문항 유형 정보가 없습니다" | `QuestionTypeChart` |
+| `questionTypes[].count` 가 0 | 범례는 남기되 인식률은 대시(—), 막대에서는 제외 | `QuestionTypeChart` |
+| `recommendations` 가 빈 배열 | 권장 조치·권장 액션 컬럼을 통째로 없애고 좌측이 전체 폭 | `page.tsx`, `RecommendationCards`, `ActionPanel` |
+| `questions` 가 빈 배열 | "표시할 문항이 없습니다" | `FailureTable` |
+| `top3` 가 3건 미만 | 있는 만큼만 그림(쿼리가 적은 앱에서 실제로 그렇다) | `FailureTable` |
+
+필드가 **아예 빠진 경우와 `null` 인 경우를 모두 통과**시켜야 한다. 외부 툴은 보통
+키 자체를 생략한다 (`backend/tests/test_adapter_contract.py`).
+
 ### questions — 문항 100개 전체
 
 - **평가 대상은 실패만이 아니라 문항 전체다.** `questions` 의 길이는
@@ -362,3 +387,4 @@ failureCategory  SIMILAR_RESOURCE | DESCRIPTION_MISSING | DESCRIPTION_WEAK
 | 2026-07-22 | 최초 작성 | — |
 | 2026-07-23 | 평가 단위를 앱으로 변경, `queries` 신설, 용어를 "쿼리"로 통일, 재생성을 요청 방식으로 변경 | 미정 #1 확정 (DAC 앱 단위) |
 | 2026-07-24 | 등급을 top1Grade/top3Grade 로 분리, failures→questions(100문항 전체), failureScope 신설, failureCategory 확장, meta.rawSource 추가 | 담당자 확정 스펙 반영 |
+| 2026-07-26 | 계약 자체는 그대로. "선택 필드·빈 배열" 절 신설 | Phase 10 안정화 — 부재를 누가 처리하는지 계약 옆에 적어 둔다 |

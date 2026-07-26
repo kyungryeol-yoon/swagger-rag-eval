@@ -192,6 +192,11 @@
   align-items: stretch;
 }
 
+/* 권장 조치가 없으면 좌 컬럼이 전체 폭을 쓴다. 빈 1fr 을 남기지 않는다. */
+.rowMainAlone {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 /* 각 컬럼은 세로 흐름, gap --space-4. */
 .mainLeft,
 .mainRight {

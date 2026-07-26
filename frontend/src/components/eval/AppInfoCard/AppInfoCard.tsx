@@ -52,7 +52,10 @@ export default function AppInfoCard({ target, queries }: AppInfoCardProps) {
         )}
       </dl>
 
-      {/* 이 앱의 쿼리 경로 목록. 기본 접힘 — 대상 식별이 먼저고 경로는 필요할 때만. */}
+      {/* 이 앱의 쿼리 경로 목록. 기본 접힘 — 대상 식별이 먼저고 경로는 필요할 때만.
+          쿼리가 없으면 접이식 자체를 만들지 않는다 — 펼쳐도 아무것도 없는
+          "0개 보기" 는 눌러 보게 만들고 아무것도 주지 않는다. */}
+      {queries.length > 0 && (
       <details className={styles.queries}>
         <summary className={styles.summary}>
           쿼리 <span className="tabular">{target.queryCount}</span>개 보기
@@ -82,6 +85,7 @@ export default function AppInfoCard({ target, queries }: AppInfoCardProps) {
           ))}
         </ul>
       </details>
+      )}
     </section>
   );
 }

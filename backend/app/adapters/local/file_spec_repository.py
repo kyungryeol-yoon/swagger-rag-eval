@@ -9,11 +9,15 @@
 """
 
 import json
+import logging
 import re
 from pathlib import Path
 from typing import Any
 
 from app.schemas.evaluation import EvaluationListItem, EvaluationReport
+from app.services.adapter import to_evaluation_report
+
+logger = logging.getLogger("app")
 
 # ID가 그대로 파일 경로가 되므로 형태를 강제한다.
 # 라우터에서도 막고 있지만, 저장소는 자기 입력을 스스로 지켜야 한다
@@ -42,8 +46,12 @@ class FileSpecRepository:
                         top3_accuracy=payload["summary"]["top3Accuracy"],
                     )
                 )
-            except (KeyError, ValueError):
+            except (KeyError, ValueError) as exc:
                 # 형식이 깨진 파일 하나가 목록 전체를 막지 않게 건너뛴다.
+                # **다만 조용히 넘기지는 않는다** — 목록에서 사라진 평가가
+                # 왜 안 보이는지 알 길이 없으면 데이터가 없는 것과 구분되지 않는다.
+                # (상세 조회는 건너뛰지 않고 ContractViolation 으로 터진다.)
+                logger.warning("목록에서 제외: %s — %s", path.name, exc)
                 continue
 
         # 최신순(evaluatedAt 내림차순). ISO 8601 문자열은 사전식 정렬이 곧 시간순이다.
@@ -54,7 +62,9 @@ class FileSpecRepository:
         payload = self._read_json(f"eval_{trace_id}", key=trace_id)
         if payload is None:
             return None
-        return EvaluationReport.model_validate(payload)
+        # 저장소가 직접 model_validate 하지 않는다. 계약 변환·검증은 어댑터 한 곳이다 —
+        # 사내에서 이 파일이 DB 구현으로 바뀌어도 검증은 그대로 남는다.
+        return to_evaluation_report(payload, source=f"eval_{trace_id}.json")
 
     def get_spec(self, spec_id: str) -> dict[str, Any] | None:
         return self._read_json(spec_id, key=spec_id)

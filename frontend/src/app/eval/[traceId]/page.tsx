@@ -10,7 +10,7 @@ import QuestionTypeChart from "@/components/eval/QuestionTypeChart/QuestionTypeC
 import RecommendationCards from "@/components/eval/RecommendationCards/RecommendationCards";
 import SummaryCards, { formatDelta } from "@/components/eval/SummaryCards/SummaryCards";
 import ThemeToggle from "@/components/common/ThemeToggle/ThemeToggle";
-import { serverApiBase } from "@/lib/config";
+import { NotFoundError, fetchJson } from "@/lib/api";
 import { gradeColor, gradeLabel, searchModeLabel } from "@/lib/enumTokens";
 import { GRADE_BANDS, formatBandRange } from "@/lib/gradeBands";
 import type { Evaluation } from "@/lib/types";
@@ -30,23 +30,27 @@ import styles from "./page.module.css";
  * 서버 컴포넌트다. 백엔드 주소는 lib/config 를 경유한다.
  */
 
+/**
+ * **정적 프리렌더 금지.** 빌드 시점에 백엔드가 없다. 지금은 동적 세그먼트라
+ * 어차피 요청 때 그려지지만, 나중에 `generateStaticParams` 를 붙이는 순간
+ * 빌드가 백엔드에 붙으려다 깨진다. 루트와 같은 이유로 명시해 둔다.
+ */
+export const dynamic = "force-dynamic";
+
 async function getEvaluation(traceId: string): Promise<Evaluation> {
-  // 평가 결과는 재실행마다 바뀐다. 캐시하면 재생성 후에도 옛 수치가 남는다.
-  const res = await fetch(
-    `${serverApiBase}/api/v1/evaluations/${encodeURIComponent(traceId)}`,
-    { cache: "no-store" },
-  );
-
-  // 404 만 not-found 로 보낸다. 나머지 실패는 error.tsx 가 받아야
-  // "백엔드가 떠 있는지" 를 안내할 수 있다.
-  if (res.status === 404) {
-    notFound();
+  // 타임아웃·실패 분류·주소 표기는 lib/api 가 맡는다. 여기서는 404 만 갈라낸다 —
+  // "결과가 없다" 와 "백엔드가 죽었다" 는 사용자가 할 일이 다르기 때문이다.
+  try {
+    return await fetchJson<Evaluation>(
+      `/api/v1/evaluations/${encodeURIComponent(traceId)}`,
+    );
+  } catch (error) {
+    if (error instanceof NotFoundError) {
+      notFound();
+    }
+    // 나머지는 error.tsx 로. ApiError 의 message 에 원인과 호출 주소가 들어 있다.
+    throw error;
   }
-  if (!res.ok) {
-    throw new Error(`평가 리포트를 불러오지 못했습니다 (HTTP ${res.status})`);
-  }
-
-  return (await res.json()) as Evaluation;
 }
 
 /**
@@ -96,6 +100,9 @@ export default async function EvaluationPage({
   const top3Delta = report.previous
     ? formatDelta(report.summary.top3Accuracy, report.previous.top3Accuracy)
     : null;
+  // 실패가 없으면 권장 조치도 재생성 후보도 없다. 그때 우 컬럼은 통째로 사라진다.
+  const hasActions = report.recommendations.length > 0;
+
   const deltaClass =
     top3Delta?.direction === "up"
       ? styles.deltaUp
@@ -298,7 +305,7 @@ export default async function EvaluationPage({
 
       {/* 행3: 좌(2fr) 유형별 막대 + 100문항 표 / 우(1fr) 권장 조치 + 권장 액션.
           좌우 컬럼의 전체 높이만 같으면 된다 — 우측 마지막 카드가 flex-grow 로 바닥을 맞춘다. */}
-      <div className={styles.rowMain}>
+      <div className={`${styles.rowMain} ${hasActions ? "" : styles.rowMainAlone}`}>
         <div className={styles.mainLeft}>
           {/* 유형별 Top-3 인식률 막대 — 도넛과 같은 계산을 공유하되 막대만. */}
           <QuestionTypeChart
@@ -312,15 +319,18 @@ export default async function EvaluationPage({
           </section>
         </div>
 
-        <div className={styles.mainRight}>
-          {report.recommendations.length > 0 && (
+        {/* 권장 조치가 없으면 우 컬럼을 아예 만들지 않는다. 빈 채로 두면
+            문항 표 옆에 1fr 짜리 빈 홈이 남아 무언가 못 불러온 것처럼 보인다.
+            실패 0건인 평가에서 실제로 그렇다 (fixture E100). */}
+        {hasActions && (
+          <div className={styles.mainRight}>
             <div className={`card ${styles.recoBox}`}>
               <RecommendationCards recommendations={report.recommendations} layout="stack" />
             </div>
-          )}
-          {/* 권장 액션 — 우 컬럼 최하단. flex-grow 로 좌측 표 높이에 바닥을 맞춘다. */}
-          <ActionPanel recommendations={report.recommendations} specId={report.target.appId} />
-        </div>
+            {/* 권장 액션 — 우 컬럼 최하단. flex-grow 로 좌측 표 높이에 바닥을 맞춘다. */}
+            <ActionPanel recommendations={report.recommendations} specId={report.target.appId} />
+          </div>
+        )}
       </div>
     </main>
   );
