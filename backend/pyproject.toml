@@ -52,18 +52,28 @@ system-certs = false
 # 에러 메시지로 다 나온다.
 
 # 사내 index. **실제 URL 을 여기 적지 않는다** — 이 저장소는 공개돼 있다.
-# 전환은 환경변수로 한다 (backend/.env.example 참고):
+# 사내 레포는 HTTP(평문)다. 전환은 환경변수로 한다 (backend/.env.example 참고):
 #
-#     UV_DEFAULT_INDEX=https://<사내 index>/simple
+#     UV_DEFAULT_INDEX=http://<사내레포>/repository/pypi/simple
 #
 # 환경변수로 두면 같은 pyproject.toml 이 사내와 GitHub 양쪽에서 그대로 쓰인다.
 # 파일에 URL 을 박으면 두 저장소가 갈라지고, prompts.md §6 전파 루프가 깨진다.
 #
-# 사내에서 파일로 고정해야 한다면 아래 형태다. 커밋하지는 말 것:
+# **HTTP index 라는 이유로 uv 에 추가 설정이 필요하지는 않다.** uv 0.11.7 에서
+# 실측: 평문 index 에 그냥 붙는다. `allow-insecure-host` 는 http 스킴 허용이
+# 아니라 TLS 인증서 검증을 건너뛰는 옵션이라 평문 연결과는 무관하다.
+# (pip 은 다르다 — HTTP index 를 --trusted-host 없이는 조용히 무시한다.)
+#
+# 레포가 http 로 받아 https 로 리다이렉트하거나 사설 인증서를 쓰는 경우에만
+# 아래 키가 필요하다. 유효한 키임을 확인했다(없는 키를 넣으면 파싱 경고가 난다):
+#
+# allow-insecure-host = ["<사내레포>"]
+#
+# 사내에서 index 를 파일로 고정해야 한다면 아래 형태다. 커밋하지는 말 것:
 #
 # [[tool.uv.index]]
 # name = "internal"
-# url = "https://<사내 index>/simple"
+# url = "http://<사내레포>/repository/pypi/simple"
 # default = true
 
 [tool.ruff]

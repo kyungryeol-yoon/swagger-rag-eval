@@ -274,7 +274,13 @@ def cmd_clean() -> None:
 TLS_ENV_KEYS = [
     "UV_DEFAULT_INDEX",
     "UV_INDEX",
+    "UV_INSECURE_HOST",
     "UV_SYSTEM_CERTS",
+    # 사내 레포가 HTTP 라서 pip 은 --trusted-host(=PIP_TRUSTED_HOST) 가 필요하다.
+    # 없으면 pip 이 그 레포를 조용히 무시한다 — 증상이 "느린 네트워크" 처럼 보여
+    # 원인을 찾기 어렵다. 그래서 doctor 가 둘을 나란히 보여준다.
+    "PIP_INDEX_URL",
+    "PIP_TRUSTED_HOST",
     "NODE_EXTRA_CA_CERTS",
     "SSL_CERT_FILE",
     "REQUESTS_CA_BUNDLE",
@@ -427,12 +433,23 @@ def cmd_doctor() -> None:
         print(f"    {pad(label, label_w)}{pad(value, value_w)}{note}")
     print()
 
-    missing = [k for k in ("UV_DEFAULT_INDEX",) if not os.environ.get(k)]
-    if missing:
+    if not os.environ.get("UV_DEFAULT_INDEX"):
         print("  사내망이라면 아래를 설정해야 한다 (자세한 내용은 각 .env.example):")
-        print("    UV_DEFAULT_INDEX   사내 Python index URL")
-        print("    UV_SYSTEM_CERTS    사내 CA 재서명 대응 (OS 신뢰 저장소 사용)")
-        print("    NODE_EXTRA_CA_CERTS  사내 CA 인증서 경로")
+        print("    UV_DEFAULT_INDEX     사내 Python index URL (사내 표준은 http)")
+        print("    PIP_INDEX_URL        pip 을 직접 쓸 때. uv 설치가 여기 해당한다")
+        print("    PIP_TRUSTED_HOST     위가 http 면 **필수**. 호스트만 (host 또는 host:port)")
+        print("    npm_config_registry  사내 npm registry URL")
+        print()
+
+    # HTTP index 인데 trusted-host 가 없으면 pip 이 조용히 그 레포를 버린다.
+    # 조용한 실패라서 여기서 잡아 준다.
+    index_url = os.environ.get("PIP_INDEX_URL", "")
+    if index_url.startswith("http://") and not os.environ.get("PIP_TRUSTED_HOST"):
+        print("  !! PIP_INDEX_URL 이 http 인데 PIP_TRUSTED_HOST 가 없다.")
+        print("     pip 은 그 레포를 경고 한 줄만 남기고 무시한다:")
+        print("       WARNING: The repository located at <host> is not a trusted")
+        print("                or secure host and is being ignored.")
+        print("     PIP_TRUSTED_HOST 에 호스트만 넣는다 (스킴·경로 없이).")
         print()
 
 

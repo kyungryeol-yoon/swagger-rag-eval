@@ -13,12 +13,17 @@
 
 # 사내 Nexus / Artifactory 의 npm 프록시 주소.
 # 보통 `/repository/npm-group/` 처럼 그룹 저장소를 가리킨다.
-registry=https://<사내-nexus>/repository/npm-group/
+#
+# **사내 표준은 HTTP(평문)다.** 스킴을 https 로 적으면 붙지 않는다.
+# npm 은 http registry 에 추가 설정 없이 붙는다 — 아래 TLS 항목은 https 로
+# 붙는 저장소가 섞여 있을 때만 쓴다.
+registry=http://<사내-nexus>/repository/npm-group/
 
 
-# --- TLS -------------------------------------------------------------------
+# --- TLS (https 저장소를 쓸 때만) -------------------------------------------
 
 # 사내 프록시가 TLS 를 사내 CA 로 재서명하는 환경에서 필요하다.
+# registry 가 http 뿐이라면 이 절은 건너뛴다 — 검증할 인증서가 없다.
 # 둘 중 하나만 쓰면 된다.
 #
 # (1) npm 에만 적용
@@ -37,6 +42,11 @@ cafile=/path/to/corp-ca-bundle.pem
 #   인증서 검증을 통째로 끄는 설정이라, 중간자 공격과 사내 CA 재서명을
 #   구분할 수 없게 된다. 인증서 오류의 해결책이 아니라 오류를 감추는 것이다.
 #   위 cafile / NODE_EXTRA_CA_CERTS 로 해결할 것.
+#
+#   **http registry 를 쓴다는 이유로는 이걸 켜지 않는다.** strict-ssl 은 https
+#   연결의 검증 옵션이라 평문 registry 와는 아무 관계가 없다. 먼저 그냥 붙여
+#   보고, 정말 TLS 오류가 날 때만(= 레포가 https 로 리다이렉트하는 경우)
+#   원인을 확인한 뒤 cafile 쪽으로 푼다.
 
 
 # --- 인증 (필요한 경우) -----------------------------------------------------

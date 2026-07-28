@@ -31,6 +31,65 @@ Port/계약만 알기 때문에 손대지 않는다.
 - 그래서 사내 포맷·인프라가 바뀌어도 **경계 구현체와 `deps.py` 조립**만 바뀌고,
   화면·라우터·계약은 그대로다.
 
+## 사내 패키지 레포 — HTTP(평문)
+
+사내 표준 레포가 HTTP 로만 제공된다. **이건 HTTPS 검증을 끄는 것과 다르다.**
+평문 레포에는 검증할 인증서 자체가 없다. HTTPS 저장소에 대고 검증을 끄는 설정
+(`npm strict-ssl=false`, `PIP_DISABLE_...` 류)은 여전히 쓰지 않는다 — 그건
+중간자 공격과 사내 CA 재서명을 구분할 수 없게 만든다.
+
+도구마다 필요한 것이 다르다. 컨테이너 안에서 실제로 확인한 결과다:
+
+| 도구 | HTTP 레포에 필요한 것 | 확인한 동작 |
+|---|---|---|
+| **pip** | **`--trusted-host` 필수** | 없으면 그 레포를 **조용히 무시**하고 PyPI 로 나간다. 경고 한 줄만 남기고 폐쇄망에서는 타임아웃으로 끝난다 |
+| **uv** | 없음 | 평문 index 에 그대로 붙는다. `--allow-insecure-host` 는 http 스킴 허용이 아니라 **TLS 인증서 검증을 건너뛰는** 옵션이라 무관하다 (uv 0.11.7 기준) |
+| **npm** | 없음 | `strict-ssl` 은 https 연결의 검증 옵션이라 평문 registry 와 무관하다 |
+
+pip 이 `--trusted-host` 없이 내는 경고 — 이 줄이 보이면 원인은 이것 하나다:
+
+```
+WARNING: The repository located at <host> is not a trusted or secure host
+         and is being ignored.
+```
+
+### 값 주입 — 전부 `--build-arg`, 커밋 금지
+
+사내 레포 URL·호스트는 저장소에 넣지 않는다. `.example` 과 이 문서에는 **형식만**
+적는다.
+
+```
+docker build --target backend \
+  --build-arg PYTHON_IMAGE=<사내레지스트리>/python:3.12-slim \
+  --build-arg PIP_INDEX_URL=http://<사내레포>/repository/pypi/simple \
+  --build-arg PIP_TRUSTED_HOST=<사내레포> \
+  --build-arg UV_DEFAULT_INDEX=http://<사내레포>/repository/pypi/simple \
+  -t <사내레지스트리>/swagger-rag-eval-backend:1.0 .
+
+docker build --target frontend \
+  --build-arg NODE_IMAGE=<사내레지스트리>/node:22-alpine \
+  --build-arg NPM_REGISTRY=http://<사내레포>/repository/npm-group/ \
+  -t <사내레지스트리>/swagger-rag-eval-frontend:1.0 .
+```
+
+- `PIP_TRUSTED_HOST` 는 **호스트만**. 스킴·경로 없이. 포트가 있으면 `host:port`.
+- `UV_INSECURE_HOST` 는 보통 비워 둔다. 레포가 http→https 로 리다이렉트하거나
+  사설 인증서를 쓸 때만 채운다.
+- `UV_SYSTEM_CERTS` 만 **빈 문자열을 주면 안 된다**. 나머지는 비어 있으면
+  "설정 안 함" 과 같게 동작한다.
+
+> **ARG 값이 이미지에 남는가**
+> `--build-arg` 는 값을 **저장소에 커밋하지 않게** 해 주지만, 그것만으로 이미지에서
+> 사라지지는 않는다. `ENV` 로 다시 굳히면 그 값이 이미지 설정에 박혀
+> `docker inspect` / `docker history` 로 보인다. 그래서 이 Dockerfile 은 레포 주소를
+> **ENV 로 옮기지 않고** 빌드 스테이지의 ARG 로만 둔다. 최종 이미지 두 개를 빌드해
+> 확인했다 — `Config.Env` 와 history 어디에도 남지 않는다.
+> 다만 **빌드 로그**에는 확장된 명령이 그대로 찍힌다. CI 로그 보존 정책은 별도로 본다.
+
+로컬(컨테이너 밖) 개발은 같은 값을 셸 환경변수로 준다:
+`backend/.env.example` 의 "사내망 전용" 절, `frontend/.npmrc.example` 참고.
+설정 여부는 `make doctor` 로 확인한다.
+
 ## 이식 후 확인
 
 ```
