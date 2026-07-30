@@ -18,15 +18,62 @@
   /* butt 다. round 로 두면 구간 끝이 서로를 덮어 간격이 사라지고
      경계 위치도 실제보다 밀려 보인다. */
   stroke-linecap: butt;
+
+  /* 좌(심각) -> 우(우수) 순서로 그려진다. --band-index 는 컴포넌트가 넘긴다.
+     pathLength=100 덕분에 100 = 전체 길이, 0 = 다 그려진 상태다.
+     stagger 는 --stagger-step 의 2배 — 구간이 4개뿐이라 촘촘하면 동시에
+     나타난 것처럼 보인다. */
+  stroke-dasharray: 100;
+  stroke-dashoffset: 0;
+  animation: bandDraw var(--dur-base) var(--ease-out)
+    calc(var(--band-index, 0) * var(--stagger-step) * 2) both;
 }
 
+@keyframes bandDraw {
+  from {
+    stroke-dashoffset: 100;
+  }
+}
+
+/*
+  바늘. 0%(9시)에서 현재 값까지 돌아온다.
+
+  회전 방향
+  ------------------------------------------------------------------------
+  이 게이지의 각도는 9시=0도, 12시=90도, 3시=180도이고, 화면에서 보면
+  **시계 방향**이다. CSS 의 양수 rotate 도 시계 방향이므로, 시작 지점(0%)은
+  최종 위치에서 sweep 만큼 **되돌린** 각도다. 그래서 from 에 음수를 쓴다.
+
+  최종 상태에는 transform 을 두지 않는다 — 바늘의 좌표(x2,y2)가 이미 목표
+  각도로 계산돼 있다. 여기에 rotate 를 겹치면 두 번 돌아간다.
+  ------------------------------------------------------------------------
+*/
 .needle {
   stroke: var(--text);
   stroke-linecap: round;
+
+  transform-origin: var(--needle-cx) var(--needle-cy);
+  animation: needleSweep var(--dur-needle) var(--ease-overshoot) both;
+}
+
+@keyframes needleSweep {
+  from {
+    transform: rotate(calc(var(--needle-sweep, 0) * -1deg));
+  }
 }
 
 .hub {
   fill: var(--text);
+}
+
+/* 애니메이션 없이도 게이지는 완전히 정상이다 — 호는 다 그려져 있고 바늘은
+   제 각도에 있다. globals.css 에 전역 규칙이 있지만 컴포넌트 자기 완결을
+   위해 여기서도 명시한다 (CLAUDE.md 규칙 4). */
+@media (prefers-reduced-motion: reduce) {
+  .band,
+  .needle {
+    animation: none;
+  }
 }
 
 /* 바늘 아래. 등급 이름과 구간 범위만 둔다 — 큰 수치는 GaugeRing 의 몫이다. */

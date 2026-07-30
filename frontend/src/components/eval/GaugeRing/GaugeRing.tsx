@@ -54,7 +54,14 @@ export default function GaugeRing({
       // 링과 숫자는 하나의 그림이다. 조각조각 읽히면 오히려 알아듣기 어렵다.
       role="img"
       aria-label={ariaLabel}
-      style={{ "--gauge-size": `${size}px` } as React.CSSProperties}
+      style={
+        {
+          "--gauge-size": `${size}px`,
+          // 링을 그려 나가는 애니메이션의 **시작값**이다 (= 아무것도 안 그린 상태).
+          // 도착값은 아래 stroke-dashoffset 속성이므로 CSS 에 적지 않는다.
+          "--gauge-circumference": circumference,
+        } as React.CSSProperties
+      }
     >
       <div className={styles.ring}>
         <svg

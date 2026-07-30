@@ -65,6 +65,24 @@
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
+
+  /* 위에서부터 순차로 올라온다. --card-index 는 컴포넌트가 넘긴다. */
+  animation: cardRise var(--dur-base) var(--ease-out)
+    calc(var(--card-index, 0) * var(--stagger-step)) both;
+}
+
+@keyframes cardRise {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+
+/* 애니메이션이 없어도 카드는 제자리에 온전히 보인다. */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    animation: none;
+  }
 }
 
 .cardHead {

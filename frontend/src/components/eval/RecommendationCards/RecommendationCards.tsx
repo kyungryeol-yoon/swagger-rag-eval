@@ -44,8 +44,8 @@ export default function RecommendationCards({
       </header>
 
       <ul className={`${styles.grid} ${layout === "stack" ? styles.stack : ""}`}>
-        {recommendations.map((item) => (
-          <Card key={item.order} item={item} />
+        {recommendations.map((item, index) => (
+          <Card key={item.order} item={item} index={index} />
         ))}
       </ul>
 
@@ -61,7 +61,7 @@ export default function RecommendationCards({
   );
 }
 
-function Card({ item }: { item: Recommendation }) {
+function Card({ item, index }: { item: Recommendation; index: number }) {
   const color = priorityColor(item.priority);
   // 막대는 0~100 안에서만 그린다. 계약상 범위 안이지만 넘치면 카드를 뚫는다.
   const width = Math.min(100, Math.max(0, item.failShare));
@@ -69,7 +69,14 @@ function Card({ item }: { item: Recommendation }) {
   return (
     <li
       className={styles.card}
-      style={{ "--priority-color": color } as React.CSSProperties}
+      style={
+        {
+          "--priority-color": color,
+          // 순차 등장용. order 가 아니라 배열 위치다 — order 는 1부터 시작하고
+          // 건너뛴 값이 있을 수 있어 지연이 어긋난다.
+          "--card-index": index,
+        } as React.CSSProperties
+      }
     >
       <div className={styles.cardHead}>
         <span className={`${styles.order} tabular`} aria-hidden="true">

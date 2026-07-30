@@ -103,7 +103,7 @@ export default function GradeScale({
           aria-hidden="true"
           focusable="false"
         >
-          {bands.map((b) => {
+          {bands.map((b, index) => {
             const d = bandArcPath(b, cx, cy, radius, GAP_DEGREES);
             if (!d) {
               return null;
@@ -115,12 +115,28 @@ export default function GradeScale({
                 d={d}
                 strokeWidth={stroke}
                 stroke={gradeColor(b.grade)}
+                /*
+                  pathLength 를 100 으로 고정하면 stroke-dasharray / dashoffset 을
+                  **길이와 무관한 0~100 스케일**로 쓸 수 있다. 호의 실제 길이를
+                  JS 로 재지 않고도 CSS 만으로 좌→우 그리기가 된다
+                  (구간마다 길이가 다르므로 이게 없으면 값을 계산해 넘겨야 한다).
+                */
+                pathLength={100}
+                style={{ "--band-index": index } as React.CSSProperties}
               />
             );
           })}
 
           {/* 바늘은 --text 다. 구간색과 같은 계열이면 어느 구간을 가리키는지
-              읽히지 않는다. */}
+              읽히지 않는다.
+
+              등장할 때 0%(9시)에서 현재 값까지 회전한다. 그리려면 회전 중심과
+              회전량을 CSS 에 알려줘야 한다:
+                --needle-cx/cy  회전 중심. **SVG 요소의 transform-origin 기본값은
+                                0 0 이라(HTML 과 다르다) 반드시 지정해야 한다.**
+                                안 주면 바늘이 좌상단을 축으로 돌아 화면을 벗어난다.
+                --needle-sweep  현재 값의 각도(도, 단위 없는 수).
+                                keyframes 가 이만큼 되돌린 지점에서 출발한다. */}
           <line
             className={styles.needle}
             x1={cx}
@@ -128,6 +144,13 @@ export default function GradeScale({
             x2={needleTip.x}
             y2={needleTip.y}
             strokeWidth={Math.max(2, stroke * 0.18)}
+            style={
+              {
+                "--needle-cx": `${cx}px`,
+                "--needle-cy": `${cy}px`,
+                "--needle-sweep": needleAngle,
+              } as React.CSSProperties
+            }
           />
           <circle className={styles.hub} cx={cx} cy={cy} r={stroke * 0.42} />
         </svg>

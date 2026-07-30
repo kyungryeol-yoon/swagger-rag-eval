@@ -166,6 +166,8 @@ export default function QuestionTypeChart({
               viewBox={`0 0 ${DONUT_VIEWBOX} ${DONUT_VIEWBOX}`}
               aria-hidden="true"
               focusable="false"
+              /* 조각들이 상속해 쓴다. 조각마다 넘기면 같은 값이 7번 반복된다. */
+              style={{ "--donut-circumference": DONUT_CIRCUMFERENCE } as React.CSSProperties}
             >
               <circle
                 className={styles.donutTrack}
@@ -174,8 +176,8 @@ export default function QuestionTypeChart({
                 r={DONUT_RADIUS}
                 strokeWidth={DONUT_STROKE}
               />
-              {visible.map((segment) => (
-                <Slice key={segment.type} segment={segment} gap={gap} />
+              {visible.map((segment, index) => (
+                <Slice key={segment.type} segment={segment} gap={gap} index={index} />
               ))}
             </svg>
 
@@ -238,16 +240,20 @@ export default function QuestionTypeChart({
         </h3>
 
         <div className={styles.bars} role="img" aria-label={barsLabel}>
-          {ranked.map((item) => (
+          {ranked.map((item, index) => (
             <div key={item.type} className={styles.barRow}>
               <span className={styles.barLabel}>{questionTypeLabel[item.type]}</span>
               <span className={styles.barTrack}>
                 <span
                   className={styles.barFill}
-                  style={{
-                    width: `${Math.min(100, Math.max(0, item.top3Accuracy))}%`,
-                    background: questionTypeColor(item.type),
-                  }}
+                  style={
+                    {
+                      width: `${Math.min(100, Math.max(0, item.top3Accuracy))}%`,
+                      background: questionTypeColor(item.type),
+                      // 위(낮은 인식률)에서 아래로 순차. 개선 대상이 먼저 자란다.
+                      "--bar-index": index,
+                    } as React.CSSProperties
+                  }
                 />
               </span>
               <span className={`${styles.barValue} tabular`}>
@@ -282,7 +288,15 @@ export default function QuestionTypeChart({
   );
 }
 
-function Slice({ segment, gap }: { segment: DonutSegment; gap: number }) {
+function Slice({
+  segment,
+  gap,
+  index,
+}: {
+  segment: DonutSegment;
+  gap: number;
+  index: number;
+}) {
   // 간격만큼 양쪽에서 깎는다. 조각이 간격보다 얇으면 0 이 되어 사라진다 —
   // 억지로 그리면 옆 조각을 침범한다.
   const drawn = Math.max(0, segment.sweepAngle - gap);
@@ -303,6 +317,21 @@ function Slice({ segment, gap }: { segment: DonutSegment; gap: number }) {
       stroke={questionTypeColor(segment.type)}
       strokeDasharray={`${arcLength} ${DONUT_CIRCUMFERENCE}`}
       strokeDashoffset={offset}
+      /*
+        순차 등장용. `index` 는 **그려지는 조각들 사이의 순서**다 —
+        questionTypes 배열의 위치가 아니다. 0건인 유형은 호출부에서 이미
+        걸러졌으므로, 그걸 그대로 쓰면 중간에 빈 순번이 생겨 stagger 가
+        끊긴다 (유형 3종 fixture 에서 실제로 그렇다).
+
+        --slice-arc 는 이 조각의 호 길이. 자기 길이만큼 자라나야 하므로
+        조각마다 시작값이 다르다.
+      */
+      style={
+        {
+          "--slice-index": index,
+          "--slice-arc": arcLength,
+        } as React.CSSProperties
+      }
     />
   );
 }
