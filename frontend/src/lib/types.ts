@@ -18,36 +18,38 @@ type Schemas = components["schemas"];
 
 // --- 최상위 응답 -----------------------------------------------------------
 
-/** GET /api/v1/evaluations/{trace_id} 의 응답. 대시보드 전체가 이것 하나로 그려진다. */
+/** POST /api/v1/evaluations 의 응답. 대시보드 전체가 이것 하나로 그려진다. */
 export type Evaluation = Schemas["EvaluationReport"];
 
-/** GET /api/v1/evaluations 목록의 한 항목. 목록·최신 리다이렉트용 최소 필드. */
-export type EvaluationListItem = Schemas["EvaluationListItem"];
+/** POST /api/v1/evaluations 의 요청 본문. `{ queryId }` — 백엔드는 `query_id` 도 받는다. */
+export type EvaluateRequest = Schemas["EvaluateRequest"];
 
 // --- 구성 요소 -------------------------------------------------------------
 
-/** 평가 대상 DAC 앱. 평가 단위는 쿼리 하나가 아니라 앱 하나다 (contract.md §0). */
-export type TargetApp = Schemas["TargetApp"];
+/**
+ * 평가 대상 DAC 쿼리 **하나**.
+ *
+ * 평가 단위가 앱에서 쿼리로 바뀌면서 `TargetApp` 을 대신한다 (contract.md §0).
+ * summary / description / xQuestions 를 그대로 들고 있어서, 화면이 "이 설명으로
+ * 검색이 걸릴 만한가" 를 사용자에게 직접 보여줄 수 있다.
+ */
+export type TargetQuery = Schemas["TargetQuery"];
 
-/** 쿼리 1개의 설명 품질과 인식률. 이 화면의 실질 산출물이다. */
-export type QueryStat = Schemas["QueryStat"];
 export type EvaluationMeta = Schemas["EvaluationMeta"];
 export type EvaluationSummary = Schemas["EvaluationSummary"];
 export type QuestionTypeStat = Schemas["QuestionTypeStat"];
 export type Recommendation = Schemas["Recommendation"];
 
-/** 문항 1개의 평가 결과(성공 포함). 실패만이 아니라 100문항 전체가 이 타입이다. */
+/** 생성된 질문 1개의 평가 결과(성공 포함). 실패만이 아니라 100문항 전체가 이 타입이다. */
 export type QuestionResult = Schemas["QuestionResult"];
-/** 1위 검색 결과. 순위가 자명해 rank 가 없다. */
-export type TopResult = Schemas["TopResult"];
 
-/** 문항이 찾아냈어야 하는 정답 쿼리. */
-export type ExpectedApi = Schemas["ExpectedApi"];
-/** 검색 결과 1건(순위 포함). Top-3 목록용. */
+/**
+ * 검색 결과 1건(순위 포함).
+ *
+ * `method` 가 없다 — 결과를 식별하는 것은 `queryId` 이고 `path` 는 표시용이다.
+ * **hit 판정도 queryId 로 한다** (contract.md §2).
+ */
 export type SearchResult = Schemas["SearchResult"];
-export type PreviousEvaluation = Schemas["PreviousEvaluation"];
-/** 외부 평가툴 원본 버전 정보 (meta.rawSource). */
-export type RawSource = Schemas["RawSource"];
 
 // --- Enum ------------------------------------------------------------------
 // 문자열 리터럴 유니온으로 생성된다.
@@ -56,7 +58,11 @@ export type RawSource = Schemas["RawSource"];
 export type Grade = Schemas["Grade"];
 export type Priority = Schemas["Priority"];
 export type SearchMode = Schemas["SearchMode"];
+
+/** **자리표시다** — 실제 분류 체계는 미확정(open-questions #69). */
 export type QuestionType = Schemas["QuestionType"];
+
+/** 항목 전체 목록이 미확정(open-questions #70). */
 export type FailureCategory = Schemas["FailureCategory"];
-/** 문항의 실패 범위. NONE(성공) / TOP1_ONLY / TOP3. */
+
 export type FailureScope = Schemas["FailureScope"];

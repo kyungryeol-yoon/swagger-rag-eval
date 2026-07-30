@@ -1,6 +1,11 @@
 """대시보드 API 진입점.
 
-현재는 저장된 평가 결과를 반환한다. 실제 평가 파이프라인은 Phase 8.
+POST /api/v1/evaluations 하나가 전부다. 쿼리 1개를 평가하고 결과를 반환하며
+**저장하지 않는다** (contract.md §0).
+
+지금 평가는 대역이다 — fixture 를 읽어 돌려준다. 실제 파이프라인(pgvector 조회 →
+LLM 질문 생성 → bge-m3 임베딩 → 벡터 검색)이 붙는 자리는
+`app/ports/spec_repository.py` 에 적혀 있다.
 """
 
 import logging
@@ -56,12 +61,12 @@ app.include_router(evaluations.router)
 
 @app.exception_handler(ContractViolation)
 def contract_violation_handler(request: Request, exc: ContractViolation) -> JSONResponse:
-    """저장된 평가 결과가 계약을 만족하지 않을 때.
+    """평가 결과가 계약을 만족하지 않을 때.
 
-    **클라이언트 잘못이 아니므로 500 이다.** 외부 평가툴이 낸 결과가 깨진 것이고,
-    고쳐야 할 것은 원본 데이터다. 그래서 `detail` 에 어느 필드가 왜 틀렸는지를
-    그대로 실어 보낸다 — 대시보드의 error.tsx 가 개발 환경에서 이 문장을
-    보여주면, 브라우저만 보고도 원본 JSON 의 어느 줄을 고칠지 알 수 있다.
+    **클라이언트 잘못이 아니므로 500 이다.** 평가 파이프라인이 낸 결과가 깨진
+    것이고, 고쳐야 할 것은 그 출력이다. 그래서 `detail` 에 어느 필드가 왜
+    틀렸는지를 그대로 실어 보낸다 — 대시보드의 error.tsx 가 개발 환경에서 이
+    문장을 보여주면, 브라우저만 보고도 어디를 고칠지 알 수 있다.
 
     조용히 200 을 주고 화면을 반쯤 그리게 두지 않는다.
     """
@@ -88,15 +93,19 @@ def health() -> dict[str, str]:
 
 @app.get("/ready", tags=["system"], summary="레디니스 체크")
 def ready(repository: SpecRepositoryDep) -> JSONResponse:
-    """데이터 소스에서 평가 결과가 실제로 읽히는지 확인한다.
+    """데이터 소스가 실제로 읽히는지 확인한다.
+
+    기준 쿼리 하나를 평가해 본다. 로컬 대역은 fixture 를 읽는 것이고, 사내
+    구현에서는 pgvector·LLM 까지 실제로 타므로 **readiness 체크가 비싸진다** —
+    그때는 파이프라인 전체가 아니라 pgvector 연결만 보는 쪽으로 좁혀야 한다
+    (open-questions #71).
 
     readiness 용이다. 실패하면 트래픽을 받지 않아야 하므로 503 을 준다.
-    저장소는 Port 를 경유하므로, 사내에서 DB 어댑터로 바뀌면
-    이 체크가 곧 DB 연결 확인이 된다.
+    Port 를 경유하므로 사내 구현으로 바뀌면 이 체크가 곧 그 구현의 연결 확인이 된다.
     """
-    trace_id = settings.readiness_trace_id
+    query_id = settings.readiness_query_id
     try:
-        found = repository.get_evaluation(trace_id) is not None
+        found = repository.evaluate(query_id) is not None
     except ContractViolation as exc:
         # 읽히긴 했는데 계약을 만족하지 않는다. 트래픽을 받아 봐야 화면이 깨지므로
         # 마찬가지로 not_ready 다. 다만 "못 읽었다" 와는 원인이 다르니 구분해 적는다.
@@ -115,7 +124,7 @@ def ready(repository: SpecRepositoryDep) -> JSONResponse:
     if not found:
         return JSONResponse(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            content={"status": "not_ready", "reason": f"평가 결과 없음: {trace_id}"},
+            content={"status": "not_ready", "reason": f"쿼리 없음: {query_id}"},
         )
 
     return JSONResponse(status_code=status.HTTP_200_OK, content={"status": "ready"})

@@ -35,8 +35,9 @@ class Settings(BaseSettings):
     # 로컬 저장소가 읽는 디렉토리. 사내에서 DB 어댑터로 갈아끼우면 쓰이지 않는다.
     fixture_dir: Path = Path(__file__).resolve().parents[1] / "fixtures"
 
-    # /ready 가 존재를 확인할 평가 결과. 데이터 소스가 실제로 읽히는지 보는 용도다.
-    readiness_trace_id: str = "A492"
+    # /ready 가 존재를 확인할 쿼리. 데이터 소스가 실제로 읽히는지 보는 용도다.
+    # 무상태라 "저장된 평가" 가 아니라 "평가할 수 있는 쿼리" 를 확인한다.
+    readiness_query_id: str = "q-lot-status"
 
     @property
     def cors_origins(self) -> list[str]:

@@ -1,0 +1,2571 @@
+{
+  "traceId": "R-71b4f0",
+  "evaluatedAt": "2026-07-30T12:24:00+09:00",
+  "target": {
+    "queryId": "q-no-result",
+    "appId": null,
+    "method": "GET",
+    "path": "/queries/chamber-sensor-trend",
+    "summary": "챔버 센서 추이",
+    "description": null,
+    "xQuestions": []
+  },
+  "meta": {
+    "embeddingModel": "bge-m3",
+    "searchMode": "VECTOR",
+    "topK": 3,
+    "questionCount": 100,
+    "durationMs": 39800
+  },
+  "summary": {
+    "totalQuestions": 100,
+    "top1Accuracy": 60.0,
+    "top3Accuracy": 80.0,
+    "top1FailCount": 40,
+    "top3FailCount": 20,
+    "top1Grade": "CRITICAL",
+    "top3Grade": "NEEDS_IMPROVEMENT"
+  },
+  "questionTypes": [
+    {
+      "type": "DIRECT",
+      "label": "직접 질문",
+      "count": 12,
+      "ratio": 12.0,
+      "top3Accuracy": 100.0
+    },
+    {
+      "type": "USER_NL",
+      "label": "사용자 자연어 질문",
+      "count": 12,
+      "ratio": 12.0,
+      "top3Accuracy": 100.0
+    },
+    {
+      "type": "DOMAIN_TERM",
+      "label": "업무 용어 질문",
+      "count": 12,
+      "ratio": 12.0,
+      "top3Accuracy": 100.0
+    },
+    {
+      "type": "PARAMETER",
+      "label": "파라미터 기반 질문",
+      "count": 11,
+      "ratio": 11.0,
+      "top3Accuracy": 100.0
+    },
+    {
+      "type": "ERROR_CASE",
+      "label": "오류/에러 상황 질문",
+      "count": 11,
+      "ratio": 11.0,
+      "top3Accuracy": 100.0
+    },
+    {
+      "type": "SHORT_KEYWORD",
+      "label": "짧은 키워드 질문",
+      "count": 31,
+      "ratio": 31.0,
+      "top3Accuracy": 35.5
+    },
+    {
+      "type": "MIXED_LANG",
+      "label": "한영 혼합 질문",
+      "count": 11,
+      "ratio": 11.0,
+      "top3Accuracy": 100.0
+    }
+  ],
+  "recommendations": [
+    {
+      "order": 1,
+      "title": "설명(Description) 보강",
+      "description": "summary 한 줄만 있고 description 이 없습니다. 짧은 키워드나 의미 없는 입력에서는 유사도 하한을 넘는 결과가 아예 나오지 않습니다.",
+      "priority": "HIGH",
+      "failShare": 62.0
+    }
+  ],
+  "questions": [
+    {
+      "no": 1,
+      "question": "asdf",
+      "questionType": "SHORT_KEYWORD",
+      "top3": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "KEYWORD_MISMATCH",
+      "reason": "유사도 하한을 넘는 결과가 없음"
+    },
+    {
+      "no": 6,
+      "question": "1234",
+      "questionType": "SHORT_KEYWORD",
+      "top3": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "KEYWORD_MISMATCH",
+      "reason": "유사도 하한을 넘는 결과가 없음"
+    },
+    {
+      "no": 11,
+      "question": "그거 있잖아 그거",
+      "questionType": "SHORT_KEYWORD",
+      "top3": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "KEYWORD_MISMATCH",
+      "reason": "유사도 하한을 넘는 결과가 없음"
+    },
+    {
+      "no": 16,
+      "question": "zzz",
+      "questionType": "SHORT_KEYWORD",
+      "top3": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "KEYWORD_MISMATCH",
+      "reason": "유사도 하한을 넘는 결과가 없음"
+    },
+    {
+      "no": 21,
+      "question": "test test",
+      "questionType": "SHORT_KEYWORD",
+      "top3": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "KEYWORD_MISMATCH",
+      "reason": "유사도 하한을 넘는 결과가 없음"
+    },
+    {
+      "no": 26,
+      "question": "?????",
+      "questionType": "SHORT_KEYWORD",
+      "top3": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "KEYWORD_MISMATCH",
+      "reason": "유사도 하한을 넘는 결과가 없음"
+    },
+    {
+      "no": 31,
+      "question": "아무거나",
+      "questionType": "SHORT_KEYWORD",
+      "top3": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "KEYWORD_MISMATCH",
+      "reason": "유사도 하한을 넘는 결과가 없음"
+    },
+    {
+      "no": 36,
+      "question": "ㅁㄴㅇㄹ",
+      "questionType": "SHORT_KEYWORD",
+      "top3": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "KEYWORD_MISMATCH",
+      "reason": "유사도 하한을 넘는 결과가 없음"
+    },
+    {
+      "no": 41,
+      "question": "asdf",
+      "questionType": "SHORT_KEYWORD",
+      "top3": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "KEYWORD_MISMATCH",
+      "reason": "유사도 하한을 넘는 결과가 없음"
+    },
+    {
+      "no": 46,
+      "question": "1234",
+      "questionType": "SHORT_KEYWORD",
+      "top3": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "KEYWORD_MISMATCH",
+      "reason": "유사도 하한을 넘는 결과가 없음"
+    },
+    {
+      "no": 51,
+      "question": "그거 있잖아 그거",
+      "questionType": "SHORT_KEYWORD",
+      "top3": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "KEYWORD_MISMATCH",
+      "reason": "유사도 하한을 넘는 결과가 없음"
+    },
+    {
+      "no": 56,
+      "question": "zzz",
+      "questionType": "SHORT_KEYWORD",
+      "top3": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "KEYWORD_MISMATCH",
+      "reason": "유사도 하한을 넘는 결과가 없음"
+    },
+    {
+      "no": 61,
+      "question": "test test",
+      "questionType": "SHORT_KEYWORD",
+      "top3": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "KEYWORD_MISMATCH",
+      "reason": "유사도 하한을 넘는 결과가 없음"
+    },
+    {
+      "no": 66,
+      "question": "?????",
+      "questionType": "SHORT_KEYWORD",
+      "top3": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "KEYWORD_MISMATCH",
+      "reason": "유사도 하한을 넘는 결과가 없음"
+    },
+    {
+      "no": 71,
+      "question": "아무거나",
+      "questionType": "SHORT_KEYWORD",
+      "top3": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "KEYWORD_MISMATCH",
+      "reason": "유사도 하한을 넘는 결과가 없음"
+    },
+    {
+      "no": 76,
+      "question": "ㅁㄴㅇㄹ",
+      "questionType": "SHORT_KEYWORD",
+      "top3": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "KEYWORD_MISMATCH",
+      "reason": "유사도 하한을 넘는 결과가 없음"
+    },
+    {
+      "no": 81,
+      "question": "asdf",
+      "questionType": "SHORT_KEYWORD",
+      "top3": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "KEYWORD_MISMATCH",
+      "reason": "유사도 하한을 넘는 결과가 없음"
+    },
+    {
+      "no": 86,
+      "question": "1234",
+      "questionType": "SHORT_KEYWORD",
+      "top3": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "KEYWORD_MISMATCH",
+      "reason": "유사도 하한을 넘는 결과가 없음"
+    },
+    {
+      "no": 91,
+      "question": "그거 있잖아 그거",
+      "questionType": "SHORT_KEYWORD",
+      "top3": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "KEYWORD_MISMATCH",
+      "reason": "유사도 하한을 넘는 결과가 없음"
+    },
+    {
+      "no": 96,
+      "question": "zzz",
+      "questionType": "SHORT_KEYWORD",
+      "top3": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "KEYWORD_MISMATCH",
+      "reason": "유사도 하한을 넘는 결과가 없음"
+    },
+    {
+      "no": 4,
+      "question": "공정별 소요 시간 통계",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": true,
+      "failureScope": "TOP1_ONLY",
+      "expectedRank": 2,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "이름이 비슷한 쿼리가 1위를 차지함"
+    },
+    {
+      "no": 10,
+      "question": "택트 타임 추이",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": true,
+      "failureScope": "TOP1_ONLY",
+      "expectedRank": 2,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "이름이 비슷한 쿼리가 1위를 차지함"
+    },
+    {
+      "no": 13,
+      "question": "step cycle time 조회 query 있나요?",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": true,
+      "failureScope": "TOP1_ONLY",
+      "expectedRank": 2,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "이름이 비슷한 쿼리가 1위를 차지함"
+    },
+    {
+      "no": 19,
+      "question": "스텝별 처리 시간 평균과 편차를 같이 보고 싶어요",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": true,
+      "failureScope": "TOP1_ONLY",
+      "expectedRank": 2,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "이름이 비슷한 쿼리가 1위를 차지함"
+    },
+    {
+      "no": 25,
+      "question": "사이클타임",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": true,
+      "failureScope": "TOP1_ONLY",
+      "expectedRank": 2,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "이름이 비슷한 쿼리가 1위를 차지함"
+    },
+    {
+      "no": 28,
+      "question": "cycle time 이 이상한 구간 조회",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": true,
+      "failureScope": "TOP1_ONLY",
+      "expectedRank": 2,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "이름이 비슷한 쿼리가 1위를 차지함"
+    },
+    {
+      "no": 34,
+      "question": "공정별 소요 시간 통계",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": true,
+      "failureScope": "TOP1_ONLY",
+      "expectedRank": 2,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "이름이 비슷한 쿼리가 1위를 차지함"
+    },
+    {
+      "no": 40,
+      "question": "택트 타임 추이",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": true,
+      "failureScope": "TOP1_ONLY",
+      "expectedRank": 2,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "이름이 비슷한 쿼리가 1위를 차지함"
+    },
+    {
+      "no": 43,
+      "question": "step cycle time 조회 query 있나요?",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": true,
+      "failureScope": "TOP1_ONLY",
+      "expectedRank": 2,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "이름이 비슷한 쿼리가 1위를 차지함"
+    },
+    {
+      "no": 49,
+      "question": "스텝별 처리 시간 평균과 편차를 같이 보고 싶어요",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": true,
+      "failureScope": "TOP1_ONLY",
+      "expectedRank": 2,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "이름이 비슷한 쿼리가 1위를 차지함"
+    },
+    {
+      "no": 55,
+      "question": "사이클타임",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": true,
+      "failureScope": "TOP1_ONLY",
+      "expectedRank": 2,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "이름이 비슷한 쿼리가 1위를 차지함"
+    },
+    {
+      "no": 58,
+      "question": "cycle time 이 이상한 구간 조회",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": true,
+      "failureScope": "TOP1_ONLY",
+      "expectedRank": 2,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "이름이 비슷한 쿼리가 1위를 차지함"
+    },
+    {
+      "no": 64,
+      "question": "공정별 소요 시간 통계",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": true,
+      "failureScope": "TOP1_ONLY",
+      "expectedRank": 2,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "이름이 비슷한 쿼리가 1위를 차지함"
+    },
+    {
+      "no": 70,
+      "question": "택트 타임 추이",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": true,
+      "failureScope": "TOP1_ONLY",
+      "expectedRank": 2,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "이름이 비슷한 쿼리가 1위를 차지함"
+    },
+    {
+      "no": 73,
+      "question": "step cycle time 조회 query 있나요?",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": true,
+      "failureScope": "TOP1_ONLY",
+      "expectedRank": 2,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "이름이 비슷한 쿼리가 1위를 차지함"
+    },
+    {
+      "no": 79,
+      "question": "스텝별 처리 시간 평균과 편차를 같이 보고 싶어요",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": true,
+      "failureScope": "TOP1_ONLY",
+      "expectedRank": 2,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "이름이 비슷한 쿼리가 1위를 차지함"
+    },
+    {
+      "no": 85,
+      "question": "사이클타임",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": true,
+      "failureScope": "TOP1_ONLY",
+      "expectedRank": 2,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "이름이 비슷한 쿼리가 1위를 차지함"
+    },
+    {
+      "no": 88,
+      "question": "cycle time 이 이상한 구간 조회",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": true,
+      "failureScope": "TOP1_ONLY",
+      "expectedRank": 2,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "이름이 비슷한 쿼리가 1위를 차지함"
+    },
+    {
+      "no": 94,
+      "question": "공정별 소요 시간 통계",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": true,
+      "failureScope": "TOP1_ONLY",
+      "expectedRank": 2,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "이름이 비슷한 쿼리가 1위를 차지함"
+    },
+    {
+      "no": 100,
+      "question": "택트 타임 추이",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": true,
+      "failureScope": "TOP1_ONLY",
+      "expectedRank": 2,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "이름이 비슷한 쿼리가 1위를 차지함"
+    },
+    {
+      "no": 2,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 3,
+      "question": "step cycle time 조회 query 있나요?",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 5,
+      "question": "사이클타임",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 7,
+      "question": "스텝 사이클타임이 비어 있는 구간을 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 8,
+      "question": "cycle time 이 이상한 구간 조회",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 9,
+      "question": "스텝별 처리 시간 평균과 편차를 같이 보고 싶어요",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 12,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 14,
+      "question": "공정별 소요 시간 통계",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 15,
+      "question": "사이클타임",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 17,
+      "question": "스텝 사이클타임이 비어 있는 구간을 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 18,
+      "question": "cycle time 이 이상한 구간 조회",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 20,
+      "question": "택트 타임 추이",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 22,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 23,
+      "question": "step cycle time 조회 query 있나요?",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 24,
+      "question": "공정별 소요 시간 통계",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 27,
+      "question": "스텝 사이클타임이 비어 있는 구간을 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 29,
+      "question": "스텝별 처리 시간 평균과 편차를 같이 보고 싶어요",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 30,
+      "question": "택트 타임 추이",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 32,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 33,
+      "question": "step cycle time 조회 query 있나요?",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 35,
+      "question": "사이클타임",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 37,
+      "question": "스텝 사이클타임이 비어 있는 구간을 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 38,
+      "question": "cycle time 이 이상한 구간 조회",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 39,
+      "question": "스텝별 처리 시간 평균과 편차를 같이 보고 싶어요",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 42,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 44,
+      "question": "공정별 소요 시간 통계",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 45,
+      "question": "사이클타임",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 47,
+      "question": "스텝 사이클타임이 비어 있는 구간을 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 48,
+      "question": "cycle time 이 이상한 구간 조회",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 50,
+      "question": "택트 타임 추이",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 52,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 53,
+      "question": "step cycle time 조회 query 있나요?",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 54,
+      "question": "공정별 소요 시간 통계",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 57,
+      "question": "스텝 사이클타임이 비어 있는 구간을 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 59,
+      "question": "스텝별 처리 시간 평균과 편차를 같이 보고 싶어요",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 60,
+      "question": "택트 타임 추이",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 62,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 63,
+      "question": "step cycle time 조회 query 있나요?",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 65,
+      "question": "사이클타임",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 67,
+      "question": "스텝 사이클타임이 비어 있는 구간을 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 68,
+      "question": "cycle time 이 이상한 구간 조회",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 69,
+      "question": "스텝별 처리 시간 평균과 편차를 같이 보고 싶어요",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 72,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 74,
+      "question": "공정별 소요 시간 통계",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 75,
+      "question": "사이클타임",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 77,
+      "question": "스텝 사이클타임이 비어 있는 구간을 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 78,
+      "question": "cycle time 이 이상한 구간 조회",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 80,
+      "question": "택트 타임 추이",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 82,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 83,
+      "question": "step cycle time 조회 query 있나요?",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 84,
+      "question": "공정별 소요 시간 통계",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 87,
+      "question": "스텝 사이클타임이 비어 있는 구간을 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 89,
+      "question": "스텝별 처리 시간 평균과 편차를 같이 보고 싶어요",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 90,
+      "question": "택트 타임 추이",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 92,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 93,
+      "question": "step cycle time 조회 query 있나요?",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 95,
+      "question": "사이클타임",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 97,
+      "question": "스텝 사이클타임이 비어 있는 구간을 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 98,
+      "question": "cycle time 이 이상한 구간 조회",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 99,
+      "question": "스텝별 처리 시간 평균과 편차를 같이 보고 싶어요",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-no-result",
+          "path": "/queries/chamber-sensor-trend",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    }
+  ]
+}

@@ -1,16 +1,15 @@
 import { notFound } from "next/navigation";
 
 import ActionPanel from "@/components/eval/ActionPanel/ActionPanel";
-import AppInfoCard from "@/components/eval/AppInfoCard/AppInfoCard";
 import FailureTable from "@/components/eval/FailureTable/FailureTable";
 import GaugeRing from "@/components/eval/GaugeRing/GaugeRing";
 import GradeScale from "@/components/eval/GradeScale/GradeScale";
-import QueryQualityTable from "@/components/eval/QueryQualityTable/QueryQualityTable";
+import QueryInfoCard from "@/components/eval/QueryInfoCard/QueryInfoCard";
 import QuestionTypeChart from "@/components/eval/QuestionTypeChart/QuestionTypeChart";
 import RecommendationCards from "@/components/eval/RecommendationCards/RecommendationCards";
-import SummaryCards, { formatDelta } from "@/components/eval/SummaryCards/SummaryCards";
+import SummaryCards from "@/components/eval/SummaryCards/SummaryCards";
 import ThemeToggle from "@/components/common/ThemeToggle/ThemeToggle";
-import { NotFoundError, fetchJson } from "@/lib/api";
+import { NotFoundError, postJson } from "@/lib/api";
 import { gradeColor, gradeLabel, searchModeLabel } from "@/lib/enumTokens";
 import { GRADE_BANDS, formatBandRange } from "@/lib/gradeBands";
 import type { Evaluation } from "@/lib/types";
@@ -18,11 +17,15 @@ import type { Evaluation } from "@/lib/types";
 import styles from "./page.module.css";
 
 /**
- * 평가 리포트 대시보드 — **레이아웃 정합성(Phase 7e)**.
+ * 평가 리포트 대시보드.
  *
- * 카드 격자를 맞추고 표에 폭을 준다. 좌우 2:1 분할과 sticky 를 없애고 아래로 쌓는다:
- *   헤더(제목·메타 한 줄) / 1행 앱정보+요약 / 2행 평가기준+문항유형+권장조치(3열) /
- *   3행 쿼리 품질 / 4행 실패 상세(전체 폭) / 5행 권장 액션.
+ * 배치(wire_B 구조 유지):
+ *   헤더(제목·메타 한 줄) / 1행 대상쿼리+요약 / 2행 평가기준+문항유형 /
+ *   3행 좌(유형별 막대 + 문항표) · 우(권장조치 + 권장액션)
+ *
+ * **Phase 12 에서 쿼리 품질 표가 빠졌다.** 평가 단위가 쿼리 하나가 되어
+ * "쿼리 목록" 이라는 개념이 없어졌다 (contract.md §0). 그 자리는 비워두지 않고
+ * 아래 행들이 그대로 올라온다 — 대상 쿼리의 설명은 QueryInfoCard 가 보여준다.
  *
  * 컴포넌트 내부는 건드리지 않고 배치·폭만 조정한다. 예외는 계약된 것 —
  * SummaryCards.omit, RecommendationCards.layout, 경로 말줄임.
@@ -37,13 +40,19 @@ import styles from "./page.module.css";
  */
 export const dynamic = "force-dynamic";
 
-async function getEvaluation(traceId: string): Promise<Evaluation> {
-  // 타임아웃·실패 분류·주소 표기는 lib/api 가 맡는다. 여기서는 404 만 갈라낸다 —
-  // "결과가 없다" 와 "백엔드가 죽었다" 는 사용자가 할 일이 다르기 때문이다.
+/**
+ * 평가를 실행한다.
+ *
+ * **POST 다.** 무상태라서 요청 자체가 평가를 돌린다 (contract.md §1).
+ * 그래서 이 페이지가 열릴 때마다 새 평가가 실행된다 — 실제 파이프라인이
+ * 붙으면 LLM 호출 100건이 매번 일어난다는 뜻이다 (open-questions #71).
+ *
+ * 타임아웃·실패 분류·주소 표기는 lib/api 가 맡는다. 여기서는 404 만 갈라낸다 —
+ * "그런 쿼리가 없다" 와 "백엔드가 죽었다" 는 사용자가 할 일이 다르기 때문이다.
+ */
+async function runEvaluation(queryId: string): Promise<Evaluation> {
   try {
-    return await fetchJson<Evaluation>(
-      `/api/v1/evaluations/${encodeURIComponent(traceId)}`,
-    );
+    return await postJson<Evaluation>("/api/v1/evaluations", { queryId });
   } catch (error) {
     if (error instanceof NotFoundError) {
       notFound();
@@ -73,42 +82,23 @@ function formatDuration(ms: number): string {
   return `${minutes}분 ${seconds}초`;
 }
 
-/**
- * 문항 출처 표기.
- *
- * `questionSource` 는 아직 enum 이 아니라 자유 문자열이다
- * (docs/open-questions.md #25). 확정되면 enumTokens 로 옮긴다.
- * 모르는 값은 그대로 보여준다 — 감추면 신뢰도 판단 근거가 사라진다.
- */
-function formatQuestionSource(source: string): string {
-  if (source === "LLM_GENERATED_HUMAN_REVIEWED") {
-    return "LLM 생성 · 사람 검수";
-  }
-  return source;
-}
-
 export default async function EvaluationPage({
   params,
 }: {
-  params: Promise<{ traceId: string }>;
+  /**
+   * 경로 세그먼트는 **query_id** 다 (폴더 이름 `[queryId]` 와 맞춘다).
+   *
+   * 프론트가 query_id 를 어떻게 받을지는 아직 미정이다 (open-questions #73) —
+   * DAC 이 URL 파라미터로 줄지 iframe 으로 감쌀지 정해지지 않았다. URL 세그먼트는
+   * 어느 쪽이 되어도 동작하는 형태라 그대로 둔다.
+   */
+  params: Promise<{ queryId: string }>;
 }) {
-  const { traceId } = await params;
-  const report = await getEvaluation(traceId);
+  const { queryId } = await params;
+  const report = await runEvaluation(queryId);
 
-  // Top-3 인식률 델타는 GaugeRing 옆으로 옮겼다(요약 카드에서 top3Accuracy 를 뺐다).
-  // 계산식은 SummaryCards 의 순수 함수를 재사용한다 — 두 곳에 두지 않는다.
-  const top3Delta = report.previous
-    ? formatDelta(report.summary.top3Accuracy, report.previous.top3Accuracy)
-    : null;
-  // 실패가 없으면 권장 조치도 재생성 후보도 없다. 그때 우 컬럼은 통째로 사라진다.
+  // 실패가 없으면 권장 조치가 없다. 그때 우 컬럼은 통째로 사라진다.
   const hasActions = report.recommendations.length > 0;
-
-  const deltaClass =
-    top3Delta?.direction === "up"
-      ? styles.deltaUp
-      : top3Delta?.direction === "down"
-        ? styles.deltaDown
-        : styles.deltaSame;
 
   return (
     <main className={styles.page}>
@@ -123,25 +113,6 @@ export default async function EvaluationPage({
           </nav>
           <h1 className={styles.title}>RAG 검색 인식률 평가 리포트</h1>
 
-          {/* 어떤 버전의 외부 평가툴 결과인지 추적용(meta.rawSource). 없으면 숨김. */}
-          {report.meta.rawSource && (
-            <p className={styles.rawSource}>
-              <span>
-                평가툴{" "}
-                <span className="tabular">{report.meta.rawSource.toolVersion}</span>
-              </span>
-              <span>
-                프롬프트{" "}
-                <span className="tabular">{report.meta.rawSource.promptVersion}</span>
-              </span>
-              <span>
-                생성{" "}
-                <span className="tabular">
-                  {formatDateTime(report.meta.rawSource.generatedAt)}
-                </span>
-              </span>
-            </p>
-          )}
         </div>
 
         {/* 재현성 메타 한 줄 + 테마 토글. 항목이 늘면 줄바꿈으로 흡수된다. */}
@@ -152,7 +123,10 @@ export default async function EvaluationPage({
             <dd className="tabular">{formatDateTime(report.evaluatedAt)}</dd>
           </div>
           <div className={styles.metaItem}>
-            <dt>Trace ID</dt>
+            {/* 저장되지 않는 값이다. 조회용이 아니라 로그 대조용이라는 뜻으로
+                "실행 ID" 로 적는다 — "Trace ID" 는 나중에 찾아볼 수 있다는 인상을
+                준다 (contract.md §0, open-questions #68). */}
+            <dt>실행 ID</dt>
             <dd className="tabular">{report.traceId}</dd>
           </div>
           <div className={styles.metaItem}>
@@ -171,7 +145,9 @@ export default async function EvaluationPage({
           </div>
           <div className={styles.metaItem}>
             <dt>문항</dt>
-            <dd>{formatQuestionSource(report.meta.questionSource)}</dd>
+            <dd>
+              <span className="tabular">{report.meta.questionCount}</span>개 생성
+            </dd>
           </div>
         </dl>
 
@@ -179,49 +155,24 @@ export default async function EvaluationPage({
         </div>
       </header>
 
-      {/* 행1: 평가 대상 정보(고정 ~300px) + 전체 요약(게이지 + 카드 4장 한 줄) */}
+      {/* 행1: 평가 대상 쿼리(고정 ~300px) + 전체 요약(게이지 + 카드 4장 한 줄) */}
       <section className={styles.overview} aria-label="요약">
-        <AppInfoCard target={report.target} queries={report.queries} />
+        <QueryInfoCard target={report.target} />
 
         <div className={`card ${styles.summaryBox}`}>
           <div className={styles.gaugeCol}>
-            {/* 캡션·델타는 페이지가 그린다(label=""). 그래야 델타를 캡션 옆에 붙인다. */}
+            {/* 캡션은 페이지가 그린다(label=""). 델타 뱃지는 무상태 전환으로 없다. */}
             <GaugeRing
               value={report.summary.top3Accuracy}
               grade={report.summary.top3Grade}
               size={88}
               label=""
             />
-            <div className={styles.gaugeCaption}>
-              <span>Top-3 인식률</span>
-              {top3Delta && report.previous && (
-                <span
-                  className={`${styles.deltaBadge} ${deltaClass}`}
-                  role="img"
-                  aria-label={`이전 평가 ${report.previous.traceId} 대비 ${Math.abs(
-                    report.summary.top3Accuracy - report.previous.top3Accuracy,
-                  ).toFixed(1)} 퍼센트포인트 ${
-                    top3Delta.direction === "up"
-                      ? "상승"
-                      : top3Delta.direction === "down"
-                        ? "하락"
-                        : "변화 없음"
-                  }`}
-                >
-                  <span className="tabular" aria-hidden="true">
-                    {top3Delta.text}
-                  </span>
-                </span>
-              )}
-            </div>
+            <span className={styles.gaugeCaption}>Top-3 인식률</span>
           </div>
 
           <div className={styles.summaryCards}>
-            <SummaryCards
-              summary={report.summary}
-              previous={report.previous}
-              omit={["top3Accuracy"]}
-            />
+            <SummaryCards summary={report.summary} omit={["top3Accuracy"]} />
           </div>
         </div>
       </section>
@@ -298,11 +249,6 @@ export default async function EvaluationPage({
         />
       </div>
 
-      {/* 행2.5: 쿼리별 설명 품질 (전체 폭) */}
-      <section aria-label="쿼리별 설명 품질">
-        <QueryQualityTable queries={report.queries} />
-      </section>
-
       {/* 행3: 좌(2fr) 유형별 막대 + 100문항 표 / 우(1fr) 권장 조치 + 권장 액션.
           좌우 컬럼의 전체 높이만 같으면 된다 — 우측 마지막 카드가 flex-grow 로 바닥을 맞춘다. */}
       <div className={`${styles.rowMain} ${hasActions ? "" : styles.rowMainAlone}`}>
@@ -315,7 +261,11 @@ export default async function EvaluationPage({
           />
 
           <section aria-label="문항별 결과">
-            <FailureTable questions={report.questions} summary={report.summary} />
+            <FailureTable
+              questions={report.questions}
+              summary={report.summary}
+              target={report.target}
+            />
           </section>
         </div>
 
@@ -328,7 +278,7 @@ export default async function EvaluationPage({
               <RecommendationCards recommendations={report.recommendations} layout="stack" />
             </div>
             {/* 권장 액션 — 우 컬럼 최하단. flex-grow 로 좌측 표 높이에 바닥을 맞춘다. */}
-            <ActionPanel recommendations={report.recommendations} specId={report.target.appId} />
+            <ActionPanel recommendations={report.recommendations} specId={report.target.queryId} />
           </div>
         )}
       </div>

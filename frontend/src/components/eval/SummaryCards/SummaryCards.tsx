@@ -1,4 +1,4 @@
-import type { EvaluationSummary, PreviousEvaluation } from "@/lib/types";
+import type { EvaluationSummary } from "@/lib/types";
 
 import styles from "./SummaryCards.module.css";
 
@@ -8,48 +8,11 @@ import styles from "./SummaryCards.module.css";
  * 시안은 6장이었다. 이모지 얼굴 "평가 상태" 카드는 뺐다 — 등급은 GaugeRing 이
  * 이미 표현하므로 의미가 겹친다 (docs/contract.md §5, prompts.md §9-1 #2).
  *
+ * **델타 뱃지가 없다** (Phase 12). 무상태 전환으로 `previous` 가 계약에서
+ * 사라졌다 — 비교할 이전 평가가 없다 (contract.md §0).
+ *
  * 서버 컴포넌트다. 상태도 이벤트도 없다.
  */
-
-// ---------------------------------------------------------------------------
-// 델타 계산 — 순수 함수
-// ---------------------------------------------------------------------------
-
-export type DeltaDirection = "up" | "down" | "same";
-
-export type Delta = {
-  text: string;
-  direction: DeltaDirection;
-};
-
-/**
- * 이전 평가 대비 변화량.
- *
- * **단위는 "p"(퍼센트포인트)다. "%" 가 아니다.**
- * 64% -> 78% 는 14 퍼센트포인트 상승이지 14% 상승이 아니다
- * (14% 상승이면 64 * 1.14 = 72.96 이 된다).
- * 이걸 "%" 로 적으면 개선 폭을 잘못 읽게 된다.
- *
- * 표시가 소수 첫째자리까지이므로 0.05 미만 차이는 같은 값으로 본다.
- * 그러지 않으면 -0.0001 이 "▼ -0.0p" 로 나온다.
- */
-export function formatDelta(current: number, previous: number): Delta {
-  const diff = current - previous;
-
-  if (Math.abs(diff) < 0.05) {
-    return { text: "— 0.0p", direction: "same" };
-  }
-  if (diff > 0) {
-    return { text: `▲ +${diff.toFixed(1)}p`, direction: "up" };
-  }
-  return { text: `▼ ${diff.toFixed(1)}p`, direction: "down" };
-}
-
-const DIRECTION_WORD: Record<DeltaDirection, string> = {
-  up: "상승",
-  down: "하락",
-  same: "변화 없음",
-};
 
 // ---------------------------------------------------------------------------
 // 숫자 표기
@@ -82,7 +45,6 @@ export type SummaryCardKey =
 
 export type SummaryCardsProps = {
   summary: EvaluationSummary;
-  previous?: PreviousEvaluation | null;
   /**
    * 렌더에서 뺄 카드. 예: GaugeRing 이 Top-3 인식률을 이미 보여줄 때
    * `["top3Accuracy"]` 로 중복을 없앤다. 뺀 자리는 남기지 않고 나머지가
@@ -91,9 +53,7 @@ export type SummaryCardsProps = {
   omit?: SummaryCardKey[];
 };
 
-export default function SummaryCards({ summary, previous, omit = [] }: SummaryCardsProps) {
-  const delta = previous ? formatDelta(summary.top3Accuracy, previous.top3Accuracy) : null;
-
+export default function SummaryCards({ summary, omit = [] }: SummaryCardsProps) {
   const cards: { key: SummaryCardKey; accent: string; label: string; value: string; unit: string }[] =
     [
       { key: "totalQuestions", accent: styles.accentSky, label: "총 질문 수", value: formatCount(summary.totalQuestions), unit: "개" },
@@ -107,24 +67,17 @@ export default function SummaryCards({ summary, previous, omit = [] }: SummaryCa
 
   return (
     <ul className={styles.grid}>
-      {visible.map((c) => (
-        <Card key={c.key} accent={c.accent} label={c.label} value={c.value} unit={c.unit}>
-          {/* Top-3 인식률 카드에만 델타 뱃지. previous 가 없으면 렌더하지 않는다 —
-              빈 자리를 남기면 카드 높이가 서로 어긋난다. */}
-          {c.key === "top3Accuracy" && delta && previous && (
-            <span
-              className={`${styles.delta} ${styles[delta.direction]}`}
-              role="img"
-              aria-label={`이전 평가 ${previous.traceId} 대비 ${Math.abs(
-                summary.top3Accuracy - previous.top3Accuracy,
-              ).toFixed(1)} 퍼센트포인트 ${DIRECTION_WORD[delta.direction]}`}
-            >
-              <span className="tabular" aria-hidden="true">
-                {delta.text}
-              </span>
-            </span>
-          )}
-        </Card>
+      {visible.map((c, index) => (
+        <Card
+          key={c.key}
+          accent={c.accent}
+          label={c.label}
+          value={c.value}
+          unit={c.unit}
+          // 순차 등장용. omit 으로 카드를 뺀 뒤의 **보이는 순서**다 —
+          // cards 배열의 위치를 쓰면 뺀 자리에서 stagger 가 끊긴다.
+          index={index}
+        />
       ))}
     </ul>
   );
@@ -135,22 +88,24 @@ function Card({
   label,
   value,
   unit,
-  children,
+  index,
 }: {
   accent: string;
   label: string;
   value: string;
   unit: string;
-  children?: React.ReactNode;
+  index: number;
 }) {
   return (
-    <li className={`${styles.card} ${accent}`}>
+    <li
+      className={`${styles.card} ${accent}`}
+      style={{ "--card-index": index } as React.CSSProperties}
+    >
       <span className={styles.label}>{label}</span>
       <span className={styles.figure}>
         <span className={`${styles.number} tabular`}>{value}</span>
         <span className={styles.unit}>{unit}</span>
       </span>
-      {children}
     </li>
   );
 }

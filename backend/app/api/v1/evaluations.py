@@ -1,55 +1,58 @@
-"""평가 리포트 조회 API.
+"""평가 실행 API.
 
-저장소는 `SpecRepository` Port 뒤에 있다. 이 파일은 구현체를 모른다
+파이프라인은 `SpecRepository` Port 뒤에 있다. 이 파일은 구현체를 모른다
 (어떤 어댑터가 주입되는지는 `app/api/deps.py`).
 
-평가 로직은 아직 없다. 저장된 결과를 반환할 뿐이다 (Phase 8 에서 `services/evaluator.py`).
+**무상태다.** 요청마다 평가하고 저장하지 않는다 (contract.md §0). 그래서
+목록 조회도, 추적 ID 로 다시 꺼내는 조회도 없다.
 """
 
-from typing import Annotated
+import re
 
-from fastapi import APIRouter, HTTPException, Path, status
+from fastapi import APIRouter, HTTPException, status
 
 from app.api.deps import SpecRepositoryDep
-from app.schemas.evaluation import EvaluationListItem, EvaluationReport
+from app.schemas.evaluation import EvaluateRequest, EvaluationReport
 
 router = APIRouter(prefix="/api/v1/evaluations", tags=["evaluations"])
 
-# trace_id 가 저장소 키로 내려가므로 형태를 강제한다.
-TRACE_ID_PATTERN = r"^[A-Za-z0-9_-]{1,32}$"
+# query_id 가 저장소 키(로컬은 파일 경로)로 내려가므로 형태를 강제한다.
+# 저장소도 자기 입력을 따로 검사하지만, 잘못된 입력은 여기서 422 로 끊는 편이
+# 낫다 — 500 보다 원인이 분명하다.
+QUERY_ID_PATTERN = re.compile(r"^[A-Za-z0-9_-]{1,128}$")
 
 
-@router.get(
+@router.post(
     "",
-    response_model=list[EvaluationListItem],
-    summary="평가 목록 조회",
-    description=(
-        "저장된 평가들의 요약 목록을 최신순으로 반환합니다. 목록 화면과 "
-        "'최신 평가로 리다이렉트'에 씁니다. 100문항 전체는 개별 조회로 가져옵니다."
-    ),
-)
-def list_evaluations(repository: SpecRepositoryDep) -> list[EvaluationListItem]:
-    return repository.list_evaluations()
-
-
-@router.get(
-    "/{trace_id}",
     response_model=EvaluationReport,
-    summary="평가 리포트 조회",
-    description="추적 ID로 평가 리포트 전체를 반환합니다. 대시보드 화면 전체가 이 응답 하나로 그려집니다.",
-    responses={status.HTTP_404_NOT_FOUND: {"description": "해당 추적 ID의 평가 결과가 없음"}},
+    summary="쿼리 1개 평가",
+    description=(
+        "DAC 쿼리 하나를 평가하고 결과를 반환합니다. 대시보드 화면 전체가 이 응답 "
+        "하나로 그려집니다.\n\n"
+        "**무상태입니다.** 요청마다 처음부터 평가하며 결과를 저장하지 않습니다. "
+        "실제 파이프라인은 LLM 질문 생성과 벡터 검색을 포함해 수십 초가 걸립니다.\n\n"
+        "요청 본문은 `{\"query_id\": \"...\"}` 이며 `queryId` 도 받습니다."
+    ),
+    responses={
+        status.HTTP_404_NOT_FOUND: {"description": "해당 query_id 의 쿼리를 찾을 수 없음"},
+    },
 )
-def get_evaluation(
-    trace_id: Annotated[
-        str,
-        Path(pattern=TRACE_ID_PATTERN, description="평가 실행의 추적 ID. 예: A492"),
-    ],
+def evaluate(
+    payload: EvaluateRequest,
     repository: SpecRepositoryDep,
 ) -> EvaluationReport:
-    report = repository.get_evaluation(trace_id)
+    query_id = payload.query_id
+
+    if not QUERY_ID_PATTERN.fullmatch(query_id):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"허용되지 않는 query_id 형태입니다: {query_id!r}",
+        )
+
+    report = repository.evaluate(query_id)
     if report is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"평가 결과를 찾을 수 없습니다: {trace_id}",
+            detail=f"쿼리를 찾을 수 없습니다: {query_id}",
         )
     return report

@@ -1,15 +1,18 @@
-"""외부 평가툴 출력 → 계약(EvaluationReport) 변환 경계.
+"""평가 결과 → 계약(EvaluationReport) 검증 경계.
 
-**사내 이식 시 실제로 손대는 유일한 변환 파일이 되도록 격리한다.**
-사내 평가툴의 원본 JSON 포맷이 확정되면 이 함수 **본문만** 교체하면 된다 —
-라우터·저장소·프론트는 계약(`schemas/evaluation.py`)만 알고 이 변환은 모른다.
+**계약 검증을 한곳으로 모은다.** 평가 파이프라인이 필드를 빠뜨리거나 형식이
+어긋난 결과를 낼 수 있는데, 그걸 조용히 통과시키면 화면이 절반만 그려지거나
+숫자가 비어 보인다. 어느 필드가 왜 틀렸는지를 붙여서 터뜨린다.
 
-지금은 fixture 가 이미 계약 형태이므로 그대로 통과(passthrough)시킨다.
+Phase 12 로 역할이 줄었다
+---------------------------------------------------------------------------
+이전에는 **외부 평가툴의 원본 JSON 을 계약으로 변환하는** 어댑터였다. 평가
+엔진이 이 백엔드 안으로 들어오면서(contract.md §0) 변환할 원본이 없어졌고,
+남은 일은 검증이다. 파이프라인이 계약 형태로 직접 만들면 되기 때문이다.
 
-**계약 검증은 여기서 강제한다.** 외부 평가툴이 필드를 빠뜨리거나 형식이 어긋난
-결과를 줄 수 있는데, 그걸 조용히 통과시키면 화면이 절반만 그려지거나 숫자가
-비어 보인다. 어느 필드가 왜 틀렸는지를 붙여서 터뜨린다 — 원본 JSON 을 고쳐야
-하는 사람은 이 시스템 밖에 있으므로, 메시지만 보고 원본을 찾아갈 수 있어야 한다.
+그래도 이 경계를 없애지 않는다 — 파이프라인이 내부에 있다는 것이 그 출력을
+믿어도 된다는 뜻은 아니다. 100문항을 조립하는 코드가 수치를 어긋나게 만드는
+쪽이 오히려 흔하다.
 """
 
 import json
@@ -82,13 +85,12 @@ def _describe(error: ErrorDetails) -> str:
     return f"{location}: {message} (받은 값: {shown})"
 
 
-def to_evaluation_report(raw: dict[str, Any], *, source: str = "평가툴 출력") -> EvaluationReport:
-    """외부 평가툴의 원본 출력(raw)을 계약 EvaluationReport 로 변환한다.
+def to_evaluation_report(raw: dict[str, Any], *, source: str = "평가 결과") -> EvaluationReport:
+    """평가 결과(raw)를 계약 EvaluationReport 로 검증해 반환한다.
 
     Args:
-        raw: 사내 평가툴이 낸 원본 JSON(dict). 포맷은 아직 미확정
-            (docs/open-questions.md #55 — 평가 엔진은 이 시스템 밖에 있다).
-        source: 오류 메시지에 붙일 출처. 파일명이나 trace_id 를 넘긴다.
+        raw: 평가 파이프라인이 낸 결과 JSON(dict). 로컬은 fixture 를 읽은 것이다.
+        source: 오류 메시지에 붙일 출처. 파일명이나 query_id 를 넘긴다.
             어느 결과가 깨졌는지 모르면 고칠 데를 찾을 수 없다.
 
     Returns:
@@ -98,17 +100,15 @@ def to_evaluation_report(raw: dict[str, Any], *, source: str = "평가툴 출력
         ContractViolation: raw 가 계약을 만족하지 못할 때. 어느 필드가
             없는지/어긋났는지를 메시지에 담는다.
 
-    TODO(사내 이식 · 담당: 경렬):
-        사내 평가툴 포맷이 확정되면 **매핑만** 교체한다. 원본 raw 의 필드명·구조를
-        계약 필드로 매핑한다 — 필드 이름 변경, 중첩 평탄화, enum 값 정규화
-        (예: 툴의 "critical" → 계약 Grade.CRITICAL), snake/camel 정리 등.
-        아래 검증부는 그대로 둔다. 매핑이 늘어날수록 검증이 더 필요해진다.
+    Note:
+        지금은 매핑 없이 검증만 한다. 파이프라인 출력이 계약과 다른 형태로
+        나오게 되면 **여기에** 매핑을 넣는다 — 라우터나 저장소가 아니다.
+        검증부는 그대로 두어야 한다. 매핑이 늘어날수록 검증이 더 필요해진다.
     """
     if not isinstance(raw, dict):
         raise ContractViolation(source, [f"(최상위): 객체(JSON object)가 아닙니다 ({type(raw).__name__})"])
 
-    # passthrough: fixture 는 이미 계약 형태다. 포맷이 확정되면 이 한 줄이
-    # 실제 매핑 로직으로 바뀐다.
+    # 지금은 매핑이 없다 — fixture 가 이미 계약 형태다.
     try:
         return EvaluationReport.model_validate(raw)
     except ValidationError as exc:

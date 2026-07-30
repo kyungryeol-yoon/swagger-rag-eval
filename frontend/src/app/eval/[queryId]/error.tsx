@@ -38,7 +38,7 @@ export default function Error({
           직접 열어봅니다 — <code>http://localhost:8000/health</code>
         </>,
         <>
-          평가 결과가 읽히는지 봅니다 — <code>http://localhost:8000/ready</code>
+          데이터 소스가 읽히는지 봅니다 — <code>http://localhost:8000/ready</code>
         </>,
         <>
           주소가 다르면 <code>API_BASE_URL</code> 을 확인합니다
@@ -56,8 +56,12 @@ export default function Error({
       }
     >
       <p>
-        백엔드 API에 연결하지 못했거나 응답이 올바르지 않습니다. 대시보드는 백엔드
-        없이는 아무것도 표시할 수 없습니다.
+        평가 요청이 실패했습니다. 백엔드에 연결하지 못했거나 응답이 올바르지
+        않습니다. 대시보드는 백엔드 없이는 아무것도 표시할 수 없습니다.
+      </p>
+      <p>
+        평가는 <strong>요청할 때마다 실행</strong>됩니다. 다시 시도하면 처음부터
+        평가합니다.
       </p>
       {/* digest 는 운영에서 로그와 화면을 잇는 유일한 끈이라 항상 남긴다. */}
       {error.digest && <p>오류 식별자: {error.digest}</p>}

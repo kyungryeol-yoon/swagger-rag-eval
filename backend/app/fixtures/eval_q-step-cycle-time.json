@@ -1,0 +1,3205 @@
+{
+  "traceId": "R-2ac9e1",
+  "evaluatedAt": "2026-07-30T11:52:00+09:00",
+  "target": {
+    "queryId": "q-step-cycle-time",
+    "appId": "mf-worker",
+    "method": "GET",
+    "path": "/queries/step-cycle-time",
+    "summary": null,
+    "description": null,
+    "xQuestions": []
+  },
+  "meta": {
+    "embeddingModel": "bge-m3",
+    "searchMode": "HYBRID",
+    "topK": 3,
+    "questionCount": 100,
+    "durationMs": 51900
+  },
+  "summary": {
+    "totalQuestions": 100,
+    "top1Accuracy": 8.0,
+    "top3Accuracy": 12.0,
+    "top1FailCount": 92,
+    "top3FailCount": 88,
+    "top1Grade": "CRITICAL",
+    "top3Grade": "CRITICAL"
+  },
+  "questionTypes": [
+    {
+      "type": "DIRECT",
+      "label": "직접 질문",
+      "count": 15,
+      "ratio": 15.0,
+      "top3Accuracy": 13.3
+    },
+    {
+      "type": "USER_NL",
+      "label": "사용자 자연어 질문",
+      "count": 15,
+      "ratio": 15.0,
+      "top3Accuracy": 13.3
+    },
+    {
+      "type": "DOMAIN_TERM",
+      "label": "업무 용어 질문",
+      "count": 14,
+      "ratio": 14.0,
+      "top3Accuracy": 14.3
+    },
+    {
+      "type": "PARAMETER",
+      "label": "파라미터 기반 질문",
+      "count": 14,
+      "ratio": 14.0,
+      "top3Accuracy": 14.3
+    },
+    {
+      "type": "ERROR_CASE",
+      "label": "오류/에러 상황 질문",
+      "count": 14,
+      "ratio": 14.0,
+      "top3Accuracy": 14.3
+    },
+    {
+      "type": "SHORT_KEYWORD",
+      "label": "짧은 키워드 질문",
+      "count": 14,
+      "ratio": 14.0,
+      "top3Accuracy": 7.1
+    },
+    {
+      "type": "MIXED_LANG",
+      "label": "한영 혼합 질문",
+      "count": 14,
+      "ratio": 14.0,
+      "top3Accuracy": 7.1
+    }
+  ],
+  "recommendations": [
+    {
+      "order": 1,
+      "title": "설명(Description) 보강",
+      "description": "summary 와 description 이 모두 비어 있습니다. 검색이 참고할 문장이 경로 이름뿐이라 대부분의 질문을 놓칩니다. 이 하나만 채워도 가장 크게 개선됩니다.",
+      "priority": "HIGH",
+      "failShare": 88.6
+    },
+    {
+      "order": 2,
+      "title": "예시 질문(x-question) 추가",
+      "description": "명세에 예시 질문이 하나도 없습니다. 현장에서 실제로 쓰는 표현을 2~3개 적어두면 짧은 키워드 질문이 걸립니다.",
+      "priority": "HIGH",
+      "failShare": 45.5
+    },
+    {
+      "order": 3,
+      "title": "현장 용어·동의어 추가",
+      "description": "'택트타임' 처럼 현장에서만 쓰는 표현을 설명에 포함합니다.",
+      "priority": "MEDIUM",
+      "failShare": 27.3
+    }
+  ],
+  "questions": [
+    {
+      "no": 13,
+      "question": "step cycle time 조회 query 있나요?",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 14,
+      "question": "공정별 소요 시간 통계",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 15,
+      "question": "사이클타임",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 16,
+      "question": "각 스텝이 얼마나 걸리는지 보려면?",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 17,
+      "question": "스텝 사이클타임이 비어 있는 구간을 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 18,
+      "question": "cycle time 이 이상한 구간 조회",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 19,
+      "question": "스텝별 처리 시간 평균과 편차를 같이 보고 싶어요",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 20,
+      "question": "택트 타임 추이",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 21,
+      "question": "스텝별 사이클타임 추이를 보려면 무엇을 호출하나요?",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 22,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 23,
+      "question": "step cycle time 조회 query 있나요?",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 24,
+      "question": "공정별 소요 시간 통계",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 25,
+      "question": "사이클타임",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 26,
+      "question": "각 스텝이 얼마나 걸리는지 보려면?",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 27,
+      "question": "스텝 사이클타임이 비어 있는 구간을 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 28,
+      "question": "cycle time 이 이상한 구간 조회",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 29,
+      "question": "스텝별 처리 시간 평균과 편차를 같이 보고 싶어요",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 30,
+      "question": "택트 타임 추이",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 31,
+      "question": "스텝별 사이클타임 추이를 보려면 무엇을 호출하나요?",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 32,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 33,
+      "question": "step cycle time 조회 query 있나요?",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 34,
+      "question": "공정별 소요 시간 통계",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 35,
+      "question": "사이클타임",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 36,
+      "question": "각 스텝이 얼마나 걸리는지 보려면?",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 37,
+      "question": "스텝 사이클타임이 비어 있는 구간을 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 38,
+      "question": "cycle time 이 이상한 구간 조회",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 39,
+      "question": "스텝별 처리 시간 평균과 편차를 같이 보고 싶어요",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 40,
+      "question": "택트 타임 추이",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 41,
+      "question": "스텝별 사이클타임 추이를 보려면 무엇을 호출하나요?",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 42,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 43,
+      "question": "step cycle time 조회 query 있나요?",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 44,
+      "question": "공정별 소요 시간 통계",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 45,
+      "question": "사이클타임",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 46,
+      "question": "각 스텝이 얼마나 걸리는지 보려면?",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 47,
+      "question": "스텝 사이클타임이 비어 있는 구간을 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 48,
+      "question": "cycle time 이 이상한 구간 조회",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 49,
+      "question": "스텝별 처리 시간 평균과 편차를 같이 보고 싶어요",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 50,
+      "question": "택트 타임 추이",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 51,
+      "question": "스텝별 사이클타임 추이를 보려면 무엇을 호출하나요?",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 52,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 53,
+      "question": "step cycle time 조회 query 있나요?",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 54,
+      "question": "공정별 소요 시간 통계",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 55,
+      "question": "사이클타임",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 56,
+      "question": "각 스텝이 얼마나 걸리는지 보려면?",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 57,
+      "question": "스텝 사이클타임이 비어 있는 구간을 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 58,
+      "question": "cycle time 이 이상한 구간 조회",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 59,
+      "question": "스텝별 처리 시간 평균과 편차를 같이 보고 싶어요",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 60,
+      "question": "택트 타임 추이",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 61,
+      "question": "스텝별 사이클타임 추이를 보려면 무엇을 호출하나요?",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 62,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 63,
+      "question": "step cycle time 조회 query 있나요?",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 64,
+      "question": "공정별 소요 시간 통계",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 65,
+      "question": "사이클타임",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 66,
+      "question": "각 스텝이 얼마나 걸리는지 보려면?",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 67,
+      "question": "스텝 사이클타임이 비어 있는 구간을 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 68,
+      "question": "cycle time 이 이상한 구간 조회",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 69,
+      "question": "스텝별 처리 시간 평균과 편차를 같이 보고 싶어요",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 70,
+      "question": "택트 타임 추이",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 71,
+      "question": "스텝별 사이클타임 추이를 보려면 무엇을 호출하나요?",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 72,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 73,
+      "question": "step cycle time 조회 query 있나요?",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 74,
+      "question": "공정별 소요 시간 통계",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 75,
+      "question": "사이클타임",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 76,
+      "question": "각 스텝이 얼마나 걸리는지 보려면?",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 77,
+      "question": "스텝 사이클타임이 비어 있는 구간을 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 78,
+      "question": "cycle time 이 이상한 구간 조회",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 79,
+      "question": "스텝별 처리 시간 평균과 편차를 같이 보고 싶어요",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 80,
+      "question": "택트 타임 추이",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 81,
+      "question": "스텝별 사이클타임 추이를 보려면 무엇을 호출하나요?",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 82,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 83,
+      "question": "step cycle time 조회 query 있나요?",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 84,
+      "question": "공정별 소요 시간 통계",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 85,
+      "question": "사이클타임",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 86,
+      "question": "각 스텝이 얼마나 걸리는지 보려면?",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 87,
+      "question": "스텝 사이클타임이 비어 있는 구간을 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 88,
+      "question": "cycle time 이 이상한 구간 조회",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 89,
+      "question": "스텝별 처리 시간 평균과 편차를 같이 보고 싶어요",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 90,
+      "question": "택트 타임 추이",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 91,
+      "question": "스텝별 사이클타임 추이를 보려면 무엇을 호출하나요?",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 92,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 93,
+      "question": "step cycle time 조회 query 있나요?",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 94,
+      "question": "공정별 소요 시간 통계",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 95,
+      "question": "사이클타임",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 96,
+      "question": "각 스텝이 얼마나 걸리는지 보려면?",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 97,
+      "question": "스텝 사이클타임이 비어 있는 구간을 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 98,
+      "question": "cycle time 이 이상한 구간 조회",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 99,
+      "question": "스텝별 처리 시간 평균과 편차를 같이 보고 싶어요",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 100,
+      "question": "택트 타임 추이",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": false,
+      "failureScope": "TOP3",
+      "expectedRank": null,
+      "failureCategory": "DESCRIPTION_MISSING",
+      "reason": "설명이 없어 질문의 의도와 이어지지 않음"
+    },
+    {
+      "no": 9,
+      "question": "스텝별 처리 시간 평균과 편차를 같이 보고 싶어요",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-step-cycle-time",
+          "path": "/queries/step-cycle-time",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": true,
+      "failureScope": "TOP1_ONLY",
+      "expectedRank": 2,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "이름이 비슷한 쿼리가 1위를 차지함"
+    },
+    {
+      "no": 10,
+      "question": "택트 타임 추이",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-step-cycle-time",
+          "path": "/queries/step-cycle-time",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": true,
+      "failureScope": "TOP1_ONLY",
+      "expectedRank": 2,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "이름이 비슷한 쿼리가 1위를 차지함"
+    },
+    {
+      "no": 11,
+      "question": "스텝별 사이클타임 추이를 보려면 무엇을 호출하나요?",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-step-cycle-time",
+          "path": "/queries/step-cycle-time",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": true,
+      "failureScope": "TOP1_ONLY",
+      "expectedRank": 2,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "이름이 비슷한 쿼리가 1위를 차지함"
+    },
+    {
+      "no": 12,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-step-cycle-time",
+          "path": "/queries/step-cycle-time",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": false,
+      "top3Hit": true,
+      "failureScope": "TOP1_ONLY",
+      "expectedRank": 2,
+      "failureCategory": "SIMILAR_RESOURCE",
+      "reason": "이름이 비슷한 쿼리가 1위를 차지함"
+    },
+    {
+      "no": 1,
+      "question": "스텝별 사이클타임 추이를 보려면 무엇을 호출하나요?",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-step-cycle-time",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 2,
+      "question": "택트타임이 튀는 스텝을 찾고 싶습니다",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-step-cycle-time",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 3,
+      "question": "step cycle time 조회 query 있나요?",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-step-cycle-time",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 4,
+      "question": "공정별 소요 시간 통계",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-step-cycle-time",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 5,
+      "question": "사이클타임",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-step-cycle-time",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 6,
+      "question": "각 스텝이 얼마나 걸리는지 보려면?",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-step-cycle-time",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 7,
+      "question": "스텝 사이클타임이 비어 있는 구간을 확인하려면 어떤 쿼리를 쓰나요?",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-step-cycle-time",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 8,
+      "question": "cycle time 이 이상한 구간 조회",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-step-cycle-time",
+          "path": "/queries/step-cycle-time",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    }
+  ]
+}

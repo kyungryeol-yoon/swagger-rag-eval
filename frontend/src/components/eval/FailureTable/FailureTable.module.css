@@ -5,6 +5,54 @@
   background: var(--surface);
 }
 
+/* --- 평가 대상 쿼리 (표 위 한 줄) ---------------------------------------- */
+
+/* 100문항의 정답이 전부 같으므로 컬럼이 아니라 여기 한 번만 적는다 (Phase 12). */
+.targetLine {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.targetLabel {
+  flex: none;
+  color: var(--text-mute);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.targetPath {
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.targetMethod {
+  flex: none;
+  color: var(--text-mute);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+/* 왜 컬럼이 없는지 한 마디로 알려준다 — 없어진 것을 찾는 사람이 생기지 않게. */
+.targetNote {
+  flex: none;
+  margin-left: auto;
+  color: var(--text-mute);
+  font-size: 11px;
+}
+
 /* --- 상단 요약 ----------------------------------------------------------- */
 
 .summaryLine {
@@ -151,11 +199,11 @@
 .colQuestion {
   width: 22%;
 }
-.colExpected {
-  width: 13%;
-}
+/* 기대 쿼리 컬럼(13%)이 사라진 폭을 여기와 추정 원인이 나눠 받았다 (Phase 12).
+   Top-3 는 경로 3줄이 들어가 폭이 가장 아쉬운 칸이었다 — 24% -> 33%.
+   나머지 4% 는 width:auto 인 추정 원인이 자동으로 흡수한다. */
 .colTop3 {
-  width: 24%;
+  width: 33%;
 }
 .colHit {
   width: 82px;
@@ -188,33 +236,7 @@
   overflow: hidden;
 }
 
-/* --- 엔드포인트 --------------------------------------------------------- */
-
-/* 한 줄 유지. 경로는 남는 폭을 먹고 넘치면 말줄임된다(줄바꿈 금지). */
-.endpoint {
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  gap: var(--space-2);
-  min-width: 0;
-}
-
-.method {
-  flex: none;
-  padding: 1px var(--space-2);
-  border-radius: var(--radius-sm);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-
-  /* color-mix 미지원 브라우저 폴백 (open-questions #48).
-     지원하지 않으면 아래 두 줄을 무시해 테두리만 남는다. */
-  color: var(--method-color);
-  border: 1px solid var(--border);
-  border-color: color-mix(in srgb, var(--method-color) 45%, transparent);
-  background: color-mix(in srgb, var(--method-color) 12%, transparent);
-}
+/* --- 경로 ---------------------------------------------------------------- */
 
 /* 한 줄 말줄임은 전역 .pathText 가 맡는다. flex 안에서 남는 폭을 먹도록 flex:1. */
 .path {
@@ -242,6 +264,29 @@
   align-items: center;
   gap: var(--space-2);
   min-width: 0;
+}
+
+/* 대상 쿼리와 같은 결과. **색만으로 알리지 않는다** — 아래 .targetMark 의
+   기호와 스크린리더 텍스트가 함께 나온다. */
+.resultTarget .path {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.targetMark {
+  flex: none;
+  color: var(--grade-good);
+  font-size: 10px;
+  line-height: 1;
+}
+
+/* 검색 결과가 아예 없을 때(top3: null). 빈 목록을 그리면 "3개인데 안 보인다"
+   처럼 읽히므로 문장으로 적는다 (contract.md §2). */
+.noResults {
+  margin: 0;
+  color: var(--text-mute);
+  font-size: 12px;
+  font-style: italic;
 }
 
 .rank {

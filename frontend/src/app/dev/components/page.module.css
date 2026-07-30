@@ -174,3 +174,10 @@
   max-width: 140px;
   line-height: 1.5;
 }
+
+/* 좁은 컬럼에 놓였을 때를 재현한다. QueryInfoCard / stack 레이아웃 /
+   ActionPanel 은 실제로 사이드 컬럼(약 320~360px)에 들어가므로, 전체 폭에서
+   확인하면 진짜 배치와 다른 것을 보게 된다. */
+.narrow {
+  max-width: 360px;
+}

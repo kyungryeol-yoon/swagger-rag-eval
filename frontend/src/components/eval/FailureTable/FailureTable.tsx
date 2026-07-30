@@ -4,14 +4,13 @@ import { Check, X } from "lucide-react";
 import { useState } from "react";
 
 import { failureCategoryLabel } from "@/lib/enumTokens";
-import { hasMultipleMethods, httpMethodColor } from "@/lib/httpMethod";
 import type {
   EvaluationSummary,
-  ExpectedApi,
   FailureCategory,
   FailureScope,
   QuestionResult,
   SearchResult,
+  TargetQuery,
 } from "@/lib/types";
 
 import styles from "./FailureTable.module.css";
@@ -30,6 +29,10 @@ import styles from "./FailureTable.module.css";
  * 정렬은 계약이 이미 해서 내려준다: TOP3 → TOP1_ONLY → NONE, 그 안에서 no
  * 오름차순 (contract.md §2). 여기서 다시 정렬하지 않는다 — grade 처럼, 백엔드가
  * 확정한 순서를 신뢰한다. 필터는 그 순서를 보존한다.
+ *
+ * **"기대 쿼리" 컬럼이 없다** (Phase 12). 평가 단위가 쿼리 하나이므로 100문항의
+ * 정답이 전부 같다 — 컬럼으로 두면 같은 경로가 100줄 반복된다. 표 위에 한 번만
+ * 적고, 확보한 폭은 Top-3 결과와 추정 원인에 넘긴다.
  */
 
 /** 기본으로 펼쳐 보이는 행 수. 나머지는 "전체 보기" 로 넘긴다. */
@@ -66,9 +69,14 @@ export type FailureTableProps = {
   questions: QuestionResult[];
   /** 백엔드가 확정한 요약. 상단 건수는 이 값만 쓴다 — 여기서 다시 세지 않는다. */
   summary: EvaluationSummary;
+  /**
+   * 평가 대상 쿼리. **표 위에 한 번만** 적는다.
+   * 100문항의 정답이 전부 이것이므로 행마다 되풀이하지 않는다.
+   */
+  target: TargetQuery;
 };
 
-export default function FailureTable({ questions, summary }: FailureTableProps) {
+export default function FailureTable({ questions, summary, target }: FailureTableProps) {
   const [scope, setScope] = useState<ScopeFilter>("ALL");
   const [category, setCategory] = useState<CategoryFilter>("ALL");
   const [expanded, setExpanded] = useState(false);
@@ -81,12 +89,6 @@ export default function FailureTable({ questions, summary }: FailureTableProps) 
       </div>
     );
   }
-
-  // 메서드가 한 종류뿐이면(SELECT 전용 DAC 등) 뱃지가 정보를 주지 못한다
-  // (open-questions #50). 필터와 무관하게 전체 기준으로 한 번만 판단해,
-  // 필터를 바꿔도 뱃지 유무가 흔들리지 않게 한다.
-  const allMethods = questions.flatMap((q) => [q.expected, q.top1, ...q.top3]);
-  const showMethod = hasMultipleMethods(allMethods);
 
   // 원인별 칩에 붙일 건수. 전체 문항 기준(필터와 독립)이라 칩이 흔들리지 않는다.
   const categoryCounts = new Map<FailureCategory, number>();
@@ -117,6 +119,16 @@ export default function FailureTable({ questions, summary }: FailureTableProps) 
 
   return (
     <div className={styles.root}>
+      {/* 평가 대상 쿼리 — 100문항의 정답. 컬럼 대신 여기 한 번만 적는다. */}
+      <p className={styles.targetLine}>
+        <span className={styles.targetLabel}>기대 쿼리</span>
+        <code className={`${styles.targetPath} pathText tabular`} title={target.path}>
+          <span className={styles.targetMethod}>{target.method}</span>
+          {target.path}
+        </code>
+        <span className={styles.targetNote}>모든 문항의 정답이 같습니다</span>
+      </p>
+
       {/* 상단 요약 — summary prop 그대로. 여기서 questions 를 세지 않는다. */}
       <p className={styles.summaryLine}>
         전체 <span className="tabular">{summary.totalQuestions}</span>문항 중{" "}
@@ -200,9 +212,6 @@ export default function FailureTable({ questions, summary }: FailureTableProps) 
               <th role="columnheader" scope="col" className={styles.colQuestion}>
                 질문
               </th>
-              <th role="columnheader" scope="col" className={styles.colExpected}>
-                기대 쿼리
-              </th>
               <th role="columnheader" scope="col" className={styles.colTop3}>
                 Top-3 검색 결과
               </th>
@@ -220,12 +229,12 @@ export default function FailureTable({ questions, summary }: FailureTableProps) 
           <tbody role="rowgroup">
             {visible.length === 0 ? (
               <tr role="row">
-                <td role="cell" colSpan={7} className={styles.noMatch}>
+                <td role="cell" colSpan={6} className={styles.noMatch}>
                   선택한 필터에 해당하는 문항이 없습니다.
                 </td>
               </tr>
             ) : (
-              visible.map((q) => <Row key={q.no} question={q} showMethod={showMethod} />)
+              visible.map((q) => <Row key={q.no} question={q} target={target} />)
             )}
           </tbody>
         </table>
@@ -252,8 +261,15 @@ export default function FailureTable({ questions, summary }: FailureTableProps) 
   );
 }
 
-function Row({ question, showMethod }: { question: QuestionResult; showMethod: boolean }) {
+function Row({
+  question,
+  target,
+}: {
+  question: QuestionResult;
+  target: TargetQuery;
+}) {
   const scope = SCOPE_BADGE[question.failureScope];
+  const results = question.top3 ?? [];
 
   return (
     <tr role="row" className={styles.row}>
@@ -265,21 +281,29 @@ function Row({ question, showMethod }: { question: QuestionResult; showMethod: b
         <p className={styles.question}>&ldquo;{question.question}&rdquo;</p>
       </td>
 
-      <td role="cell" data-label="기대 쿼리" className={styles.cellExpected}>
-        <Endpoint api={question.expected} showMethod={showMethod} />
-      </td>
-
       <td role="cell" data-label="Top-3 검색 결과" className={styles.cellTop3}>
-        <ol className={styles.results}>
-          {question.top3.map((result) => (
-            <ResultRow key={result.rank} result={result} showMethod={showMethod} />
-          ))}
-        </ol>
-        <p className={styles.expectedRank}>
-          {question.expectedRank == null
-            ? "기대 쿼리: 순위 밖"
-            : `${question.expectedRank}위 (기대 쿼리 위치)`}
-        </p>
+        {/*
+          결과가 **아예 없을 수 있다**(top3: null). 유사도 하한을 넘는 것이
+          없었다는 뜻이다 — 빈 목록을 그리면 "결과가 3개인데 안 보인다" 처럼
+          읽히므로 그 사실을 문장으로 적는다 (contract.md §2).
+          3개 미만인 경우도 있어 길이를 가정하지 않고 있는 만큼만 그린다.
+        */}
+        {results.length === 0 ? (
+          <p className={styles.noResults}>검색 결과 없음</p>
+        ) : (
+          <>
+            <ol className={styles.results}>
+              {results.map((result) => (
+                <ResultRow key={result.rank} result={result} targetId={target.queryId} />
+              ))}
+            </ol>
+            <p className={styles.expectedRank}>
+              {question.expectedRank == null
+                ? "대상 쿼리: 순위 밖"
+                : `${question.expectedRank}위 (대상 쿼리 위치)`}
+            </p>
+          </>
+        )}
       </td>
 
       <td role="cell" data-label="Hit 여부" className={styles.cellHit}>
@@ -320,40 +344,33 @@ function HitFlag({ label, hit }: { label: string; hit: boolean }) {
   );
 }
 
-function Endpoint({ api, showMethod }: { api: ExpectedApi; showMethod: boolean }) {
+/**
+ * 검색 결과 한 줄.
+ *
+ * **대상 쿼리와 같은 것을 표시로 구분한다.** 경로만 늘어놓으면 어느 줄이 정답인지
+ * 눈으로 찾아야 한다 — 특히 경로가 길어 말줄임된 경우엔 사실상 불가능하다.
+ * 비교는 `queryId` 로 한다. path 는 표시용이고 같은 path 가 다른 쿼리일 수 있다
+ * (contract.md §2).
+ */
+function ResultRow({ result, targetId }: { result: SearchResult; targetId: string }) {
+  const isTarget = result.queryId === targetId;
   return (
-    <span className={styles.endpoint}>
-      {showMethod && <MethodBadge method={api.method} />}
-      <code className={`${styles.path} pathText tabular`} title={api.path}>
-        {api.path}
-      </code>
-    </span>
-  );
-}
-
-function ResultRow({ result, showMethod }: { result: SearchResult; showMethod: boolean }) {
-  return (
-    <li className={styles.result}>
+    <li className={`${styles.result} ${isTarget ? styles.resultTarget : ""}`}>
       <span className={`${styles.rank} tabular`} aria-hidden="true">
         {result.rank}
       </span>
       <span className="srOnly">{result.rank}위</span>
-      {showMethod && <MethodBadge method={result.method} />}
-      <code className={`${styles.path} pathText tabular`} title={result.path}>
+      <code className={`${styles.path} pathText tabular`} title={`${result.queryId} · ${result.path}`}>
         {result.path}
       </code>
+      {/* 색만으로 알리지 않는다 — 스크린리더와 흑백 출력에도 남는 표시를 함께 둔다. */}
+      {isTarget && (
+        <span className={styles.targetMark}>
+          <span aria-hidden="true">◀</span>
+          <span className="srOnly">대상 쿼리</span>
+        </span>
+      )}
       <span className={`${styles.score} tabular`}>{result.score.toFixed(3)}</span>
     </li>
-  );
-}
-
-function MethodBadge({ method }: { method: string }) {
-  return (
-    <span
-      className={styles.method}
-      style={{ "--method-color": httpMethodColor(method) } as React.CSSProperties}
-    >
-      {method}
-    </span>
   );
 }

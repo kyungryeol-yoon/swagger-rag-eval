@@ -53,22 +53,6 @@
   color: var(--text);
 }
 
-/* 평가툴 출처(rawSource). 제목 아래 아주 작게, 항목은 가운뎃점으로 나눈다. */
-.rawSource {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1) var(--space-3);
-  margin: var(--space-2) 0 0;
-  color: var(--text-mute);
-  font-size: 11px;
-}
-
-.rawSource > span + span::before {
-  content: "·";
-  margin-right: var(--space-3);
-  color: var(--border);
-}
-
 /* 우측 그룹: 재현성 메타(좌) + 테마 토글(우 끝). 좁아지면 아래로 흐른다. */
 .headerRight {
   display: flex;
@@ -135,38 +119,11 @@
   gap: var(--space-2);
 }
 
+/* 델타 뱃지는 무상태 전환으로 없어졌다 (Phase 12) — 캡션 한 줄만 남는다. */
 .gaugeCaption {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
   color: var(--text-dim);
   font-size: 12px;
   font-weight: 500;
-}
-
-.deltaBadge {
-  padding: 1px var(--space-2);
-  border-radius: var(--radius-sm);
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 1.4;
-  white-space: nowrap;
-
-  background: var(--surface-2);
-  background: color-mix(in srgb, var(--delta-color) 14%, transparent);
-  color: var(--delta-color);
-}
-
-.deltaUp {
-  --delta-color: var(--green);
-}
-
-.deltaDown {
-  --delta-color: var(--red);
-}
-
-.deltaSame {
-  --delta-color: var(--text-mute);
 }
 
 .summaryCards {

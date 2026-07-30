@@ -33,6 +33,26 @@
   background: color-mix(in srgb, var(--accent) var(--card-accent-bg-alpha), transparent);
   border: 1px solid var(--border);
   border-color: color-mix(in srgb, var(--accent) var(--card-accent-border-alpha), transparent);
+
+  /* 왼쪽부터 순차로 올라온다. --card-index 는 컴포넌트가 넘긴다. */
+  animation: cardRise var(--dur-base) var(--ease-out)
+    calc(var(--card-index, 0) * var(--stagger-step)) both;
+}
+
+@keyframes cardRise {
+  from {
+    opacity: 0;
+    /* transform 이 아니라 개별 translate 속성이다. 카드에는 transform 을
+       쓰는 다른 규칙이 없지만, 나중에 hover 등이 붙어도 서로 덮지 않는다. */
+    translate: 0 8px;
+  }
+}
+
+/* 애니메이션이 없어도 카드는 제자리에 온전히 보인다. */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    animation: none;
+  }
 }
 
 /* 좌측 세로 악센트 바 */
@@ -71,34 +91,6 @@
   color: var(--text-mute);
   font-size: 13px;
   font-weight: 500;
-}
-
-/* --- 델타 뱃지 --------------------------------------------------------- */
-
-.delta {
-  align-self: flex-start;
-  padding: 2px var(--space-2);
-  border-radius: var(--radius-sm);
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 1.4;
-  white-space: nowrap;
-
-  background: var(--surface-2);
-  background: color-mix(in srgb, var(--delta-color) 14%, transparent);
-  color: var(--delta-color);
-}
-
-.up {
-  --delta-color: var(--green);
-}
-
-.down {
-  --delta-color: var(--red);
-}
-
-.same {
-  --delta-color: var(--text-mute);
 }
 
 /* --- 카드별 악센트 ------------------------------------------------------ */

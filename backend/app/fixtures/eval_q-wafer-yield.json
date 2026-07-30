@@ -1,0 +1,3188 @@
+{
+  "traceId": "R-55d0aa",
+  "evaluatedAt": "2026-07-30T12:10:00+09:00",
+  "target": {
+    "queryId": "q-wafer-yield",
+    "appId": "mf-worker",
+    "method": "GET",
+    "path": "/queries/wafer-yield-daily",
+    "summary": "일별 웨이퍼 수율 집계 조회",
+    "description": "지정한 기간의 웨이퍼 수율을 일자별·라인별로 집계합니다. 투입량, 양품 수, 수율(%)을 함께 반환하며 기간은 최대 90일까지 지정할 수 있습니다. 현장에서는 '수율 집계', 'yield daily' 로도 부릅니다.",
+    "xQuestions": [
+      "어제 웨이퍼 수율을 라인별로 보고 싶습니다",
+      "일자별 수율 추이 조회",
+      "yield daily 집계",
+      "수율이 떨어진 날 찾기"
+    ]
+  },
+  "meta": {
+    "embeddingModel": "bge-m3",
+    "searchMode": "HYBRID",
+    "topK": 3,
+    "questionCount": 100,
+    "durationMs": 44100
+  },
+  "summary": {
+    "totalQuestions": 100,
+    "top1Accuracy": 100.0,
+    "top3Accuracy": 100.0,
+    "top1FailCount": 0,
+    "top3FailCount": 0,
+    "top1Grade": "GOOD",
+    "top3Grade": "GOOD"
+  },
+  "questionTypes": [
+    {
+      "type": "DIRECT",
+      "label": "직접 질문",
+      "count": 15,
+      "ratio": 15.0,
+      "top3Accuracy": 100.0
+    },
+    {
+      "type": "USER_NL",
+      "label": "사용자 자연어 질문",
+      "count": 15,
+      "ratio": 15.0,
+      "top3Accuracy": 100.0
+    },
+    {
+      "type": "DOMAIN_TERM",
+      "label": "업무 용어 질문",
+      "count": 14,
+      "ratio": 14.0,
+      "top3Accuracy": 100.0
+    },
+    {
+      "type": "PARAMETER",
+      "label": "파라미터 기반 질문",
+      "count": 14,
+      "ratio": 14.0,
+      "top3Accuracy": 100.0
+    },
+    {
+      "type": "ERROR_CASE",
+      "label": "오류/에러 상황 질문",
+      "count": 14,
+      "ratio": 14.0,
+      "top3Accuracy": 100.0
+    },
+    {
+      "type": "SHORT_KEYWORD",
+      "label": "짧은 키워드 질문",
+      "count": 14,
+      "ratio": 14.0,
+      "top3Accuracy": 100.0
+    },
+    {
+      "type": "MIXED_LANG",
+      "label": "한영 혼합 질문",
+      "count": 14,
+      "ratio": 14.0,
+      "top3Accuracy": 100.0
+    }
+  ],
+  "recommendations": [],
+  "questions": [
+    {
+      "no": 1,
+      "question": "어제 웨이퍼 수율을 라인별로 보고 싶습니다",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 2,
+      "question": "일별 수율 집계 조회",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 3,
+      "question": "wafer yield 어제 기준으로 알려줘",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 4,
+      "question": "수율이 떨어진 날을 찾으려면 어떤 쿼리를 쓰나요?",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 5,
+      "question": "라인별 일간 수율",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 6,
+      "question": "웨이퍼 수율 추이를 기간으로 조회하려면?",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 7,
+      "question": "yield daily 집계",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 8,
+      "question": "어제 라인 수율 얼마야?",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 9,
+      "question": "일자별 웨이퍼 수율과 투입량을 같이 보고 싶습니다",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 10,
+      "question": "수율 집계 쿼리",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 11,
+      "question": "어제 웨이퍼 수율을 라인별로 보고 싶습니다",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 12,
+      "question": "일별 수율 집계 조회",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 13,
+      "question": "wafer yield 어제 기준으로 알려줘",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 14,
+      "question": "수율이 떨어진 날을 찾으려면 어떤 쿼리를 쓰나요?",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 15,
+      "question": "라인별 일간 수율",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 16,
+      "question": "웨이퍼 수율 추이를 기간으로 조회하려면?",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 17,
+      "question": "yield daily 집계",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 18,
+      "question": "어제 라인 수율 얼마야?",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 19,
+      "question": "일자별 웨이퍼 수율과 투입량을 같이 보고 싶습니다",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 20,
+      "question": "수율 집계 쿼리",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 21,
+      "question": "어제 웨이퍼 수율을 라인별로 보고 싶습니다",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 22,
+      "question": "일별 수율 집계 조회",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 23,
+      "question": "wafer yield 어제 기준으로 알려줘",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 24,
+      "question": "수율이 떨어진 날을 찾으려면 어떤 쿼리를 쓰나요?",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 25,
+      "question": "라인별 일간 수율",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 26,
+      "question": "웨이퍼 수율 추이를 기간으로 조회하려면?",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 27,
+      "question": "yield daily 집계",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 28,
+      "question": "어제 라인 수율 얼마야?",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 29,
+      "question": "일자별 웨이퍼 수율과 투입량을 같이 보고 싶습니다",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 30,
+      "question": "수율 집계 쿼리",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 31,
+      "question": "어제 웨이퍼 수율을 라인별로 보고 싶습니다",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 32,
+      "question": "일별 수율 집계 조회",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 33,
+      "question": "wafer yield 어제 기준으로 알려줘",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 34,
+      "question": "수율이 떨어진 날을 찾으려면 어떤 쿼리를 쓰나요?",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 35,
+      "question": "라인별 일간 수율",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 36,
+      "question": "웨이퍼 수율 추이를 기간으로 조회하려면?",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 37,
+      "question": "yield daily 집계",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 38,
+      "question": "어제 라인 수율 얼마야?",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 39,
+      "question": "일자별 웨이퍼 수율과 투입량을 같이 보고 싶습니다",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 40,
+      "question": "수율 집계 쿼리",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 41,
+      "question": "어제 웨이퍼 수율을 라인별로 보고 싶습니다",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 42,
+      "question": "일별 수율 집계 조회",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 43,
+      "question": "wafer yield 어제 기준으로 알려줘",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 44,
+      "question": "수율이 떨어진 날을 찾으려면 어떤 쿼리를 쓰나요?",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 45,
+      "question": "라인별 일간 수율",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 46,
+      "question": "웨이퍼 수율 추이를 기간으로 조회하려면?",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 47,
+      "question": "yield daily 집계",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 48,
+      "question": "어제 라인 수율 얼마야?",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 49,
+      "question": "일자별 웨이퍼 수율과 투입량을 같이 보고 싶습니다",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 50,
+      "question": "수율 집계 쿼리",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 51,
+      "question": "어제 웨이퍼 수율을 라인별로 보고 싶습니다",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 52,
+      "question": "일별 수율 집계 조회",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 53,
+      "question": "wafer yield 어제 기준으로 알려줘",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 54,
+      "question": "수율이 떨어진 날을 찾으려면 어떤 쿼리를 쓰나요?",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 55,
+      "question": "라인별 일간 수율",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 56,
+      "question": "웨이퍼 수율 추이를 기간으로 조회하려면?",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 57,
+      "question": "yield daily 집계",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 58,
+      "question": "어제 라인 수율 얼마야?",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 59,
+      "question": "일자별 웨이퍼 수율과 투입량을 같이 보고 싶습니다",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 60,
+      "question": "수율 집계 쿼리",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 61,
+      "question": "어제 웨이퍼 수율을 라인별로 보고 싶습니다",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 62,
+      "question": "일별 수율 집계 조회",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 63,
+      "question": "wafer yield 어제 기준으로 알려줘",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 64,
+      "question": "수율이 떨어진 날을 찾으려면 어떤 쿼리를 쓰나요?",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 65,
+      "question": "라인별 일간 수율",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 66,
+      "question": "웨이퍼 수율 추이를 기간으로 조회하려면?",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 67,
+      "question": "yield daily 집계",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 68,
+      "question": "어제 라인 수율 얼마야?",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 69,
+      "question": "일자별 웨이퍼 수율과 투입량을 같이 보고 싶습니다",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 70,
+      "question": "수율 집계 쿼리",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 71,
+      "question": "어제 웨이퍼 수율을 라인별로 보고 싶습니다",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 72,
+      "question": "일별 수율 집계 조회",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 73,
+      "question": "wafer yield 어제 기준으로 알려줘",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 74,
+      "question": "수율이 떨어진 날을 찾으려면 어떤 쿼리를 쓰나요?",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 75,
+      "question": "라인별 일간 수율",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 76,
+      "question": "웨이퍼 수율 추이를 기간으로 조회하려면?",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 77,
+      "question": "yield daily 집계",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 78,
+      "question": "어제 라인 수율 얼마야?",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 79,
+      "question": "일자별 웨이퍼 수율과 투입량을 같이 보고 싶습니다",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 80,
+      "question": "수율 집계 쿼리",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 81,
+      "question": "어제 웨이퍼 수율을 라인별로 보고 싶습니다",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 82,
+      "question": "일별 수율 집계 조회",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 83,
+      "question": "wafer yield 어제 기준으로 알려줘",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 84,
+      "question": "수율이 떨어진 날을 찾으려면 어떤 쿼리를 쓰나요?",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 85,
+      "question": "라인별 일간 수율",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 86,
+      "question": "웨이퍼 수율 추이를 기간으로 조회하려면?",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 87,
+      "question": "yield daily 집계",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 88,
+      "question": "어제 라인 수율 얼마야?",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 89,
+      "question": "일자별 웨이퍼 수율과 투입량을 같이 보고 싶습니다",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 90,
+      "question": "수율 집계 쿼리",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 91,
+      "question": "어제 웨이퍼 수율을 라인별로 보고 싶습니다",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 92,
+      "question": "일별 수율 집계 조회",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 93,
+      "question": "wafer yield 어제 기준으로 알려줘",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 94,
+      "question": "수율이 떨어진 날을 찾으려면 어떤 쿼리를 쓰나요?",
+      "questionType": "DOMAIN_TERM",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 95,
+      "question": "라인별 일간 수율",
+      "questionType": "PARAMETER",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 96,
+      "question": "웨이퍼 수율 추이를 기간으로 조회하려면?",
+      "questionType": "ERROR_CASE",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 97,
+      "question": "yield daily 집계",
+      "questionType": "SHORT_KEYWORD",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-lot-trace",
+          "path": "/queries/lot-trace",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 98,
+      "question": "어제 라인 수율 얼마야?",
+      "questionType": "MIXED_LANG",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-inventory-wip",
+          "path": "/queries/inventory-wip",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 99,
+      "question": "일자별 웨이퍼 수율과 투입량을 같이 보고 싶습니다",
+      "questionType": "DIRECT",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-operator-shift",
+          "path": "/queries/operator-shift",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    },
+    {
+      "no": 100,
+      "question": "수율 집계 쿼리",
+      "questionType": "USER_NL",
+      "top3": [
+        {
+          "rank": 1,
+          "queryId": "q-wafer-yield",
+          "path": "/queries/wafer-yield-daily",
+          "score": 0.91
+        },
+        {
+          "rank": 2,
+          "queryId": "q-defect-summary",
+          "path": "/queries/defect-summary",
+          "score": 0.74
+        },
+        {
+          "rank": 3,
+          "queryId": "q-equipment-downtime",
+          "path": "/queries/equipment-downtime",
+          "score": 0.62
+        }
+      ],
+      "top1Hit": true,
+      "top3Hit": true,
+      "failureScope": "NONE",
+      "expectedRank": 1,
+      "failureCategory": null,
+      "reason": null
+    }
+  ]
+}

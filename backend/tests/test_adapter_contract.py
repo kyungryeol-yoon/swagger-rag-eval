@@ -19,7 +19,7 @@ from app.services.adapter import ContractViolation, to_evaluation_report
 
 client = TestClient(app)
 
-FIXTURE_PATH: Path = settings.fixture_dir / "eval_A492.json"
+FIXTURE_PATH: Path = settings.fixture_dir / "eval_q-lot-status.json"
 
 
 @pytest.fixture
@@ -28,19 +28,19 @@ def raw() -> dict[str, Any]:
 
 
 def test_valid_payload_passes_through(raw: dict[str, Any]) -> None:
-    assert to_evaluation_report(raw).trace_id == "A492"
+    assert to_evaluation_report(raw).target.query_id == "q-lot-status"
 
 
 def test_missing_top_level_field_names_the_field(raw: dict[str, Any]) -> None:
     del raw["summary"]
     with pytest.raises(ContractViolation) as exc:
-        to_evaluation_report(raw, source="eval_A492.json")
+        to_evaluation_report(raw, source="eval_q-lot-status.json")
 
     message = str(exc.value)
     assert "summary" in message
     assert "필수 필드가 없습니다" in message
     # 어느 결과가 깨졌는지도 함께 나와야 고칠 데를 찾을 수 있다.
-    assert "eval_A492.json" in message
+    assert "eval_q-lot-status.json" in message
 
 
 def test_missing_nested_field_reports_full_path(raw: dict[str, Any]) -> None:
@@ -51,10 +51,10 @@ def test_missing_nested_field_reports_full_path(raw: dict[str, Any]) -> None:
 
 
 def test_missing_field_inside_a_list_reports_the_index(raw: dict[str, Any]) -> None:
-    del raw["queries"][3]["grade"]
+    del raw["questions"][3]["questionType"]
     with pytest.raises(ContractViolation) as exc:
         to_evaluation_report(raw)
-    assert "queries[3].grade" in str(exc.value)
+    assert "questions[3].questionType" in str(exc.value)
 
 
 def test_wrong_type_is_reported_with_the_given_value(raw: dict[str, Any]) -> None:
@@ -97,27 +97,51 @@ def test_many_errors_are_truncated(raw: dict[str, Any]) -> None:
 
 
 def test_optional_fields_may_be_absent(raw: dict[str, Any]) -> None:
-    """previous / meta.rawSource / target.owner 는 없어도 통과해야 한다."""
-    raw["previous"] = None
-    raw["meta"]["rawSource"] = None
-    raw["target"]["owner"] = None
+    """target 의 선택 필드는 null 로 와도 통과해야 한다."""
+    raw["target"]["appId"] = None
+    raw["target"]["summary"] = None
+    raw["target"]["description"] = None
+    for question in raw["questions"]:
+        question["top3"] = None
+        question["top1Hit"] = False
+        question["top3Hit"] = False
+        question["failureScope"] = "TOP3"
+        question["expectedRank"] = None
+        question["failureCategory"] = "OTHER"
+        question["reason"] = "결과 없음"
 
     report = to_evaluation_report(raw)
-    assert report.previous is None
-    assert report.meta.raw_source is None
-    assert report.target.owner is None
+    assert report.target.app_id is None
+    assert report.target.summary is None
+    assert report.target.description is None
+    assert all(q.top3 is None for q in report.questions)
 
 
 def test_optional_fields_may_be_omitted_entirely(raw: dict[str, Any]) -> None:
-    """null 이 아니라 키 자체가 없는 경우도 있다 — 외부 툴은 보통 이쪽이다."""
-    del raw["previous"]
-    del raw["meta"]["rawSource"]
-    del raw["target"]["owner"]
+    """null 이 아니라 키 자체가 없는 경우도 통과해야 한다."""
+    del raw["target"]["appId"]
+    del raw["target"]["summary"]
+    del raw["target"]["description"]
 
     report = to_evaluation_report(raw)
-    assert report.previous is None
-    assert report.meta.raw_source is None
-    assert report.target.owner is None
+    assert report.target.app_id is None
+    assert report.target.summary is None
+    assert report.target.description is None
+
+
+def test_x_questions_is_required(raw: dict[str, Any]) -> None:
+    """빈 배열은 되지만 **생략은 안 된다** (contract.md §2 필드 규약).
+
+    기본값을 두면 프론트 타입이 `string[] | undefined` 가 되어 화면마다
+    방어 코드가 붙는다. "항상 배열" 을 타입으로 보장하려면 필수여야 한다.
+    """
+    raw["target"]["xQuestions"] = []
+    assert to_evaluation_report(raw).target.x_questions == []
+
+    del raw["target"]["xQuestions"]
+    with pytest.raises(ContractViolation) as exc:
+        to_evaluation_report(raw)
+    assert "target.xQuestions" in str(exc.value)
 
 
 # ---------------------------------------------------------------------------
@@ -130,39 +154,17 @@ def test_repository_routes_through_the_adapter(tmp_path: Path) -> None:
     from app.adapters.local.file_spec_repository import FileSpecRepository
 
     broken = json.loads(FIXTURE_PATH.read_text(encoding="utf-8"))
-    del broken["target"]["appName"]
-    (tmp_path / "eval_BROKEN.json").write_text(
+    del broken["target"]["path"]
+    (tmp_path / "eval_q-broken.json").write_text(
         json.dumps(broken, ensure_ascii=False), encoding="utf-8"
     )
 
     repository = FileSpecRepository(tmp_path)
     with pytest.raises(ContractViolation) as exc:
-        repository.get_evaluation("BROKEN")
+        repository.evaluate("q-broken")
 
-    assert "target.appName" in str(exc.value)
-    assert "eval_BROKEN.json" in str(exc.value)
-
-
-def test_broken_fixture_does_not_block_the_list(tmp_path: Path, caplog: Any) -> None:
-    """목록은 깨진 파일 하나로 멈추지 않되, 조용히 넘기지도 않는다."""
-    import logging
-
-    from app.adapters.local.file_spec_repository import FileSpecRepository
-
-    good = json.loads(FIXTURE_PATH.read_text(encoding="utf-8"))
-    (tmp_path / "eval_A492.json").write_text(json.dumps(good, ensure_ascii=False), encoding="utf-8")
-
-    broken = {k: v for k, v in good.items() if k != "target"}
-    (tmp_path / "eval_BROKEN.json").write_text(
-        json.dumps(broken, ensure_ascii=False), encoding="utf-8"
-    )
-
-    repository = FileSpecRepository(tmp_path)
-    with caplog.at_level(logging.WARNING, logger="app"):
-        items = repository.list_evaluations()
-
-    assert [item.trace_id for item in items] == ["A492"]
-    assert "eval_BROKEN.json" in caplog.text
+    assert "target.path" in str(exc.value)
+    assert "eval_q-broken.json" in str(exc.value)
 
 
 def test_contract_violation_returns_500_with_the_reason(tmp_path: Path) -> None:
@@ -172,7 +174,7 @@ def test_contract_violation_returns_500_with_the_reason(tmp_path: Path) -> None:
 
     broken = json.loads(FIXTURE_PATH.read_text(encoding="utf-8"))
     del broken["summary"]["top3Grade"]
-    (tmp_path / "eval_BROKEN.json").write_text(
+    (tmp_path / "eval_q-broken.json").write_text(
         json.dumps(broken, ensure_ascii=False), encoding="utf-8"
     )
 
@@ -180,11 +182,19 @@ def test_contract_violation_returns_500_with_the_reason(tmp_path: Path) -> None:
     try:
         # 예외 핸들러의 응답을 보려면 TestClient 가 예외를 되던지지 않아야 한다.
         with TestClient(app, raise_server_exceptions=False) as local:
-            res = local.get("/api/v1/evaluations/BROKEN")
+            res = local.post("/api/v1/evaluations", json={"query_id": "q-broken"})
     finally:
         app.dependency_overrides.clear()
 
     assert res.status_code == 500
     body = res.json()
-    assert body["source"] == "eval_BROKEN.json"
+    assert body["source"] == "eval_q-broken.json"
     assert any("summary.top3Grade" in problem for problem in body["problems"])
+
+
+def test_question_count_mismatch_is_a_contract_violation(raw: dict[str, Any]) -> None:
+    """세 자리에 있는 질문 수가 어긋나면 어댑터가 잡아 준다."""
+    raw["summary"]["totalQuestions"] = 42
+    with pytest.raises(ContractViolation) as exc:
+        to_evaluation_report(raw)
+    assert "질문 수가 서로 다릅니다" in str(exc.value)

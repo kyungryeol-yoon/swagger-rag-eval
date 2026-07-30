@@ -44,7 +44,7 @@ def test_cors_origins_defaults_to_localhost() -> None:
 
 
 class _EmptyRepository:
-    def get_evaluation(self, trace_id: str) -> EvaluationReport | None:
+    def evaluate(self, query_id: str) -> EvaluationReport | None:
         return None
 
     def get_spec(self, spec_id: str) -> dict[str, object] | None:
@@ -52,7 +52,7 @@ class _EmptyRepository:
 
 
 class _BrokenRepository:
-    def get_evaluation(self, trace_id: str) -> EvaluationReport | None:
+    def evaluate(self, query_id: str) -> EvaluationReport | None:
         raise OSError("저장소에 닿지 못했습니다")
 
     def get_spec(self, spec_id: str) -> dict[str, object] | None:

@@ -23,15 +23,18 @@ from app.main import app
 from app.ports.auth import AuthProvider, User
 from app.ports.llm import Embedder, LLMClient
 from app.ports.spec_repository import SpecRepository
-from app.schemas.evaluation import EvaluationListItem, EvaluationReport
+from app.schemas.evaluation import EvaluationReport
 
 client = TestClient(app)
 
 
+NORMAL_QUERY_ID = "q-lot-status"
+
+
 @pytest.fixture
 def report() -> EvaluationReport:
-    payload = json.loads((settings.fixture_dir / "eval_A492.json").read_text(encoding="utf-8"))
-    return EvaluationReport.model_validate(payload)
+    path = settings.fixture_dir / f"eval_{NORMAL_QUERY_ID}.json"
+    return EvaluationReport.model_validate(json.loads(path.read_text(encoding="utf-8")))
 
 
 # ---------------------------------------------------------------------------
@@ -58,11 +61,8 @@ def test_local_adapter_satisfies_the_protocol() -> None:
 
 def test_port_protocols_expose_expected_signatures() -> None:
     """구현이 비어 있는 Port도 시그니처는 고정돼 있어야 한다."""
-    assert set(SpecRepository.__protocol_attrs__) == {
-        "list_evaluations",
-        "get_evaluation",
-        "get_spec",
-    }
+    # 무상태 전환으로 list_evaluations 가 사라졌다 (contract.md §0).
+    assert set(SpecRepository.__protocol_attrs__) == {"evaluate", "get_spec"}
     assert set(AuthProvider.__protocol_attrs__) == {"get_current_user"}
     assert set(LLMClient.__protocol_attrs__) == {"complete"}
     assert set(Embedder.__protocol_attrs__) == {"embed"}
@@ -100,20 +100,8 @@ class FakeSpecRepository:
         self._report = report
         self.seen: list[str] = []
 
-    def list_evaluations(self) -> list[EvaluationListItem]:
-        if self._report is None:
-            return []
-        return [
-            EvaluationListItem(
-                trace_id=self._report.trace_id,
-                app_name=self._report.target.app_name,
-                evaluated_at=self._report.evaluated_at,
-                top3_accuracy=self._report.summary.top3_accuracy,
-            )
-        ]
-
-    def get_evaluation(self, trace_id: str) -> EvaluationReport | None:
-        self.seen.append(trace_id)
+    def evaluate(self, query_id: str) -> EvaluationReport | None:
+        self.seen.append(query_id)
         return self._report
 
     def get_spec(self, spec_id: str) -> dict[str, Any] | None:
@@ -129,22 +117,22 @@ def test_endpoint_works_with_an_injected_fake(report: EvaluationReport) -> None:
     fake = FakeSpecRepository(report)
     app.dependency_overrides[get_spec_repository] = lambda: fake
     try:
-        res = client.get("/api/v1/evaluations/A492")
+        res = client.post("/api/v1/evaluations", json={"query_id": NORMAL_QUERY_ID})
         assert res.status_code == 200
-        assert res.json()["traceId"] == "A492"
-        assert fake.seen == ["A492"]
+        assert res.json()["target"]["queryId"] == NORMAL_QUERY_ID
+        assert fake.seen == [NORMAL_QUERY_ID]
     finally:
         app.dependency_overrides.clear()
 
 
 def test_endpoint_serves_whatever_the_repository_returns(report: EvaluationReport) -> None:
     """저장소가 파일이 아니어도 된다는 것을 보인다. 응답은 저장소가 준 값 그대로."""
-    renamed = report.model_copy(update={"trace_id": "B001"})
+    renamed = report.model_copy(update={"trace_id": "R-fake"})
     app.dependency_overrides[get_spec_repository] = lambda: FakeSpecRepository(renamed)
     try:
-        res = client.get("/api/v1/evaluations/B001")
+        res = client.post("/api/v1/evaluations", json={"query_id": NORMAL_QUERY_ID})
         assert res.status_code == 200
-        assert res.json()["traceId"] == "B001"
+        assert res.json()["traceId"] == "R-fake"
     finally:
         app.dependency_overrides.clear()
 
@@ -153,7 +141,7 @@ def test_endpoint_returns_404_when_repository_has_nothing() -> None:
     """404 판단은 라우터가 한다. 저장소는 None 만 돌려준다."""
     app.dependency_overrides[get_spec_repository] = lambda: FakeSpecRepository(None)
     try:
-        res = client.get("/api/v1/evaluations/A492")
+        res = client.post("/api/v1/evaluations", json={"query_id": NORMAL_QUERY_ID})
         assert res.status_code == 404
     finally:
         app.dependency_overrides.clear()
@@ -166,24 +154,14 @@ def test_endpoint_returns_404_when_repository_has_nothing() -> None:
 
 def test_file_repository_reads_the_fixture() -> None:
     repository = FileSpecRepository(settings.fixture_dir)
-    found = repository.get_evaluation("A492")
+    found = repository.evaluate(NORMAL_QUERY_ID)
     assert found is not None
-    assert found.trace_id == "A492"
+    assert found.target.query_id == NORMAL_QUERY_ID
 
 
-def test_file_repository_returns_none_for_missing_evaluation() -> None:
+def test_file_repository_returns_none_for_missing_query() -> None:
     repository = FileSpecRepository(settings.fixture_dir)
-    assert repository.get_evaluation("NOPE") is None
-
-
-def test_file_repository_lists_evaluations_newest_first() -> None:
-    """fixtures 의 eval_*.json 을 요약해 최신순으로 준다."""
-    repository = FileSpecRepository(settings.fixture_dir)
-    items = repository.list_evaluations()
-    trace_ids = [item.trace_id for item in items]
-    assert {"A492", "A311"} <= set(trace_ids)
-    # evaluatedAt 내림차순
-    assert items == sorted(items, key=lambda item: item.evaluated_at, reverse=True)
+    assert repository.evaluate("q-no-such-query") is None
 
 
 def test_file_repository_reads_the_dumped_openapi_spec() -> None:
@@ -200,11 +178,11 @@ def test_file_repository_returns_none_for_missing_spec() -> None:
     assert repository.get_spec("no_such_spec") is None
 
 
-@pytest.mark.parametrize("bad_id", ["../secrets", "a/b", "", "x" * 65])
+@pytest.mark.parametrize("bad_id", ["../secrets", "a/b", "", "x" * 129])
 def test_file_repository_rejects_unsafe_ids(bad_id: str) -> None:
     """HTTP를 거치지 않고 직접 호출될 수 있으므로 저장소가 스스로 막아야 한다."""
     repository = FileSpecRepository(settings.fixture_dir)
     with pytest.raises(ValueError):
         repository.get_spec(bad_id)
     with pytest.raises(ValueError):
-        repository.get_evaluation(bad_id)
+        repository.evaluate(bad_id)

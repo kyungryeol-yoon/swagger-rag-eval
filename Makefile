@@ -24,7 +24,7 @@ PY ?= python3
 
 TASKS := $(PY) scripts/tasks.py
 
-.PHONY: help setup dev build test lint gen-types dump-spec sync-fixture edge-fixtures show-quality lock doctor clean
+.PHONY: help setup dev build test lint gen-types dump-spec sync-fixture fixtures show-quality lock doctor clean
 
 help:
 	$(TASKS) help
@@ -53,8 +53,8 @@ dump-spec:
 sync-fixture:
 	$(TASKS) sync-fixture
 
-edge-fixtures:
-	$(TASKS) edge-fixtures
+fixtures:
+	$(TASKS) fixtures
 
 show-quality:
 	$(TASKS) show-quality

@@ -1,0 +1,161 @@
+/* 카드 규격은 다른 카드와 동일(padding --space-5 / radius-lg).
+   세로 흐름: 경로(상) → ID → 명세 텍스트 → 예시 질문(하). */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  min-width: 0;
+}
+
+/* 경로. 카드에서 가장 먼저 읽혀야 하는 것이다.
+   길면 말줄임하고 전체는 title 로 본다 — 줄바꿈으로 쪼개면 경로가 두 개처럼 보인다. */
+.path {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  min-width: 0;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 메서드는 경로에 딸린 접두사다. 뱃지로 키우지 않는다 — 전부 GET 이라
+   정보가 없는데 색까지 주면 시선만 뺏는다 (open-questions #50). */
+.method {
+  flex: none;
+  color: var(--text-mute);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+/* --- 식별자 -------------------------------------------------------------- */
+
+.ids {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  margin: 0;
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border);
+}
+
+.idItem {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.idItem dt {
+  flex: none;
+  color: var(--text-mute);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.idItem dd {
+  margin: 0;
+  min-width: 0;
+  color: var(--text-dim);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+/* --- 명세 텍스트 (이 카드의 본체) ---------------------------------------- */
+
+.spec {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+/* 필드 이름은 명세의 키 그대로 적는다(summary / description).
+   사용자가 DAC 에서 고칠 때 어느 칸을 고쳐야 하는지 바로 이어져야 한다. */
+.fieldLabel {
+  color: var(--text-mute);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+
+.fieldBody {
+  margin: 0;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+/* description 은 길다. 카드를 무한히 늘리지 않도록 5줄쯤에서 끊고 스크롤한다 —
+   말줄임으로 자르면 뒷부분을 볼 방법이 없고, 다 펼치면 카드가 옆 블록보다
+   훨씬 길어진다. */
+.fieldBodyLong {
+  margin: 0;
+  max-height: 7.5em;
+  overflow-y: auto;
+  color: var(--text-dim);
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+/* **없다는 사실이 평가 결과다.** 흐리게 감추지 않고 경고색으로 드러낸다. */
+.fieldMissing {
+  margin: 0;
+  color: var(--grade-critical);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* --- 예시 질문 (접이식) --------------------------------------------------- */
+
+/* margin-top:auto 로 바닥에 붙여 우측 게이지+요약 블록 높이를 채운다. */
+.examples {
+  margin-top: auto;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+}
+
+.examplesSummary {
+  color: var(--text-dim);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+}
+
+.exampleList {
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.exampleItem {
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}

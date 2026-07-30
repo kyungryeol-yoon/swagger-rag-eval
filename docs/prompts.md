@@ -720,7 +720,7 @@ frontend/src/styles/globals.css 에 CSS 변수 토큰을 정의해줘.
 |---|---|---|---|
 | 6-1 | `GaugeRing` | 78% 하나만. 중복 표시 제거 | **완료** (+ 6-1a 정렬 수정) |
 | 6-2 | `SummaryCards` | 요약 지표 5장. `previous` 있으면 델타 뱃지 | **완료** |
-| 6-3 | `AppSummaryCard` + `QueryQualityTable` | 앱 메타 + 쿼리별 품질 표. 기존 TargetApiCard(단일 엔드포인트) 폐기 | **완료** |
+| 6-3 | `AppSummaryCard` + `QueryQualityTable` | 앱 메타 + 쿼리별 품질 표 | **폐기 (Phase 12)** — `QueryInfoCard` 로 대체 |
 | 6-4 | `QuestionTypeChart` | 도넛 + 범례 + **유형별 인식률 막대** | **완료** |
 | 6-5 | `RecommendationCards` | priority 뱃지, failShare 바, 중복 집계 각주 | **완료** |
 | 6-6 | `FailureTable` | 표시 3건 + 전체 보기. score 표시. 정렬·필터는 후속 | **완료** |
@@ -946,7 +946,13 @@ app/dev/components/page.tsx 에 섹션 추가:
 > `EvaluationSummary` / `PreviousEvaluation` 이다 (`lib/types.ts`).
 > 계약 스키마 이름을 그대로 재노출한 것이라 그쪽을 썼다.
 
-#### Phase 6-3 — AppSummaryCard + QueryQualityTable (완료)
+#### Phase 6-3 — AppSummaryCard + QueryQualityTable (완료 → **Phase 12 에서 폐기**)
+
+> **이 절의 산출물은 지금 저장소에 없다.** Phase 12 에서 평가 단위가 앱에서
+> 쿼리 1개로 바뀌면서(`open-questions.md` #1 재확정) 두 컴포넌트의 근거가
+> 사라졌다 — 앱 메타(`AppSummaryCard`)와 쿼리 목록 표(`QueryQualityTable`)는
+> 계약에 대응 필드가 없다. 대상 쿼리의 설명 품질은 `QueryInfoCard` 가 보여준다.
+> 아래 내용은 **당시 판단의 기록**으로 남긴다.
 
 **기존 `TargetApiCard`(단일 엔드포인트 카드) 설계는 폐기했다.** 평가 단위가
 쿼리 하나가 아니라 DAC 앱 하나로 바뀌면서(contract.md §0, open-questions #1)
@@ -1129,7 +1135,9 @@ app/dev/components/page.tsx 에 섹션 추가:
 - **`failureCategory` 에는 색을 주지 않는다.** 실패의 *종류*를 나누는 범주일 뿐
   어느 원인이 더 심각하다는 뜻이 아니다. 색을 붙이면 "빨간 원인이 더 나쁜가?"
   하고 읽게 된다. 중립 뱃지(`--surface-2` + `--border`)로 둔다.
-- **method 색은 `lib/httpMethod.ts` 로 분리.** 메서드 뱃지는 실패 테이블·대상
+- ~~**method 색은 `lib/httpMethod.ts` 로 분리.**~~ (Phase 12 에서 파일 삭제 —
+  DAC 쿼리가 전부 조회라 색이 정보를 주지 않는데 시선만 뺏는다. open-questions #50)
+  메서드 뱃지는 실패 테이블·대상
   API 카드·검색 결과에 두루 나오는데, 판단이 흩어지면 화면마다 같은 GET 이
   다른 색으로 보인다. 계약의 `method` 가 자유 문자열이라(#27) **모르는 값은
   중립색으로 떨어뜨린다** — 화면이 깨지는 것보다 회색이 낫다.

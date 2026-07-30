@@ -16,7 +16,15 @@
 
 import { serverApiBase } from "./config";
 
-/** 요청 하나의 상한(ms). 평가 조회는 저장된 결과를 읽어 오는 것이라 오래 걸릴 이유가 없다. */
+/**
+ * 요청 하나의 상한(ms).
+ *
+ * **무상태 전환으로 이 값의 의미가 바뀌었다** (Phase 12). 예전에는 저장된 결과를
+ * 읽어 오는 시간이라 8초로 넉넉했다. 지금은 요청이 평가를 실행시키므로 —
+ * LLM 질문 생성 100건 + 벡터 검색 — 실제 파이프라인이 붙으면 **수십 초**가 걸린다.
+ * fixture 대역을 읽는 지금은 8초로 충분하지만, 파이프라인 연동 시 반드시 올려야
+ * 한다 (open-questions #71).
+ */
 const REQUEST_TIMEOUT_MS = 8_000;
 
 /** `/ready` 확인은 이미 실패한 뒤의 원인 규명용이다. 더 짧게 끊는다. */
@@ -101,19 +109,46 @@ function describe(kind: ApiFailureKind, url: string, status?: number): string {
 }
 
 /**
- * 백엔드에서 JSON 을 가져온다.
+ * 백엔드에서 JSON 을 가져온다 (GET).
  *
  * @param path `/api/v1/...` 처럼 슬래시로 시작하는 경로. 절대 URL 을 넣지 않는다.
  * @throws NotFoundError 404 일 때. 호출부가 `notFound()` 로 바꾼다.
  * @throws ApiError 그 밖의 모든 실패. `kind` 로 종류가 갈린다.
  */
 export async function fetchJson<T>(path: string): Promise<T> {
+  return request<T>(path, undefined);
+}
+
+/**
+ * 백엔드에 JSON 을 보내고 JSON 을 받는다 (POST).
+ *
+ * 평가 실행이 POST 인 이유는 **요청 자체가 평가를 돌리기 때문**이다 — 무상태라
+ * 조회할 저장된 결과가 없다 (contract.md §1). 부수효과가 있는 조회는 GET 이 아니다.
+ *
+ * @throws NotFoundError 404 일 때. 호출부가 `notFound()` 로 바꾼다.
+ * @throws ApiError 그 밖의 모든 실패.
+ */
+export async function postJson<T>(path: string, body: unknown): Promise<T> {
+  return request<T>(path, body);
+}
+
+/**
+ * 실제 요청. `body` 가 없으면 GET, 있으면 POST 다.
+ *
+ * 타임아웃·실패 분류·주소 표기가 한 곳에 있어야 같은 장애가 페이지마다 다른
+ * 문구로 보이지 않는다.
+ */
+async function request<T>(path: string, body: unknown): Promise<T> {
   const url = `${serverApiBase}${path}`;
 
   let res: Response;
   try {
-    // 평가 결과는 재실행마다 바뀐다. 캐시하면 재생성 후에도 옛 수치가 남는다.
+    // 평가 결과는 실행마다 바뀐다. 캐시하면 옛 수치가 남는다.
+    // 무상태라 애초에 캐시할 대상이 아니기도 하다.
     res = await fetch(url, {
+      method: body === undefined ? "GET" : "POST",
+      headers: body === undefined ? undefined : { "Content-Type": "application/json" },
+      body: body === undefined ? undefined : JSON.stringify(body),
       cache: "no-store",
       signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     });

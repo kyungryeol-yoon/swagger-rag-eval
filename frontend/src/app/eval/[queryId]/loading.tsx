@@ -9,12 +9,14 @@ import styles from "./states.module.css";
  * 보이고, 사용자는 로딩이 끝난 뒤에도 눈으로 위치를 다시 찾아야 한다.
  *
  * 그래서 여기 격자는 page.module.css 를 그대로 따라간다:
- *   헤더 / 행1 앱정보+요약 / 행2 평가기준+문항유형 / 쿼리 품질 /
+ *   헤더 / 행1 대상쿼리+요약 / 행2 평가기준+문항유형 /
  *   행3 좌(막대+문항표) 우(권장조치+권장액션)
  * 한쪽을 고치면 다른 쪽도 고쳐야 한다. 어긋나면 레이아웃 시프트로 바로 보인다.
+ * Phase 12 에서 쿼리 품질 표가 빠졌으므로 그 블록도 함께 없앴다.
  *
- * 평가는 수십 초 걸린다. 진행 중 화면이 실제로는 가장 자주 보이는 화면이다
- * (docs/prompts.md §9-4).
+ * **무상태 전환으로 이 화면이 더 중요해졌다** (Phase 12). 요청 자체가 평가를
+ * 실행하므로, 페이지를 열 때마다 수십 초짜리 대기가 실제로 발생한다 — 진행 중
+ * 화면이 가장 자주 보이는 화면이다 (docs/prompts.md §9-4).
  */
 export default function Loading() {
   return (
@@ -35,10 +37,13 @@ export default function Loading() {
 
       {/* 행1 — 앱 정보(300px) + 요약(게이지 + 카드 4장) */}
       <div className={styles.overview}>
+        {/* 대상 쿼리 카드 — 경로 / ID / summary / description 자리. */}
         <div className={styles.appCard}>
-          <span className={`${styles.bar} ${styles.w160} ${styles.h16}`} />
+          <span className={`${styles.bar} ${styles.w200} ${styles.h14}`} />
           <span className={`${styles.bar} ${styles.w120} ${styles.h10}`} />
           <span className={`${styles.bar} ${styles.full} ${styles.h10}`} />
+          <span className={`${styles.bar} ${styles.full} ${styles.h10}`} />
+          <span className={`${styles.bar} ${styles.w160} ${styles.h10}`} />
         </div>
 
         <div className={styles.summaryBox}>
@@ -76,14 +81,6 @@ export default function Loading() {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* 쿼리별 설명 품질 — 전체 폭 표 */}
-      <div className={styles.table}>
-        <span className={styles.tableHead} />
-        {[0, 1, 2, 3, 4].map((i) => (
-          <span key={i} className={styles.tableRow} />
-        ))}
       </div>
 
       {/* 행3 — 좌: 유형별 막대 + 문항 표 / 우: 권장 조치 + 권장 액션 */}

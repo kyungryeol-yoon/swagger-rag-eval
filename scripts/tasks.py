@@ -139,7 +139,7 @@ COMMANDS: list[tuple[str, str]] = [
     ("gen-types", "백엔드 OpenAPI -> 프론트 타입 생성"),
     ("dump-spec", "sample-api 의 openapi.json 덤프"),
     ("sync-fixture", "backend fixture 를 frontend/src/mocks 로 복사 (dev 페이지용)"),
-    ("edge-fixtures", "경계값 fixture 재생성 (계약이 바뀌면 함께 커밋)"),
+    ("fixtures", "평가 결과 fixture 재생성 (계약이 바뀌면 함께 커밋)"),
     ("show-quality", "sample-api 엔드포인트별 설명 품질 표"),
     ("lock", "uv.lock 재생성 (사내 저장소 전환 시)"),
     ("doctor", "환경 진단 — 사내 PC 최초 셋업 시 먼저 실행"),
@@ -201,19 +201,18 @@ def cmd_dump_spec() -> None:
     run(["uv", "run", "python", "-m", "app.scripts.dump_openapi"], SAMPLE_API)
 
 
-def cmd_edge_fixtures() -> None:
-    """경계값 fixture 를 다시 만든다 (Phase 10).
+def cmd_fixtures() -> None:
+    """평가 결과 fixture 를 다시 만든다.
 
-    인식률 100%, 전건 실패, 쿼리 1개, 유형 3종, 첫 평가, 초장문 — 화면이 극단
-    데이터에서 무너지지 않는지 눈으로 확인하려고 만든 것들이다. 직전 평가(A311)도
-    A492 에서 유도해 함께 다시 만든다 — 손으로 요약만 고치면 게이지와 표가
-    서로 다른 말을 하게 된다.
+    쿼리 하나가 곧 하나의 경계다 — 설명 충실(정상) / 설명 없음(인식률 최저) /
+    인식률 100% / 검색 결과 없음(top3 null) / 초장문. 화면이 각 상태에서
+    무너지지 않는지 눈으로 확인하려고 만든 것들이다.
 
     **결과 JSON 은 생성물이 아니라 커밋 대상이다.** 폐쇄망에는 파일로 옮기므로
     스크립트를 돌릴 수 없는 환경이 있다. 계약이 바뀌면 이 타겟을 돌리고
     나온 JSON 을 함께 커밋한다.
     """
-    run(["uv", "run", "python", "-m", "app.scripts.make_edge_fixtures"], BACKEND)
+    run(["uv", "run", "python", "-m", "app.scripts.make_fixtures"], BACKEND)
 
 
 def cmd_show_quality() -> None:
@@ -243,8 +242,8 @@ def cmd_sync_fixture() -> None:
     폐쇄망에 파일 단위로 복사될 때 이 mock 이 함께 가야 dev 페이지가 뜬다.
     계약이 바뀌면 fixture 를 먼저 고치고 이 타겟으로 다시 복사한다.
     """
-    src = BACKEND / "app" / "fixtures" / "eval_A492.json"
-    dst = FRONTEND / "src" / "mocks" / "eval_A492.json"
+    src = BACKEND / "app" / "fixtures" / "eval_q-lot-status.json"
+    dst = FRONTEND / "src" / "mocks" / "eval_q-lot-status.json"
     dst.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(src, dst)
     print(f"복사: {src.relative_to(ROOT)} -> {dst.relative_to(ROOT)}")
@@ -661,7 +660,7 @@ HANDLERS = {
     "gen-types": cmd_gen_types,
     "dump-spec": cmd_dump_spec,
     "sync-fixture": cmd_sync_fixture,
-    "edge-fixtures": cmd_edge_fixtures,
+    "fixtures": cmd_fixtures,
     "show-quality": cmd_show_quality,
     "lock": cmd_lock,
     "doctor": cmd_doctor,

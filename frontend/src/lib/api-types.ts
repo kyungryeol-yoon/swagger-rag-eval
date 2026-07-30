@@ -11,33 +11,17 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * 평가 목록 조회
-         * @description 저장된 평가들의 요약 목록을 최신순으로 반환합니다. 목록 화면과 '최신 평가로 리다이렉트'에 씁니다. 100문항 전체는 개별 조회로 가져옵니다.
-         */
-        get: operations["list_evaluations_api_v1_evaluations_get"];
+        get?: never;
         put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/evaluations/{trace_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
         /**
-         * 평가 리포트 조회
-         * @description 추적 ID로 평가 리포트 전체를 반환합니다. 대시보드 화면 전체가 이 응답 하나로 그려집니다.
+         * 쿼리 1개 평가
+         * @description DAC 쿼리 하나를 평가하고 결과를 반환합니다. 대시보드 화면 전체가 이 응답 하나로 그려집니다.
+         *
+         *     **무상태입니다.** 요청마다 처음부터 평가하며 결과를 저장하지 않습니다. 실제 파이프라인은 LLM 질문 생성과 벡터 검색을 포함해 수십 초가 걸립니다.
+         *
+         *     요청 본문은 `{"query_id": "..."}` 이며 `queryId` 도 받습니다.
          */
-        get: operations["get_evaluation_api_v1_evaluations__trace_id__get"];
-        put?: never;
-        post?: never;
+        post: operations["evaluate_api_v1_evaluations_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -76,11 +60,15 @@ export interface paths {
         };
         /**
          * 레디니스 체크
-         * @description 데이터 소스에서 평가 결과가 실제로 읽히는지 확인한다.
+         * @description 데이터 소스가 실제로 읽히는지 확인한다.
+         *
+         *     기준 쿼리 하나를 평가해 본다. 로컬 대역은 fixture 를 읽는 것이고, 사내
+         *     구현에서는 pgvector·LLM 까지 실제로 타므로 **readiness 체크가 비싸진다** —
+         *     그때는 파이프라인 전체가 아니라 pgvector 연결만 보는 쪽으로 좁혀야 한다
+         *     (open-questions #71).
          *
          *     readiness 용이다. 실패하면 트래픽을 받지 않아야 하므로 503 을 준다.
-         *     저장소는 Port 를 경유하므로, 사내에서 DB 어댑터로 바뀌면
-         *     이 체크가 곧 DB 연결 확인이 된다.
+         *     Port 를 경유하므로 사내 구현으로 바뀌면 이 체크가 곧 그 구현의 연결 확인이 된다.
          */
         get: operations["ready_ready_get"];
         put?: never;
@@ -96,42 +84,32 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /**
-         * EvaluationListItem
-         * @description GET /api/v1/evaluations 목록의 한 항목.
+         * EvaluateRequest
+         * @description POST /api/v1/evaluations 의 요청 본문.
          *
-         *     목록 화면·최신 리다이렉트에 필요한 최소 필드만 담는다. 100문항 전체를
-         *     싣지 않는다 — 목록은 가볍게, 상세는 개별 조회로.
+         *     DAC 이 `{"query_id": "..."}` 를 보낸다. 이 계약의 직렬화 규약은 camelCase 이고
+         *     DAC 이 보내는 형태는 snake_case 라 둘이 어긋난다 — `populate_by_name` 덕분에
+         *     **`query_id` 와 `queryId` 를 모두 받는다.** 그 불일치를 경계에서 흡수하고,
+         *     응답은 규약대로 camelCase 하나만 쓴다 (contract.md §1).
          */
-        EvaluationListItem: {
+        EvaluateRequest: {
             /**
-             * Traceid
-             * @description 평가 실행의 추적 ID.
+             * Queryid
+             * @description 평가할 DAC 쿼리 식별자.
              */
-            traceId: string;
-            /**
-             * Appname
-             * @description 평가 대상 앱 이름.
-             */
-            appName: string;
-            /**
-             * Evaluatedat
-             * @description 평가 실행 시각(ISO 8601 + 타임존). 최신순 정렬 기준.
-             */
-            evaluatedAt: string;
-            /**
-             * Top3Accuracy
-             * @description 대표 지표. 목록에서 앱 상태를 한눈에 보이게 한다.
-             */
-            top3Accuracy: number;
+            queryId: string;
         };
         /**
          * EvaluationMeta
          * @description 재현성 정보. 같은 조건으로 다시 돌릴 수 있어야 한다.
+         *
+         *     저장 전제 필드(`raw_source`)와 문항 출처(`question_source`)가 빠졌다 —
+         *     평가 엔진이 이 백엔드 안에 있고 질문은 항상 여기의 LLM 이 만든다.
          */
         EvaluationMeta: {
             /**
              * Embeddingmodel
-             * @description 검색에 사용한 임베딩 모델 이름. 예: bge-m3
+             * @description 검색에 사용한 임베딩 모델. bge-m3 (1024차원, 코사인 유사도).
              */
             embeddingModel: string;
             /** @description 검색 방식. HYBRID 는 BM25 + 벡터 병용. */
@@ -142,28 +120,26 @@ export interface components {
              */
             topK: number;
             /**
-             * Questionsource
-             * @description 평가 문항의 출처. 신뢰도 판단 근거로 화면에 노출한다. 예: LLM_GENERATED_HUMAN_REVIEWED
+             * Questioncount
+             * @description LLM 이 생성한 질문 수. **summary.totalQuestions 와 반드시 같다** — 같은 수가 두 자리에 있으므로 EvaluationReport 가 검증한다.
              */
-            questionSource: string;
+            questionCount: number;
             /**
              * Durationms
              * @description 평가 전체 소요 시간(밀리초).
              */
             durationMs: number;
-            /** @description 외부 평가툴의 원본 버전 정보. 없으면 null. */
-            rawSource?: components["schemas"]["RawSource"] | null;
         };
         /**
          * EvaluationReport
-         * @description GET /api/v1/evaluations/{trace_id} 의 응답.
+         * @description POST /api/v1/evaluations 의 응답.
          *
          *     대시보드 전체가 이 하나로 그려진다.
          */
         EvaluationReport: {
             /**
              * Traceid
-             * @description 평가 실행의 추적 ID. 예: A492
+             * @description 이 실행 한 번을 가리키는 값. **저장되지 않는다** — 로그 대조용이며 나중에 이 ID 로 다시 조회할 수 없다 (open-questions #68).
              */
             traceId: string;
             /**
@@ -171,34 +147,27 @@ export interface components {
              * @description 평가 실행 시각(ISO 8601 + 타임존).
              */
             evaluatedAt: string;
-            /** @description 평가 대상 DAC 앱. */
-            target: components["schemas"]["TargetApp"];
+            /** @description 평가 대상 DAC 쿼리 하나. */
+            target: components["schemas"]["TargetQuery"];
             /** @description 재현성 정보. */
             meta: components["schemas"]["EvaluationMeta"];
             /** @description 요약 지표. */
             summary: components["schemas"]["EvaluationSummary"];
             /**
-             * Queries
-             * @description 쿼리별 설명 품질과 인식률. 앱에 등록된 쿼리 전부를 내려준다. 이 목록에서 needsRegeneration 인 것이 재생성 요청 대상이 된다.
-             */
-            queries: components["schemas"]["QueryStat"][];
-            /**
              * Questiontypes
-             * @description 문항 유형별 분포와 인식률. 7종 전부 내려준다.
+             * @description 문항 유형별 분포와 인식률. 분류 체계는 자리표시(#69).
              */
             questionTypes: components["schemas"]["QuestionTypeStat"][];
             /**
              * Recommendations
-             * @description 권장 조치 목록. order 오름차순.
+             * @description 권장 조치 목록. order 오름차순. 항목 전체 목록은 미확정(#70).
              */
             recommendations: components["schemas"]["Recommendation"][];
             /**
              * Questions
-             * @description 평가 문항 전체(성공 포함). 건수는 totalQuestions 와 같다. 정렬: TOP3 실패 → TOP1_ONLY 실패 → 성공, 그 안에서 no 오름차순.
+             * @description 생성된 질문 전체(성공 포함). 건수는 totalQuestions 와 같다. 정렬: TOP3 실패 → TOP1_ONLY 실패 → 성공, 그 안에서 no 오름차순.
              */
             questions: components["schemas"]["QuestionResult"][];
-            /** @description 직전 평가 결과. 이전 평가가 없으면 null 이며 프론트는 델타 뱃지를 숨긴다. */
-            previous?: components["schemas"]["PreviousEvaluation"] | null;
         };
         /**
          * EvaluationSummary
@@ -236,22 +205,6 @@ export interface components {
             top3Grade: components["schemas"]["Grade"];
         };
         /**
-         * ExpectedApi
-         * @description 문항이 찾아냈어야 하는 정답 쿼리.
-         */
-        ExpectedApi: {
-            /**
-             * Method
-             * @description 기대 쿼리의 HTTP 메서드.
-             */
-            method: string;
-            /**
-             * Path
-             * @description 기대 쿼리의 경로.
-             */
-            path: string;
-        };
-        /**
          * FailureCategory
          * @description 실패 원인 분류. 담당자 확정 스펙 기준 (contract.md §3).
          * @enum {string}
@@ -278,130 +231,57 @@ export interface components {
             detail?: components["schemas"]["ValidationError"][];
         };
         /**
-         * PreviousEvaluation
-         * @description 직전 평가 결과. Before/After 델타의 기준점.
-         */
-        PreviousEvaluation: {
-            /**
-             * Traceid
-             * @description 직전 평가의 추적 ID.
-             */
-            traceId: string;
-            /**
-             * Evaluatedat
-             * @description 직전 평가 시각(ISO 8601 + 타임존).
-             */
-            evaluatedAt: string;
-            /**
-             * Top3Accuracy
-             * @description 직전 평가의 Top-3 인식률(%).
-             */
-            top3Accuracy: number;
-        };
-        /**
          * Priority
          * @description 권장 조치의 우선순위.
          * @enum {string}
          */
         Priority: "HIGH" | "MEDIUM" | "LOW";
         /**
-         * QueryStat
-         * @description 쿼리 1개의 설명 품질과 인식률.
-         *
-         *     **이 화면의 실질 산출물이다.** 어느 쿼리의 설명을 고쳐야 하는지가
-         *     여기서 정해지고, 그 목록이 그대로 재생성 요청 대상이 된다.
-         */
-        QueryStat: {
-            /**
-             * Path
-             * @description 쿼리 경로. 경로 파라미터는 중괄호 표기.
-             */
-            path: string;
-            /**
-             * Method
-             * @description HTTP 메서드. 대문자로 내려준다.
-             */
-            method: string;
-            /**
-             * Summary
-             * @description 명세에 적힌 요약. 없으면 null — 비어 있다는 사실 자체가 평가 결과다.
-             */
-            summary?: string | null;
-            /**
-             * Descriptionlength
-             * @description 설명 길이(글자 수). 0 이면 설명이 없다. 길이만으로도 부실한 쿼리가 드러난다.
-             */
-            descriptionLength: number;
-            /**
-             * Hasparamdescription
-             * @description 파라미터 설명이 하나라도 있는지. 파라미터 기반 질문의 인식률과 직결된다.
-             */
-            hasParamDescription: boolean;
-            /**
-             * Questioncount
-             * @description 이 쿼리를 기대 결과로 삼은 문항 수. 모든 쿼리의 합은 totalQuestions.
-             */
-            questionCount: number;
-            /**
-             * Top3Accuracy
-             * @description 이 쿼리를 기대한 문항들의 Top-3 인식률(%).
-             */
-            top3Accuracy: number;
-            /** @description 이 쿼리의 등급. 백엔드가 확정해 내려준다. */
-            grade: components["schemas"]["Grade"];
-            /**
-             * Needsregeneration
-             * @description 재생성 요청 대상 후보인지. **백엔드가 판단한다** — 프론트가 인식률로 다시 계산하지 않는다. 판정 기준은 docs/open-questions.md #53 참고.
-             */
-            needsRegeneration: boolean;
-        };
-        /**
          * QuestionResult
-         * @description 문항 1개의 평가 결과.
+         * @description 생성된 질문 1개의 평가 결과.
          *
-         *     **평가 대상은 실패만이 아니라 문항 100개 전체다.** 성공한 문항도 여기 들어온다
-         *     (성공이면 failureCategory 와 reason 이 null).
+         *     **평가 대상은 실패만이 아니라 질문 100개 전체다.** 성공한 문항도 여기 들어온다
+         *     (성공이면 `failure_category` 와 `reason` 이 null).
+         *
+         *     `expected` 가 없다 — 평가 대상이 쿼리 하나이므로 100문항의 정답이 전부
+         *     `target` 과 같다. `top1` 도 없다 — 항상 `top3[0]` 과 같은 값이었다.
          */
         QuestionResult: {
             /**
              * No
-             * @description 표시 순번(1~100).
+             * @description 표시 순번(1~questionCount).
              */
             no: number;
             /**
              * Question
-             * @description 실제로 던진 질문 문장.
+             * @description LLM 이 생성해 실제로 던진 질문 문장.
              */
             question: string;
-            /** @description 문항 유형 enum. */
+            /** @description 문항 유형 enum. 자리표시(#69). */
             questionType: components["schemas"]["QuestionType"];
-            /** @description 찾아냈어야 하는 정답 쿼리. */
-            expected: components["schemas"]["ExpectedApi"];
-            /** @description 1위 검색 결과. */
-            top1: components["schemas"]["TopResult"];
             /**
              * Top3
-             * @description 상위 3개 검색 결과. 보통 topK 개.
+             * @description 상위 검색 결과. **1~topK 개이거나, 결과가 한 건도 없으면 null 이다.** 코퍼스가 작거나 유사도 하한에 걸리면 실제로 그렇다. 화면은 길이를 3으로 가정하지 않는다.
              */
-            top3: components["schemas"]["SearchResult"][];
+            top3?: components["schemas"]["SearchResult"][] | null;
             /**
              * Top1Hit
-             * @description 1위가 기대 쿼리와 일치했는지.
+             * @description 1위가 평가 대상 쿼리였는지. top3[0].queryId == target.queryId.
              */
             top1Hit: boolean;
             /**
              * Top3Hit
-             * @description 상위 3개 안에 기대 쿼리가 있었는지.
+             * @description 상위 3개 안에 평가 대상 쿼리가 있었는지.
              */
             top3Hit: boolean;
-            /** @description 실패 범위. NONE(성공) / TOP1_ONLY / TOP3. */
+            /** @description 실패 범위. NONE(성공) / TOP1_ONLY / TOP3. 결과 없음도 TOP3 다. */
             failureScope: components["schemas"]["FailureScope"];
             /**
              * Expectedrank
-             * @description 기대 쿼리가 전체 검색 결과에서 몇 위였는지. Top-N 밖이면 null.
+             * @description **평가 대상 쿼리가** 전체 검색 결과에서 몇 위였는지. Top-N 밖이거나 결과가 없으면 null.
              */
             expectedRank?: number | null;
-            /** @description 실패 원인 분류. **성공(NONE)이면 null**. */
+            /** @description 실패 원인 분류. **성공(NONE)이면 null**. 항목 전체 목록은 미확정(#70). */
             failureCategory?: components["schemas"]["FailureCategory"] | null;
             /**
              * Reason
@@ -412,6 +292,14 @@ export interface components {
         /**
          * QuestionType
          * @description 평가 문항의 유형.
+         *
+         *     **자리표시다** (open-questions.md #69). 실제 분류 체계는 사내 질문 생성
+         *     프롬프트가 정하며 미확정이다. 알려진 상위 갈래는 업무 관련 / 생성 관련 / 기타.
+         *
+         *     **바꿀 때 고치는 곳은 여기와 `frontend/src/lib/enumTokens.ts` 두 곳뿐이다.**
+         *     도넛·범례·막대·원인 필터는 그 두 테이블만 보고 그려진다. 프론트의 두 테이블은
+         *     `Record<QuestionType, …>` 이라 enum 이 바뀌면 타입 에러로 빠진 항목을 알려준다.
+         *     색이 모자라면 `globals.css` 의 `--chart-type-*` 도 함께 늘린다.
          * @enum {string}
          */
         QuestionType: "DIRECT" | "USER_NL" | "DOMAIN_TERM" | "PARAMETER" | "ERROR_CASE" | "SHORT_KEYWORD" | "MIXED_LANG";
@@ -445,31 +333,6 @@ export interface components {
              * @description 이 유형에서의 Top-3 인식률(%). 유형 간 편차가 개선 우선순위를 정한다.
              */
             top3Accuracy: number;
-        };
-        /**
-         * RawSource
-         * @description 평가툴 원본 식별자.
-         *
-         *     평가 엔진은 이 시스템 밖에 있다(contract.md §0). 담당자 툴의 프롬프트나
-         *     지표가 바뀌면 결과 비교가 필요하므로, 어떤 버전의 툴이 만든 결과인지 남긴다.
-         *     이 백엔드의 1차 역할은 그 출력을 계약으로 변환하는 어댑터다.
-         */
-        RawSource: {
-            /**
-             * Toolversion
-             * @description 평가툴 버전.
-             */
-            toolVersion: string;
-            /**
-             * Promptversion
-             * @description 질문 생성 프롬프트 버전.
-             */
-            promptVersion: string;
-            /**
-             * Generatedat
-             * @description 평가툴이 결과를 생성한 시각(ISO 8601 + 타임존).
-             */
-            generatedAt: string;
         };
         /**
          * Recommendation
@@ -507,7 +370,10 @@ export interface components {
         SearchMode: "BM25" | "VECTOR" | "HYBRID";
         /**
          * SearchResult
-         * @description 검색 결과 1건 (순위 포함). Top-3 목록에 쓴다.
+         * @description 검색 결과 1건 (순위 포함).
+         *
+         *     `method` 가 없다. 결과를 식별하는 것은 `query_id` 이고 `path` 는 표시용이다 —
+         *     DAC 쿼리는 전부 조회라 메서드가 구별에 기여하지 않는다 (open-questions #50).
          */
         SearchResult: {
             /**
@@ -516,76 +382,68 @@ export interface components {
              */
             rank: number;
             /**
-             * Method
-             * @description 검색된 쿼리의 HTTP 메서드.
+             * Queryid
+             * @description 검색된 쿼리의 DAC 식별자. **hit 판정은 이 값과 target.queryId 를 비교한다** — path 가 아니다. 같은 path 가 다른 쿼리일 수 있다.
              */
-            method: string;
+            queryId: string;
             /**
              * Path
-             * @description 검색된 쿼리의 경로.
+             * @description 검색된 쿼리의 경로. 표시용이다.
              */
             path: string;
             /**
              * Score
-             * @description 정규화된 유사도 점수(0~1). 아깝게 놓친 건지 완전히 빗나간 건지 구분하는 근거.
+             * @description 코사인 유사도(0~1). bge-m3 임베딩끼리의 값이다. 아깝게 놓친 건지 완전히 빗나간 건지 구분하는 근거.
              */
             score: number;
         };
         /**
-         * TargetApp
-         * @description 평가 대상이 된 DAC 앱.
+         * TargetQuery
+         * @description 평가 대상이 된 DAC 쿼리 **하나**.
          *
-         *     평가 단위는 **쿼리 하나가 아니라 앱 하나**다. DAC 이 앱마다 Swagger 를
-         *     생성하므로 Swagger 1개 = 앱 1개이고, 그 안의 엔드포인트 하나가 등록된
-         *     SELECT 쿼리 하나다 (docs/contract.md §0).
+         *     이전 계약은 앱 하나를 평가하고 그 안의 쿼리 목록을 함께 내려줬다. 지금은
+         *     쿼리 하나가 평가 단위다 (contract.md §0).
+         *
+         *     `summary` / `description` / `x_questions` 를 그대로 실어 보내는 것은
+         *     화면이 **"이 설명으로 검색이 걸릴 만한가" 를 사용자에게 직접 보여주기**
+         *     위해서다. 인식률 숫자만 보여주면 무엇을 고쳐야 할지 알 수 없다.
          */
-        TargetApp: {
+        TargetQuery: {
+            /**
+             * Queryid
+             * @description DAC 쿼리 식별자. 평가 요청의 query_id 와 같다.
+             */
+            queryId: string;
             /**
              * Appid
-             * @description DAC 앱 식별자. 예: mf-worker
+             * @description 이 쿼리가 속한 DAC 앱. DAC 이 제공하지 않으면 null.
              */
-            appId: string;
-            /**
-             * Appname
-             * @description 화면에 표시할 앱 이름.
-             */
-            appName: string;
-            /**
-             * Specversion
-             * @description Swagger 버전. 재생성 전후를 구분하는 근거이므로 화면에 반드시 표기한다.
-             */
-            specVersion: string;
-            /**
-             * Querycount
-             * @description 앱에 등록된 쿼리 수. queries 배열의 길이와 같다.
-             */
-            queryCount: number;
-            /**
-             * Owner
-             * @description 앱 담당 조직 또는 담당자. DAC 이 제공하지 않으면 null.
-             */
-            owner?: string | null;
-        };
-        /**
-         * TopResult
-         * @description 1위 결과. 순위가 자명하므로 rank 를 두지 않는다.
-         */
-        TopResult: {
+            appId?: string | null;
             /**
              * Method
-             * @description 1위 쿼리의 HTTP 메서드.
+             * @description HTTP 메서드. 대문자로 내려준다.
              */
             method: string;
             /**
              * Path
-             * @description 1위 쿼리의 경로.
+             * @description 쿼리 경로. 경로 파라미터는 중괄호 표기.
              */
             path: string;
             /**
-             * Score
-             * @description 1위의 정규화된 유사도 점수(0~1).
+             * Summary
+             * @description 명세의 summary. 없으면 null — **비어 있다는 사실 자체가 평가 결과다.**
              */
-            score: number;
+            summary?: string | null;
+            /**
+             * Description
+             * @description 명세의 description. 없으면 null. 검색이 참고하는 본문이다.
+             */
+            description?: string | null;
+            /**
+             * Xquestions
+             * @description 명세에 적힌 예시 질문(x-question). 없으면 **빈 배열**이다 — null 이 아니다. 화면이 길이만 보고 분기할 수 있게 배열로 고정한다.
+             */
+            xQuestions: string[];
         };
         /** ValidationError */
         ValidationError: {
@@ -609,37 +467,18 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    list_evaluations_api_v1_evaluations_get: {
+    evaluate_api_v1_evaluations_post: {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["EvaluationListItem"][];
-                };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EvaluateRequest"];
             };
         };
-    };
-    get_evaluation_api_v1_evaluations__trace_id__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description 평가 실행의 추적 ID. 예: A492 */
-                trace_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
         responses: {
             /** @description Successful Response */
             200: {
@@ -650,7 +489,7 @@ export interface operations {
                     "application/json": components["schemas"]["EvaluationReport"];
                 };
             };
-            /** @description 해당 추적 ID의 평가 결과가 없음 */
+            /** @description 해당 query_id 의 쿼리를 찾을 수 없음 */
             404: {
                 headers: {
                     [name: string]: unknown;
